@@ -1,6 +1,10 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ServiceProgress() {
+    const navigate = useNavigate();
+    const handleServiceFinished = () => {
+        navigate('/houseowner/serviceFinished');
+    }
     return (
         <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
 
@@ -34,10 +38,10 @@ export default function ServiceProgress() {
                     </div>
                 </div>
             </div>
-            <div className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-black bg-[#EEEEEE] rounded-lg max-w-[350px]">
+            <div onClick={handleServiceFinished} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-black bg-[#EEEEEE] rounded-lg max-w-[350px]">
                 Chat With Provider
             </div>
-            <div className="gap-9 self-center px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+            <div onClick={handleServiceFinished} className="gap-9 self-center px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
                 Service Finished
             </div>
         </div>

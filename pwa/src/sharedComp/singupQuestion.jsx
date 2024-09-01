@@ -4,21 +4,21 @@ import { useNavigate } from "react-router-dom";
 function Question() {
     const navigate = useNavigate();
     const handleShoveller = () => {
-        navigate('/shoveller/searchJobByList');
+        navigate('/shoveller/shovellerDetails');
     }
 
     const handleHouseOwner = () => {
-        navigate('/houseowner/homeOwnerLocation');
+        navigate('/houseowner/personalDetail');
     }
   return (
     <div className="flex flex-col pb-16 mx-auto w-full bg-white max-w-[480px]">
-      <div className="flex gap-2 items-center px-5 mt-7">
+      {/* <div className="flex gap-2 items-center px-5 mt-7">
         <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 bg-black rounded-md basis-0" />
         <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 rounded-md basis-0 bg-zinc-100" />
         <div className="flex flex-1 shrink self-stretch my-auto h-2 rounded-md basis-0 bg-zinc-100 w-[65px]" />
         <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 rounded-md basis-0 bg-zinc-100" />
         <div className="flex flex-1 shrink self-stretch my-auto h-2 rounded-md basis-0 bg-zinc-100 w-[65px]" />
-      </div>
+      </div> */}
       <div className="flex flex-col self-center mt-12 w-full text-4xl text-center text-black capitalize max-w-[331px] min-h-[224px] mx-auto">
         <img
           loading="lazy"

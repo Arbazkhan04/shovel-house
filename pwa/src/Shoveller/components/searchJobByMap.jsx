@@ -1,6 +1,10 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchJobByArea() {
+  const navigate = useNavigate();
+  const handleList = () => {
+    navigate('/shoveller/searchJobByList');
+  }
   return (
     <div className="flex overflow-hidden flex-col pb-8 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-5 w-full">
@@ -42,7 +46,7 @@ export default function SearchJobByArea() {
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/7771b5892dc0009e9473ba2883081ac19512249ff0fb66321dfd9a26cc399c68?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
                   />
-                  <div className="self-stretch my-auto">List</div>
+                  <div onClick={handleList} className="self-stretch my-auto">List</div>
                 </div>
               </div>
               <img

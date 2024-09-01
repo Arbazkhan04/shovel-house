@@ -1,6 +1,14 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ShovellerDetails() {
+    const navigate = useNavigate();
+    const handleNext = () => {
+        navigate("/shoveller/serviceDetail");
+        };
+    const handleBack = () => {
+        navigate("/signupQuestion");
+        }
+
   return (
     <div className="flex overflow-hidden flex-col items-center pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="mt-16 text-5xl font-medium text-center text-black capitalize w-[305px]">
@@ -49,10 +57,10 @@ export default function ShovellerDetails() {
         </div>
       </div>
       <div className="flex gap-3 items-start mt-36 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap max-w-[350px]">
-        <div className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100">
+        <div onClick={handleBack} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100">
           Back
         </div>
-        <div className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg">
+        <div onClick={handleNext} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg">
           Next
         </div>
       </div>

@@ -81,9 +81,17 @@
 // }
 
 
-
+import { useNavigate } from "react-router-dom";
 
 export default function HomeOwnerLocation() {
+
+    const navigate = useNavigate();
+    const handleDuration = () => {
+        navigate('/houseOwner/timeDuration');
+    }
+    const handleBack = () => {
+        navigate('/question');
+    }
     return (
       <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
         <div className="flex gap-2 items-center px-5 mt-7">
@@ -156,10 +164,10 @@ export default function HomeOwnerLocation() {
           </div>
         </div>
         <div className="flex gap-3 items-start self-center mt-10 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap max-w-[350px]">
-          <div className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100 cursor-pointer">
+          <div onClick={handleBack} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100 cursor-pointer">
             Back
           </div>
-          <div className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg cursor-pointer">
+          <div onClick={handleDuration} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg cursor-pointer">
             Next
           </div>
         </div>

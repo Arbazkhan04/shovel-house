@@ -1,6 +1,10 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ServiceFinished() {
+  const navigate = useNavigate();
+  const handleFinished = () => {
+    navigate("/houseowner/transaction");
+  }
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-6 w-full">
@@ -108,7 +112,7 @@ export default function ServiceFinished() {
             </div>
           </div>
         </div>
-        <div className="gap-9 self-start px-12 py-4 mt-20 text-xl font-medium tracking-wider text-center text-white whitespace-nowrap bg-black rounded-lg">
+        <div onClick={handleFinished} className="gap-9 self-start px-12 py-4 mt-20 text-xl font-medium tracking-wider text-center text-white whitespace-nowrap bg-black rounded-lg">
           Confirm
         </div>
       </div>

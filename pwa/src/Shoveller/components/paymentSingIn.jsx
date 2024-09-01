@@ -1,10 +1,20 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function PayementSingIn() {
+  const navigate = useNavigate();
+  const handleNext = () => {
+    navigate("/shoveller/searchJobByList");
+  };
+  const handleBack = () => {
+    navigate("/shoveller/shovellerPersonalDetail");
+  };
+  const handleSingUp = () => {
+    navigate('/shoveller/paymentSingUp')
+  }
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-5 w-full">
-        <img
+        <img onClick={handleBack}
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/9e1b4b91b9c57b90dd883ecf517bededc2915ea909e4a211385ef791c20c162e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
           className="object-contain w-6 aspect-square"
@@ -48,12 +58,12 @@ export default function PayementSingIn() {
               </div>
             </div>
             <div className="flex-1 shrink gap-2.5 self-stretch pr-2 mt-3 w-full text-xs text-right text-neutral-400">
-              Dont have an account? <span className="text-black">Signup</span>
+              Dont have an account? <span onClick={handleSingUp} className="text-black">Signup</span>
             </div>
           </div>
         </div>
         <div className="flex gap-3 items-start mt-20 text-xl font-medium tracking-wider text-center text-white whitespace-nowrap">
-          <div className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 w-full bg-black rounded-lg min-w-[240px]">
+          <div onClick={handleNext} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 w-full bg-black rounded-lg min-w-[240px]">
             Signin
           </div>
         </div>

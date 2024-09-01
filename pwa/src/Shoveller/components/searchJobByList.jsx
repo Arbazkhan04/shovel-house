@@ -1,6 +1,15 @@
-import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchJobByList() {
+  const navigate = useNavigate();
+
+  const handleShovllerMap = () => {
+    navigate("/shoveller/searchJobByMap");
+  }
+
+  const navigateToHouseOwnerJob = () => {
+    navigate("/shoveller/isMatchHouseOwner");
+  }
   return (
     <div className="flex overflow-hidden flex-col pb-3 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-5 w-full">
@@ -34,7 +43,7 @@ export default function SearchJobByList() {
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/9dd09a6abf1a68166b7a3c2ea65a50fe520a8497f75825bd00076a8f5326b01a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
                   />
-                  <div className="self-stretch my-auto w-[41px]">Map</div>
+                  <div onClick={handleShovllerMap} className="self-stretch my-auto w-[41px]">Map</div>
                 </div>
                 <div className="flex gap-2 items-center self-stretch my-auto text-black">
                   <img
@@ -53,7 +62,7 @@ export default function SearchJobByList() {
             </div>
           </div>
           <div className="flex flex-col mt-5 w-full tracking-tight">
-            <div className="flex gap-10 justify-between items-center px-4 py-3 w-full rounded-lg bg-zinc-100">
+            <div onClick={navigateToHouseOwnerJob} className="flex gap-10 justify-between items-center px-4 py-3 w-full rounded-lg bg-zinc-100">
               <div className="flex gap-2 items-center self-stretch my-auto text-zinc-800">
                 <img
                   loading="lazy"

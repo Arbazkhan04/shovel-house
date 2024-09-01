@@ -7,6 +7,11 @@ function Login() {
    const handleNavigate = () => {
         navigate('/question');
     }
+
+    const handleQuestion = () => {
+        navigate('/signupQuestion');
+    }
+    
   return (
   <div className="flex flex-col items-center min-h-screen bg-white mt-5">
     <div className="text-center text-3xl font-medium text-black">Shovel House</div>
@@ -67,6 +72,9 @@ function Login() {
         <button onClick={handleNavigate} className="mt-6 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg py-3">
           Login
         </button>
+        <div className="mt-3 text-sm text-center text-neutral-600">
+                            Not a member? <span onClick={handleQuestion} className="text-blue-500 cursor-pointer">Sign Up</span>
+        </div>
       </div>
     </div>
 

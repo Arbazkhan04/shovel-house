@@ -5,6 +5,7 @@ import ShovellerRoutes from "./Shoveller/components/shovellerRoutes";
 
 import Login from "./sharedComp/login";
 import Question from "./sharedComp/question";
+import SignupQuestion from "./sharedComp/singupQuestion";
 
 
 import Loader from './sharedComp/loader';
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Login />} />
           <Route path="/question" element={<Question />} />
+          <Route path ="signupQuestion" element={<SignupQuestion />} />
           {HouseOwnerRoutes.map(({ path, element }) => (
             <Route
               key={path}
@@ -32,7 +34,7 @@ function App() {
               element={element}
             />
           ))}
-        </Routes>
+      </Routes>
       </Suspense>
 
     </Router>

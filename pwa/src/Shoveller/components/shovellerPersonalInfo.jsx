@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
-export default function PersonalDetail() {
+export default function ShovellerPersonalDetail() {
   const navigate = useNavigate();
   const handleNext = () => {
-    navigate("/houseowner/loginAccountDetail");
+    navigate("/shoveller/paymentSingIn");
   };
   const handleBack = () => {
-    navigate("/signupQuestion");
+    navigate("/shoveller/serviceDetail");
   };
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">

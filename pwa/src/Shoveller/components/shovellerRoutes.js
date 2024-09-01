@@ -7,6 +7,7 @@ import SearchJobByList from "./searchJobByList";
 import IsMatchHouseOwner from "./isMatchHouseOwner"
 import ServiceProgressShoveller from "./serviceProgress";
 import ServiceFinishedByShoveller from "./serviceFinished";
+import ShovellerPersonalDetail from "./shovellerPersonalInfo";
 
 const route = [
     { path:'/shovellerDetails', element: <ShovellerDetails /> },
@@ -18,6 +19,7 @@ const route = [
     { path:'/isMatchHouseOwner', element: <IsMatchHouseOwner /> },
     { path:'/serviceProgressShoveller', element: <ServiceProgressShoveller /> },
     { path:'/serviceFinishedByShoveller', element: <ServiceFinishedByShoveller /> },
+    { path:'/shovellerPersonalDetail', element: <ShovellerPersonalDetail /> },
 ]
 
 export default route;
