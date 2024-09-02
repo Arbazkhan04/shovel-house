@@ -1,13 +1,22 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function PaymentDetail() {
   const navigate = useNavigate();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
   const handleNext = () => {
     navigate('/houseowner/reviewDetail');
-  }
+  };
+
   const handleBack = () => {
     navigate('/houseowner/timeDuration');
-  }
+  };
+
+  const handlePaymentMethodSelect = (method) => {
+    setSelectedPaymentMethod(method);
+  };
+
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex gap-2 items-center px-5 mt-7">
@@ -32,36 +41,46 @@ export default function PaymentDetail() {
             Payment Method
           </div>
           <div className="flex flex-col mt-5 w-full tracking-tight">
-            <div className="flex flex-col w-full">
-              <div className="flex gap-10 justify-between items-center p-4 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800">
-                <div className="flex gap-2.5 items-center self-stretch my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/f1df82230037aa25e5c67535a8e35d82ce99075218bf72306b95e4c15304eacf?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
-                  />
-                  <div className="self-stretch my-auto">Credit /Debit</div>
-                </div>
+            <div
+              className={`flex gap-10 justify-between items-center p-4 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Credit /Debit' ? 'bg-black text-white' : ''}`}
+              onClick={() => handlePaymentMethodSelect('Credit /Debit')}
+            >
+              <div className="flex gap-2.5 items-center self-stretch my-auto">
                 <img
                   loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/82a8fbc9183edeb50cc62e151aa667427dd6da5610c952d30c3e1dfae832fa2a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                  className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/f1df82230037aa25e5c67535a8e35d82ce99075218bf72306b95e4c15304eacf?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                  className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
                 />
+                <div className="self-stretch my-auto">Credit /Debit</div>
               </div>
+              <img
+                loading="lazy"
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/82a8fbc9183edeb50cc62e151aa667427dd6da5610c952d30c3e1dfae832fa2a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+              />
+            </div>
+
+            {selectedPaymentMethod === 'Credit /Debit' && (
               <div className="flex flex-col mt-1 w-full rounded-none">
                 <div className="flex flex-col justify-center p-6 rounded-lg bg-zinc-100">
                   <div className="flex flex-col w-full">
                     <div className="text-xl leading-none text-zinc-800">
                       Card Number
                     </div>
-                    <div className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded">
-                      5632 5684 2649 5912
-                    </div>
+                    <input
+                      type="text"
+                      className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
+                      placeholder="Enter card number"
+                    />
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center whitespace-nowrap rounded-lg bg-zinc-100 text-zinc-800">
+            )}
+
+            <div
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Paypal' ? 'bg-black text-white' : ''}`}
+              onClick={() => handlePaymentMethodSelect('Paypal')}
+            >
               <div className="flex gap-3 items-center self-stretch my-auto">
                 <img
                   loading="lazy"
@@ -76,7 +95,11 @@ export default function PaymentDetail() {
                 className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
               />
             </div>
-            <div className="flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800">
+
+            <div
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Master Card' ? 'bg-black text-white' : ''}`}
+              onClick={() => handlePaymentMethodSelect('Master Card')}
+            >
               <div className="flex gap-3 items-center self-stretch my-auto">
                 <img
                   loading="lazy"
@@ -91,7 +114,28 @@ export default function PaymentDetail() {
                 className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
               />
             </div>
-            <div className="flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800">
+
+            {selectedPaymentMethod === 'Master Card' && (
+              <div className="flex flex-col mt-1 w-full rounded-none">
+                <div className="flex flex-col justify-center p-6 rounded-lg bg-zinc-100">
+                  <div className="flex flex-col w-full">
+                    <div className="text-xl leading-none text-zinc-800">
+                      Card Number
+                    </div>
+                    <input
+                      type="text"
+                      className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
+                      placeholder="Enter card number"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Apple Pay' ? 'bg-black text-white' : ''}`}
+              onClick={() => handlePaymentMethodSelect('Apple Pay')}
+            >
               <div className="flex gap-2.5 items-center self-stretch my-auto">
                 <img
                   loading="lazy"
@@ -110,10 +154,10 @@ export default function PaymentDetail() {
         </div>
       </div>
       <div className="flex gap-3 items-start self-center mt-11 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap max-w-[350px]">
-        <div onClick={handleBack} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100">
+        <div onClick={handleBack} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100 cursor-pointer">
           Back
         </div>
-        <div onClick={handleNext} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg">
+        <div onClick={handleNext} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg cursor-pointer">
           Next
         </div>
       </div>
