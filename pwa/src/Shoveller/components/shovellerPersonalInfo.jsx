@@ -215,10 +215,10 @@ import { useState } from "react";
 export default function ShovellerPersonalDetail() {
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState("User name");
-  const [email, setEmail] = useState("Email");
-  const [phone, setPhone] = useState("Phone");
-  const [address, setAddress] = useState("Address");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleNext = () => {
     navigate("/shoveller/paymentSingIn");
@@ -250,7 +250,7 @@ export default function ShovellerPersonalDetail() {
                 />
                 <input
                   type="text"
-                  value={''}
+                  value={userName}
                   placeholder="User name"
                   onChange={(e) => setUserName(e.target.value)}
                   className="self-stretch my-auto border-none bg-transparent outline-none"
@@ -266,7 +266,7 @@ export default function ShovellerPersonalDetail() {
                 />
                 <input
                   type="text"
-                  value={''}
+                  value={email}
                   placeholder="Email"
                   onChange={(e) => setEmail(e.target.value)}
                   className="self-stretch my-auto border-none bg-transparent outline-none"
@@ -282,7 +282,7 @@ export default function ShovellerPersonalDetail() {
                 />
                 <input
                   type="text"
-                  value={''}
+                  value={phone}
                   placeholder="Phone"
                   onChange={(e) => setPhone(e.target.value)}
                   className="self-stretch my-auto border-none bg-transparent outline-none"
@@ -298,7 +298,7 @@ export default function ShovellerPersonalDetail() {
                 />
                 <input
                   type="text"
-                  value={''}
+                  value={address}
                   placeholder="Address"
                   onChange={(e) => setAddress(e.target.value)}
                   className="self-stretch my-auto border-none bg-transparent outline-none"
