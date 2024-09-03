@@ -234,7 +234,8 @@ export default function ShovellerPersonalDetail() {
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/9e1b4b91b9c57b90dd883ecf517bededc2915ea909e4a211385ef791c20c162e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain w-6 aspect-square"
+          className="object-contain w-6 aspect-square cursor-pointer"
+          onClick={handleBack}
         />
         <div className="flex flex-col mt-3.5">
           <div className="text-2xl font-medium tracking-wide text-black">
