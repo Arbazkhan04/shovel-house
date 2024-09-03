@@ -56,7 +56,7 @@ export default function ShovellerDetails() {
           </div>
         </div>
       </div>
-      <div className="flex gap-3 items-start mt-36 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap max-w-[350px]">
+      <div className="flex gap-3 items-start mt-36 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap max-w-[350px] cursor-pointer">
         <div onClick={handleBack} className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100">
           Back
         </div>

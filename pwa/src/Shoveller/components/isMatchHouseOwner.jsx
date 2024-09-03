@@ -12,7 +12,7 @@ export default function IsMatchShoveller() {
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain self-end w-6 aspect-square"
+          className="object-contain self-end w-6 aspect-square cursor-pointer"
         />
         <div className="self-start mt-14">Matched!</div>
       </div>
@@ -33,12 +33,12 @@ export default function IsMatchShoveller() {
             <span className="">JohnAndrew's</span> 
             Service <br />  Requested  <span className=""> At 6:00 Am</span>
           </div>
-          <div className="gap-9 self-center py-3.5 pr-12 pl-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg min-h-[52px] w-[169px]">
+          <div className="gap-9 cursor-pointer self-center py-3.5 pr-12 pl-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg min-h-[52px] w-[169px]">
             Details
           </div>
         </div>
       </div>
-      <div onClick={handleChat} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+      <div onClick={handleChat} className="gap-9 cursor-pointer self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
         Chat With Client
       </div>
     </div>
