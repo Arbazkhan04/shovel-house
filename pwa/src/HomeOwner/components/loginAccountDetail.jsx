@@ -10,6 +10,10 @@ export default function LoginAccountDetail() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // State for password visibility
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
   const handleNext = () => {
     navigate("/houseowner/loginPaymentInfo");
   };
@@ -24,7 +28,8 @@ export default function LoginAccountDetail() {
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/9e1b4b91b9c57b90dd883ecf517bededc2915ea909e4a211385ef791c20c162e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain w-6 aspect-square"
+          className="object-contain w-6 aspect-square cursor-pointer"
+          onClick={handleBack}
         />
         <div className="flex flex-col mt-3.5">
           <div className="text-2xl font-medium tracking-wide text-black">
@@ -76,7 +81,7 @@ export default function LoginAccountDetail() {
                       className="object-contain shrink-0 self-stretch my-auto aspect-square w-[22px]"
                     />
                     <input
-                      type="password"
+                      type={passwordVisible ? "text" : "password"}
                       placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -85,8 +90,9 @@ export default function LoginAccountDetail() {
                   </div>
                   <img
                     loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1c47945e503b601c0f121727bce918086e3b749eaef6e51f3a524cdd1aa877a6?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/e0ef8afe2c37fbd8211cecc072a89488a2e75bf43d919f723ba689650730598e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"  
+                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square cursor-pointer"
+                    onClick={() => setPasswordVisible(!passwordVisible)}
                   />
                 </div>
               </div>
@@ -100,7 +106,7 @@ export default function LoginAccountDetail() {
                       className="object-contain shrink-0 self-stretch my-auto aspect-square w-[22px]"
                     />
                     <input
-                      type="password"
+                      type={confirmPasswordVisible ? "text" : "password"}
                       placeholder="Confirm Password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -109,8 +115,9 @@ export default function LoginAccountDetail() {
                   </div>
                   <img
                     loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/e0ef8afe2c37fbd8211cecc072a89488a2e75bf43d919f723ba689650730598e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/e0ef8afe2c37fbd8211cecc072a89488a2e75bf43d919f723ba689650730598e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"  
+                    className="object-contain shrink-0 self-stretch my-auto w-4 aspect-square cursor-pointer"
+                    onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
                   />
                 </div>
               </div>
