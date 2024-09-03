@@ -34,7 +34,8 @@ export default function ServicePreference() {
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/d58c15594f08f907ba81058258945cedda38f9bf3e78da17eccb4be4905d6147?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain w-6 aspect-square"
+          className="object-contain w-6 aspect-square cursor-pointer"
+          onClick={handleBack}
         />
         <div className="mt-4 text-3xl font-medium text-black capitalize min-h-[34px]">
           Services Preferences
