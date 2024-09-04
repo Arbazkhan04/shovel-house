@@ -3,9 +3,17 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  neighbourHood:{
     type: String,
-    required: [true, 'Please provide name'],
+    required: [true, 'Please provide neighbourhood'],
+  },
+  servicesProvide:{
+    type:[String],
+    required: [true, 'Please provide services'],
+  },
+  userName: {
+    type: String,
+    required: [true, 'Please provide userName'],
   },
   email: {
     type: String,
@@ -16,10 +24,18 @@ const UserSchema = new mongoose.Schema({
     ],
     unique: true,
   },
-  privilege: {
+  phone: {
     type: String,
-    enum: ['Homeowner', 'Shoveler'],
+    required: [true, 'Please provide phone number'],
   },
+  Address: {
+    type: String,
+    required: [true, 'Please provide address'],
+  },
+  // privilege: {
+  //   type: String,
+  //   enum: ['Homeowner', 'Shoveler'],
+  // },
   password: {
     type: String,
     required: [true, 'Please provide password'],
