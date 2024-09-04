@@ -3,43 +3,47 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
-  neighbourHood:{
+
+  userRole: {
     type: String,
-    required: [true, 'Please provide neighbourhood'],
-  },
-  servicesProvide:{
-    type:[String],
-    required: [true, 'Please provide services'],
+    enum: ['admin', 'shoveller', 'houseOwner'],
+    required: true
   },
   userName: {
     type: String,
-    required: [true, 'Please provide userName'],
+    required: function() { return this.userRole !== 'admin'; }  // Required for shoveller and houseOwner
   },
   email: {
     type: String,
-    required: [true, 'Please provide email'],
-    match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      'Please provide a valid email',
-    ],
-    unique: true,
+    required: true,
+    unique: true
   },
   phone: {
     type: String,
-    required: [true, 'Please provide phone number'],
+    required: function() { return this.userRole !== 'admin'; }  // Required for shoveller and houseOwner
   },
-  Address: {
+  address: {
     type: String,
-    required: [true, 'Please provide address'],
+    required: function() { return this.userRole !== 'admin'; }  // Required for shoveller and houseOwner
   },
-  // privilege: {
-  //   type: String,
-  //   enum: ['Homeowner', 'Shoveler'],
-  // },
   password: {
     type: String,
-    required: [true, 'Please provide password'],
-    minlength: 8,
+    required: true
+  },
+  neighbourhood: {
+    type: String,
+    required: function() { return this.userRole === 'shoveller'; },  // Required only for shovellers
+    default: undefined //keep empty is not provided
+  },
+  servicesProvide: {
+    type: [String],
+    required: function() { return this.userRole === 'shoveller'; },  // Required only for shovellers
+    default: undefined //keep empty is not provided
+  },
+  serviceRequired: {
+    type: [String],
+    required: function() { return this.userRole === 'houseOwner'; }, // Required only for houseOwners
+    default: undefined //keep empty is not provided
   },
 })
 
