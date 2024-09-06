@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import HouseOwnerRoutes from "./HomeOwner/components/homeOwnerRoute";
 import ShovellerRoutes from "./Shoveller/components/shovellerRoutes";
+// In your main index.js or App.js
+import 'leaflet/dist/leaflet.css';
 
 import Login from "./sharedComp/login";
 import Question from "./sharedComp/question";
