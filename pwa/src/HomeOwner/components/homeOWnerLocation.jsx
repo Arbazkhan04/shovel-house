@@ -1,61 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-const DefaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Function to handle marker clicks and update location
-const LocationMarker = ({ setPosition, position }) => {
-  useMapEvents({
-    click(e) {
-      setPosition(e.latlng);  // Update position on map click
-    }
-  });
-
-  return position === null ? null : (
-    <Marker position={position} />
-  );
-};
-
-
-
-function MapComponent() {
-  const [position, setPosition] = useState(null);
-
-  // Fetch user location
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (location) => {
-        const { latitude, longitude } = location.coords;
-        setPosition([latitude, longitude]);
-      },
-      (error) => {
-        console.error('Error getting location', error);
-      }
-    );
-  }, []);
-
-  if (!position) {
-    return <div>Loading map...</div>; // Add a fallback while waiting for location
-  }
-
-  return (
-    <MapContainer center={position} zoom={13} style={{ height: '300px', width: '100%' }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <LocationMarker setPosition={setPosition} position={position} />
-    </MapContainer >
-  );
-}
+import MapComponent from "./map";
 
 export default function HomeOwnerLocation() {
   const [selectedServices, setSelectedServices] = useState([]);
@@ -93,7 +38,7 @@ export default function HomeOwnerLocation() {
           </div>
 
 
-          <div className="flex gap-4 items-center p-4 mt-3 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
+          {/* <div className="flex gap-4 items-center p-4 mt-3 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
             <div className="flex gap-3 items-center self-stretch my-auto">
               <img
                 loading="lazy"
@@ -107,7 +52,7 @@ export default function HomeOwnerLocation() {
               className="flex-1 outline-none bg-transparent"
                />
             </div>
-          </div>
+          </div> */}
         </div>
 
 
@@ -201,7 +146,3 @@ export default function HomeOwnerLocation() {
     </div>
   );
 }
-
-
-
-
