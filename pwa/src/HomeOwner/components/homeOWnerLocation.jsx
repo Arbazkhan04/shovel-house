@@ -36,23 +36,6 @@ export default function HomeOwnerLocation() {
           <div className="text-3xl font-medium tracking-wide text-black">
             Location
           </div>
-
-
-          {/* <div className="flex gap-4 items-center p-4 mt-3 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
-            <div className="flex gap-3 items-center self-stretch my-auto">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/a6032f4677532048706a8704524ffe1d8992163f0534e05763bdc632371b83aa?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
-              />
-              <input type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Search"
-              className="flex-1 outline-none bg-transparent"
-               />
-            </div>
-          </div> */}
         </div>
 
 
