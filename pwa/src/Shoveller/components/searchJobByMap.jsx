@@ -1,7 +1,82 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
+import ShovelHouseImage from "../../assets/images/shovelhouse.png";
+const libraries = ["places"]; // Load the Places library
 
 export default function SearchJobByArea() {
+  
+  const [position, setPosition] = useState(null);
+  const [map, setMap] = useState(null);
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [address, setAddress] = useState("");
+  const [jobs, setJobs] = useState([]); // Holds jobs data
+
   const navigate = useNavigate();
+  
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyDJQNAbTK3AGLlmRGVxa3VbejegSp-qB9A",
+    libraries
+  });
+
+  const onLoad = (mapInstance) => {
+    setMap(mapInstance);
+  };
+
+  const onAutocompleteLoad = (autocompleteInstance) => {
+    setAutocomplete(autocompleteInstance);
+  };
+
+  const handlePlaceSelect = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        const { lat, lng } = place.geometry.location;
+        setPosition({ lat: lat(), lng: lng() });
+        map.panTo({ lat: lat(), lng: lng() });
+        // Fetch nearby jobs based on search location (dummy data)
+        fetchNearbyJobs(lat(), lng());
+      }
+
+      // Update the address with the formatted address from the selected place
+      if (place.formatted_address) {
+        setAddress(place.formatted_address);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (location) => {
+          const { latitude, longitude } = location.coords;
+          setPosition({ lat: latitude, lng: longitude });
+          fetchNearbyJobs(latitude, longitude); // Fetch jobs based on current location (dummy data)
+        },
+        (error) => {
+          console.error("Error getting location", error);
+        }
+      );
+    }
+  }, []);
+
+  const fetchNearbyJobs = (lat, lng) => {
+    // Add dummy job data instead of fetching from API
+    const dummyJobs = [
+      { id: 1, latitude: lat + 0.01, longitude: lng + 0.01, title: "Job 1" },
+      { id: 2, latitude: lat - 0.01, longitude: lng - 0.01, title: "Job 2" },
+      { id: 3, latitude: lat + 0.02, longitude: lng - 0.02, title: "Job 3" },
+      { id: 4, latitude: lat - 0.02, longitude: lng + 0.02, title: "Job 4" },
+    ];
+
+    setJobs(dummyJobs); // Store dummy jobs in state
+  };
+
+  if (!isLoaded) {
+    return <div>Loading map...</div>;
+  }
+
+
   const handleList = () => {
     navigate('/shoveller/searchJobByList');
   }
@@ -19,22 +94,32 @@ export default function SearchJobByArea() {
               <div className="text-3xl font-medium tracking-wide text-black">
                 Search Jobs In Area
               </div>
-              <div className="flex gap-4 items-center p-4 mt-3 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
-            <div className="flex gap-3 items-center self-stretch my-auto">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/24150185c539c82e9703719df45b8d931494322e0bbfae370589b7b204138ab1?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
-              />
-              <input
-                type="text"
-                placeholder="Search Location"
-                className="flex-1 p-2 rounded-lg bg-zinc-100 text-stone-500 focus:outline-none"
-              />
+              {/* // Search Location */}
+              <div className="flex gap-4 items-center p-4 mt-2 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
+                <div className="flex gap-3 items-center self-stretch my-auto">
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/a6032f4677532048706a8704524ffe1d8992163f0534e05763bdc632371b83aa?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                    className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+                    alt="Search Icon"
+                  />
+                  <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      value={address} // Use the updated address state
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="flex-1 outline-none bg-transparent"
+                    />
+                  </Autocomplete>
+                </div>
+              </div>
+
+
             </div>
-          </div>
-            </div>
-            <div className="flex flex-col items-center mt-6 w-full text-xl leading-none text-center whitespace-nowrap">
+
+
+            <div className="flex flex-col mb-4 items-center mt-6 w-full text-xl leading-none text-center whitespace-nowrap">
               <div className="flex gap-10 justify-between items-center max-w-full w-[211px]">
                 <div className="flex cursor-pointer gap-2 items-center self-stretch my-auto text-black">
                   <img
@@ -60,13 +145,36 @@ export default function SearchJobByArea() {
               />
             </div>
           </div>
-          <img
-            loading="lazy"
-            srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/e88f6f984dd1a0953ea51d15c39a4b306a63fbc437f41ad5dbe1a84191ac0c11?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-            className="object-contain mx-auto mt-5 w-full rounded-none aspect-[0.66] w-[350px]"
-          />
+
+          {/* show map here */}
+          <GoogleMap
+            mapContainerStyle={{ height: "450px", width: "100%" }}
+            center={position}
+            zoom={13}
+            onLoad={onLoad}
+          >
+            {position && <Marker position={position} />}
+
+            {/* Render job markers (dummy data) */}
+          {jobs.map((job) => (
+            <Marker
+              key={job.id}
+              position={{ lat: job.latitude, lng: job.longitude }}
+              icon={{
+                url: ShovelHouseImage,
+                scaledSize: new window.google.maps.Size(30, 30),
+              }}
+              label={job.title} // Display the job title as label
+            />
+          ))}
+
+          </GoogleMap>
+
+
         </div>
       </div>
     </div>
   );
 }
+
+
