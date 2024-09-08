@@ -30,6 +30,10 @@ function MapComponent() {
         setPosition({ lat: lat(), lng: lng() });
         map.panTo({ lat: lat(), lng: lng() });
       }
+      // Update the address with the formatted address from the selected place
+      if (place.formatted_address) {
+        setAddress(place.formatted_address);
+      }
     }
   };
 
@@ -65,7 +69,7 @@ function MapComponent() {
             <input
               type="text"
               placeholder="Search"
-              value={address}
+              value={address} // Use the updated address state
               onChange={(e) => setAddress(e.target.value)}
               className="flex-1 outline-none bg-transparent"
             />
