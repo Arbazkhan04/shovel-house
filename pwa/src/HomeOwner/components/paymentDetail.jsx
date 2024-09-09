@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 export default function PaymentDetail() {
   const navigate = useNavigate();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [amount, setAmount] = useState('');
+  const [formattedAmount, setFormattedAmount] = useState('');
 
   const handleNext = () => {
     navigate('/houseowner/reviewDetail');
@@ -18,6 +20,29 @@ export default function PaymentDetail() {
   const handlePaymentMethodSelect = (method) => {
     // Set the selected payment method, ensuring only one can be selected at a time
     setSelectedPaymentMethod(method);
+  };
+
+  const handleAmountChange = (e) => {
+    let inputValue = e.target.value;
+  
+    // Remove the dollar sign if present
+    if (inputValue[0] === "$") { inputValue = inputValue.slice(1); }
+  
+    // Allow only numbers and the decimal point
+    if (/^\d*\.?\d{0,2}$/.test(inputValue)) {
+      setAmount("$" + inputValue);
+    }
+  };
+
+  const handleBlur = () => {
+    // Remove the dollar sign before converting to a number
+    const numericValue = parseFloat(amount.replace('$', ''));
+    if (!isNaN(numericValue)) {
+      const formattedValue = numericValue.toFixed(2);
+      setAmount("$" + formattedValue);
+    } else {
+      setAmount(""); // Handle invalid input, e.g., clear it
+    }
   };
 
   return (
@@ -36,10 +61,20 @@ export default function PaymentDetail() {
         <div className="text-3xl font-medium tracking-wide text-black">
           Payment Offering
         </div>
-        <div className="gap-4 self-stretch px-4 py-6 mt-3 w-full text-3xl tracking-tight leading-none text-center rounded-lg bg-zinc-100 text-zinc-800">
-          $ 50.00
+        <div className="self-stretch py-6 mt-3 w-full text-3xl tracking-tight leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 flex items-center justify-center">
+          <input
+            type="text"
+            value={amount}
+            onChange={handleAmountChange}
+            onBlur={handleBlur} // Format on blur (when the input loses focus)
+            placeholder="$50.00"
+            maxLength={5}
+            className="w-full text-center max-w-[150px] text-3xl bg-transparent border-none outline-none"
+          />
         </div>
       </div>
+
+
 
       <div className="flex mt-6 w-full bg-zinc-100 min-h-[2px]" />
 
@@ -52,9 +87,8 @@ export default function PaymentDetail() {
           <div className="flex flex-col mt-5 w-full tracking-tight">
             {/* Credit / Debit Card */}
             <div
-              className={`flex gap-10 justify-between items-center p-4 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${
-                selectedPaymentMethod === 'Credit /Debit' ? 'bg-black text-white' : ''
-              }`}
+              className={`flex gap-10 justify-between items-center p-4 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Credit /Debit' ? 'bg-black text-white' : ''
+                }`}
               onClick={() => handlePaymentMethodSelect('Credit /Debit')}
             >
               <div className="flex gap-2.5 items-center self-stretch my-auto">
@@ -82,7 +116,7 @@ export default function PaymentDetail() {
                       type="text"
                       className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
                       placeholder="Enter card number"
-                      // Consider adding value and onChange handlers
+                    // Consider adding value and onChange handlers
                     />
                   </div>
                 </div>
@@ -91,9 +125,8 @@ export default function PaymentDetail() {
 
             {/* PayPal */}
             <div
-              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${
-                selectedPaymentMethod === 'Paypal' ? 'bg-black text-white' : ''
-              }`}
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Paypal' ? 'bg-black text-white' : ''
+                }`}
               onClick={() => handlePaymentMethodSelect('Paypal')}
             >
               <div className="flex gap-3 items-center self-stretch my-auto">
@@ -121,7 +154,7 @@ export default function PaymentDetail() {
                       type="email"
                       className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
                       placeholder="Enter PayPal email"
-                      // Consider adding value and onChange handlers
+                    // Consider adding value and onChange handlers
                     />
                   </div>
                 </div>
@@ -130,9 +163,8 @@ export default function PaymentDetail() {
 
             {/* Master Card */}
             <div
-              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${
-                selectedPaymentMethod === 'Master Card' ? 'bg-black text-white' : ''
-              }`}
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Master Card' ? 'bg-black text-white' : ''
+                }`}
               onClick={() => handlePaymentMethodSelect('Master Card')}
             >
               <div className="flex gap-3 items-center self-stretch my-auto">
@@ -160,7 +192,7 @@ export default function PaymentDetail() {
                       type="text"
                       className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
                       placeholder="Enter card number"
-                      // Consider adding value and onChange handlers
+                    // Consider adding value and onChange handlers
                     />
                   </div>
                 </div>
@@ -169,9 +201,8 @@ export default function PaymentDetail() {
 
             {/* Apple Pay */}
             <div
-              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${
-                selectedPaymentMethod === 'Apple Pay' ? 'bg-black text-white' : ''
-              }`}
+              className={`flex gap-10 justify-between items-center p-4 mt-2 w-full text-xl leading-none text-center rounded-lg bg-zinc-100 text-zinc-800 cursor-pointer ${selectedPaymentMethod === 'Apple Pay' ? 'bg-black text-white' : ''
+                }`}
               onClick={() => handlePaymentMethodSelect('Apple Pay')}
             >
               <div className="flex gap-2.5 items-center self-stretch my-auto">
@@ -199,7 +230,7 @@ export default function PaymentDetail() {
                       type="email"
                       className="gap-2.5 self-stretch px-4 py-3.5 mt-4 w-full text-base leading-none text-center text-black bg-white rounded"
                       placeholder="Enter Apple ID"
-                      // Consider adding value and onChange handlers
+                    // Consider adding value and onChange handlers
                     />
                   </div>
                 </div>
