@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
 import ShovelHouseImage from "../../assets/images/shovelhouse.png";
+
 const libraries = ["places"]; // Load the Places library
 
 export default function SearchJobByArea() {
-  
   const [position, setPosition] = useState(null);
   const [map, setMap] = useState(null);
   const [autocomplete, setAutocomplete] = useState(null);
   const [address, setAddress] = useState("");
   const [jobs, setJobs] = useState([]); // Holds jobs data
-
   const navigate = useNavigate();
   
   const { isLoaded } = useJsApiLoader({
@@ -34,16 +33,54 @@ export default function SearchJobByArea() {
         const { lat, lng } = place.geometry.location;
         setPosition({ lat: lat(), lng: lng() });
         map.panTo({ lat: lat(), lng: lng() });
-        // Fetch nearby jobs based on search location (dummy data)
-        fetchNearbyJobs(lat(), lng());
+        fetchNearbyJobs(lat(), lng()); // Fetch jobs based on selected place
       }
 
-      // Update the address with the formatted address from the selected place
       if (place.formatted_address) {
         setAddress(place.formatted_address);
       }
     }
   };
+
+  const debounce = (func, timeout = 200) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
+    };
+  };
+
+  const geocodeLatLng = (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    const latlng = { lat, lng };
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === "OK") {
+        if (results[0]) {
+          setAddress(results[0].formatted_address);
+        }
+      } else {
+        console.error("Geocoder failed due to: " + status);
+      }
+    });
+  };
+
+  const handleMapCenterChanged = useCallback(
+    debounce(() => {
+      if (map) {
+        const newPosition = map.getCenter();
+        const newLat = newPosition.lat();
+        const newLng = newPosition.lng();
+
+        if (newLat !== position?.lat || newLng !== position?.lng) {
+          setPosition({ lat: newLat, lng: newLng });
+          geocodeLatLng(newLat, newLng); // Update address based on map center
+        }
+      }
+    }, 300), // Debounce for 300ms
+    [map, position]
+  );
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -51,7 +88,7 @@ export default function SearchJobByArea() {
         (location) => {
           const { latitude, longitude } = location.coords;
           setPosition({ lat: latitude, lng: longitude });
-          fetchNearbyJobs(latitude, longitude); // Fetch jobs based on current location (dummy data)
+          fetchNearbyJobs(latitude, longitude); // Fetch jobs based on current location
         },
         (error) => {
           console.error("Error getting location", error);
@@ -61,7 +98,6 @@ export default function SearchJobByArea() {
   }, []);
 
   const fetchNearbyJobs = (lat, lng) => {
-    // Add dummy job data instead of fetching from API
     const dummyJobs = [
       { id: 1, latitude: lat + 0.01, longitude: lng + 0.01, title: "Job 1" },
       { id: 2, latitude: lat - 0.01, longitude: lng - 0.01, title: "Job 2" },
@@ -69,17 +105,17 @@ export default function SearchJobByArea() {
       { id: 4, latitude: lat - 0.02, longitude: lng + 0.02, title: "Job 4" },
     ];
 
-    setJobs(dummyJobs); // Store dummy jobs in state
+    setJobs(dummyJobs);
   };
 
   if (!isLoaded) {
     return <div>Loading map...</div>;
   }
 
-
   const handleList = () => {
-    navigate('/shoveller/searchJobByList');
-  }
+    navigate("/shoveller/searchJobByList");
+  };
+
   return (
     <div className="flex overflow-hidden flex-col pb-8 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-5 w-full">
@@ -90,34 +126,30 @@ export default function SearchJobByArea() {
         />
         <div className="flex flex-col mt-4">
           <div className="flex flex-col w-full">
-            <div className="flex flex-col w-full">
-              <div className="text-3xl font-medium tracking-wide text-black">
-                Search Jobs In Area
-              </div>
-              {/* // Search Location */}
-              <div className="flex gap-4 items-center p-4 mt-2 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
-                <div className="flex gap-3 items-center self-stretch my-auto">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/a6032f4677532048706a8704524ffe1d8992163f0534e05763bdc632371b83aa?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
-                    alt="Search Icon"
-                  />
-                  <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      value={address} // Use the updated address state
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="flex-1 outline-none bg-transparent"
-                    />
-                  </Autocomplete>
-                </div>
-              </div>
-
-
+            <div className="text-3xl font-medium tracking-wide text-black">
+              Search Jobs In Area
             </div>
 
+            {/* Search Location */}
+            <div className="flex gap-4 items-center p-4 mt-2 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
+              <div className="flex gap-3 items-center self-stretch my-auto">
+                <img
+                  loading="lazy"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/a6032f4677532048706a8704524ffe1d8992163f0534e05763bdc632371b83aa?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                  className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
+                  alt="Search Icon"
+                />
+                <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="flex-1 outline-none bg-transparent"
+                  />
+                </Autocomplete>
+              </div>
+            </div>
 
             <div className="flex flex-col mb-4 items-center mt-6 w-full text-xl leading-none text-center whitespace-nowrap">
               <div className="flex gap-10 justify-between items-center max-w-full w-[211px]">
@@ -146,35 +178,31 @@ export default function SearchJobByArea() {
             </div>
           </div>
 
-          {/* show map here */}
+          {/* Map rendering */}
           <GoogleMap
             mapContainerStyle={{ height: "450px", width: "100%" }}
             center={position}
             zoom={13}
             onLoad={onLoad}
+            onCenterChanged={handleMapCenterChanged} // Update position when center changes
           >
             {position && <Marker position={position} />}
 
-            {/* Render job markers (dummy data) */}
-          {jobs.map((job) => (
-            <Marker
-              key={job.id}
-              position={{ lat: job.latitude, lng: job.longitude }}
-              icon={{
-                url: ShovelHouseImage,
-                scaledSize: new window.google.maps.Size(30, 30),
-              }}
-              label={job.title} // Display the job title as label
-            />
-          ))}
-
+            {/* Render job markers */}
+            {jobs.map((job) => (
+              <Marker
+                key={job.id}
+                position={{ lat: job.latitude, lng: job.longitude }}
+                icon={{
+                  url: ShovelHouseImage,
+                  scaledSize: new window.google.maps.Size(30, 30),
+                }}
+                label={job.title}
+              />
+            ))}
           </GoogleMap>
-
-
         </div>
       </div>
     </div>
   );
 }
-
-
