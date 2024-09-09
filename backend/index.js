@@ -14,10 +14,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser())
 
 
-const authRouter = require('./routes/AuthRouter.js')
 // route
-app.use('/api/auth', authRouter);
+app.use('/api/auth', require('./routes/AuthRouter.js'));
 app.use('/api/chat', require('./middleware/authentication.js'), require('./routes/ChatsRouter.js'))
+app.use('/api/job', require('./middleware/authentication.js'), require('./routes/JobRouter.js'))
 
 
 app.use(require('./middleware/not-found.js'));
