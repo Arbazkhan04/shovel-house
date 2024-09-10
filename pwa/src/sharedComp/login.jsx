@@ -1,6 +1,7 @@
 import upperHeadImage from "../assets/images/upperhead.png";
 import homeImage from "../assets/images/home.png";
 import { useNavigate } from 'react-router-dom';
+import ForgotPassword from "./forgotpassword";
 import { useState } from 'react';
 
 function Login() {
@@ -8,6 +9,17 @@ function Login() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+
+
+  const handleForgotPassword = () => {
+    setIsForgotPasswordOpen(true);
+  }
+
+  const handleForgotPasswordSave = (email) => {
+    console.log('Forgot Password Email:', email);
+  }
+
 
   const handleNavigate = () => {
     navigate('/question');
@@ -84,9 +96,18 @@ function Login() {
             </div>
 
             {/* Forgot Password Link */}
-            <div className="mt-3 text-xs text-right text-neutral-400">
+            <div onClick={handleForgotPassword} className="mt-3 text-xs text-right text-neutral-400">
               Forgot password?
             </div>
+
+            {/* Forgot Password Modal */}
+            {isForgotPasswordOpen && (
+             <ForgotPassword
+             isOpen={isForgotPasswordOpen}
+             onClose={() => setIsForgotPasswordOpen(false)}
+             onSave={handleForgotPasswordSave}
+           />
+            )}
 
             {/* Login Button */}
             <button onClick={handleNavigate} className="mt-6 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg py-3">
