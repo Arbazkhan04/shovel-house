@@ -4,9 +4,14 @@ const { BadRequestError, UnauthenticatedError } = require('../errors')
 const sendEmail = require('../utlis/sendEmail') // Utility function to send emails
 
 const register = async (req, res) => {
-  const user = await User.create({ ...req.body })
-  const token = user.createJWT()
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
+  try {
+    const user = await User.create({ ...req.body })
+    const token = user.createJWT()
+    res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
+  }
+  catch (err) {
+    throw new BadRequestError('Invalid User Data')
+  }
 }
 
 const login = async (req, res) => {

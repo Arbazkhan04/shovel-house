@@ -7,8 +7,8 @@ const jobSchema = new Schema({
     ref: 'User',
     required: true,
   },
-  workerInfo: {
-    workerId: {
+  ShovelerInfo: {
+    ShovelerId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: false,
@@ -58,7 +58,7 @@ const jobSchema = new Schema({
     max: 5,
     required: false,
   },
-  workerFeedback: {
+  ShovelerFeedback: {
     type: String,
     required: false,
   },
