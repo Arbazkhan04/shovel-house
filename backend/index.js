@@ -17,8 +17,8 @@ app.use(cookiesParser())
 // route
 app.use('/api/auth', require('./routes/AuthRouter.js'));
 app.use('/api/chat', require('./middleware/authentication.js'), require('./routes/ChatsRouter.js'))
-app.use('/api/job', require('./middleware/authentication.js'), require('./routes/JobRouter.js'))
-
+//app.use('/api/job', require('./middleware/authentication.js'), require('./routes/JobRouter.js'))
+app.use('/api/job', require('./routes/JobRouter.js'))
 
 app.use(require('./middleware/not-found.js'));
 app.use(require('./middleware/error-handler.js'));

@@ -3,6 +3,12 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError } = require('../errors')
 const sendEmail = require('../utlis/sendEmail') // Utility function to send emails
 
+const getAllUsers = async (req, res) => {
+  const users = await User.find({}).sort('createdAt')
+  res.status(StatusCodes.OK).json({ users, count: users.length })
+}
+
+
 const register = async (req, res) => {
   try {
     const user = await User.create({ ...req.body })
@@ -99,4 +105,5 @@ module.exports = {
   register,
   login,
   forgotPassword,
+  getAllUsers,
 }
