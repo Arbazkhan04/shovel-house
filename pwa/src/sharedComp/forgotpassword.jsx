@@ -4,7 +4,11 @@ const ForgotPassword = ({ isOpen, onClose, onSave }) => {
     const [email, setEmail] = useState("");
   
     if (!isOpen) return null;
-  
+
+    const handleSave = () => {
+        onSave(email);
+        onClose();
+      };
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-60 backdrop-blur-sm">
         {/* Modal container */}
@@ -27,7 +31,7 @@ const ForgotPassword = ({ isOpen, onClose, onSave }) => {
               Cancel
             </button>
             <button
-              onClick={() => onSave(email)}
+              onClick={handleSave}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Save

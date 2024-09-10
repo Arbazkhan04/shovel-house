@@ -96,7 +96,7 @@ function Login() {
             </div>
 
             {/* Forgot Password Link */}
-            <div onClick={handleForgotPassword} className="mt-3 text-xs text-right text-neutral-400">
+            <div onClick={handleForgotPassword} className="mt-3 text-xs text-right text-neutral-400 cursor-pointer">
               Forgot password?
             </div>
 
