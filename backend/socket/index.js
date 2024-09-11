@@ -1,44 +1,80 @@
-const express = require('express')
-const { Server } = require('socket.io')
-const http = require('http')
-const Message = require('../models/Message.js')
+// socket.js
+const socketIo = require('socket.io');
+const Chat = require('../models/chat.js');
 
-const app = express()
+const configureSocket = (server) => {
+    const io = socketIo(server, {
+        cors: {
+          origin: 'http://localhost:3000', // Allow your frontend to connect
+          methods: ['GET', 'POST'],
+          credentials: true
+        }
+      });
 
-const server = http.createServer(app)
-const io = new Server(server, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-      credentials: true,
-    },
-});
-  
+  io.on('connection', (socket) => {
+    console.log('New user connected:', socket.id);
 
-io.on('connection', (socket) => {
-    console.log('New WebSocket connection');
+    // Join a specific chat room (based on jobId)
+    socket.on('joinRoom', async ({ jobId }) => {
+      socket.join(jobId);
+      console.log(`User joined room: ${jobId}`);
 
-    socket.on('joinRoom', ({ userId }) => {
-        socket.join(userId);
-        console.log(`User ${userId} joined room`);
+      // Fetch previous chat messages from MongoDB when the user joins the room
+      try {
+        const chat = await Chat.findOne({ jobId }).populate('messages.senderId', 'name');
+        if (chat) {
+          // Emit the previous messages to the user who just joined
+          socket.emit('previousMessages', chat.messages);
+        }
+      } catch (error) {
+        console.error('Error fetching chat history:', error);
+      }
     });
 
+    // Handle sending a message via Socket.IO
+    socket.on('sendMessage', async (data) => {
+      const { jobId, senderId, message, clientId, providerId } = data;
 
-    socket.on('sendMessage', async ({ sender, receiver, content }) => {
-        const message = new Message({ sender, receiver, content });
-        await message.save();
+      try {
+        // Find the chat for the given job
+        let chat = await Chat.findOne({ jobId });
 
-        io.to(sender).emit('message', message);
-        io.to(receiver).emit('message', message);
+        if (!chat) {
+          // If no chat exists, create a new one
+          chat = new Chat({
+            jobId,
+            clientId,
+            providerId
+          });
+        }
+
+        // Add the new message to the messages array
+        chat.messages.push({
+          senderId,
+          message
+        });
+
+        // Save the updated chat in the database
+        await chat.save();
+
+        // Broadcast the new message to all users in the room
+        io.to(jobId).emit('newMessage', {
+          senderId,
+          message,
+          timestamp: new Date()
+        });
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     });
 
+    // Handle user disconnect
     socket.on('disconnect', () => {
-        console.log('WebSocket disconnected');
+      console.log('User disconnected:', socket.id);
     });
+  });
 
-});
+  return io;
+};
 
-module.exports = {
-    app,
-    server
-}
+module.exports = configureSocket;
