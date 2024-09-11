@@ -1,4 +1,4 @@
-const Message = require('../models/Message.js');
+const Message = require('../models/chat.js');
 
 
 const history = async (req, res) => { 
