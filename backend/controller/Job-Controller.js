@@ -123,12 +123,27 @@ const findJob = async (req, res) => {
   }
 };
 
-  
+const updateJob = async (req, res) => {
+  const { params: { jobId } } = req;
 
+  try {
+    const job = await Job.findByIdAndUpdate({_id: jobId}, req.body, { new: true, runValidators: true })
+    
+    if (!job) {
+      new NotFoundError(`No job with id ${jobId}`);
+    }
+    res.status(StatusCodes.OK).json({ job });
+
+  } catch (error) {
+    console.log('Error updating job:', error); // Add logging for debugging
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Server error', error: error.message });
+  }
+}
 
 module.exports = {
-    getAllJobs,
-    createJob,
-    getJob,
-    findJob
+  getAllJobs,
+  createJob,
+  getJob,
+  findJob,
+  updateJob
   }
