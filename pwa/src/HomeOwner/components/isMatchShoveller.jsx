@@ -1,7 +1,20 @@
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import Chat from '../../sharedComp/chat';
 export default function IsMatchShoveller() {
+  
+  const jobId = '66e03afed4e709de47f51ce3'; // Example jobId
+  const userId = '66d82f725178d979882cc3de'; // Example userId
+  const clientId = "66d82f725178d979882cc3de";
+  const providerId = "66d82ca10001748cce7ccb1b"
+
   const navigate = useNavigate();
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const openChat = () => setIsChatOpen(true);
+  const closeChat = () => setIsChatOpen(false);
+
   const handleChat = () => {
     navigate('/HouseOwner/serviceProgress');
   }
@@ -39,9 +52,31 @@ export default function IsMatchShoveller() {
           </div>
         </div>
       </div>
-      <div onClick={handleChat} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+      <div onClick={openChat} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
         Chat With Provider
       </div>
+      {/* chat modal */}
+      {isChatOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
+          <div className="bg-white rounded-lg p-6 w-96 relative">
+            <button
+              onClick={closeChat}
+              className="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800"
+            >
+              &times;
+            </button>
+
+            {/* Chat Component */}
+            <Chat
+              jobId={jobId}
+              userId={userId}
+              clientId={clientId}
+              providerId={providerId}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
