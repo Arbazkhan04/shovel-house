@@ -31,7 +31,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  neighbourhood: {
+  imageUrl: {
+    type: String,
+    required: function() { return this.userRole !== 'admin'; },  // Required for shoveller and houseOwner
+  },
+  neighborhood: {
     type: String,
     required: function() { return this.userRole === 'shoveller'; },  // Required only for shovellers
     default: undefined //keep empty is not provided
