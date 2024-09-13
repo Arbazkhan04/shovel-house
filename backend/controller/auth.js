@@ -2,6 +2,20 @@ const User = require('../models/User')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError } = require('../errors')
 const sendEmail = require('../utlis/sendEmail') // Utility function to send emails
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient,GetCommand, ScanCommand,DeleteCommand ,PutCommand,UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+
+const S3_BUCKET = process.env.S3_BUCKET;
+
+const s3 = new S3Client();
+const client = new DynamoDBClient();
+const docClient = DynamoDBDocumentClient.from(client);
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const getAllUsers = async (req, res) => {
   const users = await User.find({}).sort('createdAt')
@@ -10,6 +24,69 @@ const getAllUsers = async (req, res) => {
 
 
 const register = async (req, res) => {
+
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+        return res.status(500).json({ error: err.message });
+    }
+
+    try {
+        const { userName, email, phone, address} = req.body;
+
+        if (
+            typeof userName !== 'string' ||
+            typeof email !== 'string' ||
+            typeof phone !== 'string' ||
+            typeof address !== 'string'
+        ) {
+            console.error('Validation error:', req.body);
+            return res.status(400).json({ error: 'attributes must be string' });
+        }
+
+        const userId = uuidv4();
+        // unix time in milliseconds
+        const timestamp = new Date().getTime();
+        // const createdAtTimestamp = Number(createdAt);
+        // const updatedAtTimestamp = Number(updatedAt);
+        const imageName = `${userId}.jpg`;
+        const imageUrl = `https://${S3_BUCKET}.s3.amazonaws.com/${imageName}`;
+
+        // Upload image to S3
+        await s3.send(new PutObjectCommand({
+            Bucket: S3_BUCKET,
+            Key: imageName,
+            Body: req.file.buffer,
+            ContentType: req.file.mimetype,
+        }));
+
+        // Save user to DynamoDB
+        const params = {
+            TableName: USER_TABLE,
+            Item: {
+                userId,
+                userName,
+                userRole,
+                email,
+                phone,
+                address,
+                imageUrl,
+                neighborhood,
+                servicesProvide,
+                serviceRequired,
+            },
+        };
+
+        const command = new PutCommand(params);
+        await docClient.send(command);
+        res.json({ id: userId, message: 'data saved successfully', imageUrl });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+  
+  // our normal code for mongo db
   try {
     const user = await User.create({ ...req.body })
     const token = user.createJWT()
@@ -106,4 +183,5 @@ module.exports = {
   login,
   forgotPassword,
   getAllUsers,
+  resetPassword,
 }
