@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 function Question() {
     const navigate = useNavigate();
     const handleShoveller = () => {
-        navigate('/shoveller/shovellerDetails');
+        navigate('/shoveller/shovellerSignupProcess');
     }
 
     const handleHouseOwner = () => {
-        navigate('/houseowner/personalDetail');
+        navigate('/houseowner/houseOwnerSingupProcess');
     }
   return (
     <div className="flex flex-col pb-16 mx-auto w-full bg-white max-w-[480px]">

@@ -10,17 +10,18 @@ import IsMatchShoveller from "./isMatchShoveller"
 import ServiceProgress from "./serviceProgress";
 import ServiceFinished from "./serviceFinished";
 import Transaction from "./transaction";
-
+import HouseOwnerSingupProcess from "./houseOwnerSingupProcess";
 
 const route = [
+    { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> },
     { path: '/homeOwnerLocation', element: <HomeOwnerLocation /> },
     { path: '/timeDuration', element: <TimeDuration /> },
     { path: '/paymentDetail', element: <PayementDetail /> },
     { path: '/reviewDetail', element: <ReviewDetail /> },
-    { path: '/personalDetail', element: <PersonalDetail /> },
-    { path: '/loginAccountDetail', element: <LoginAccountDetail /> },
-    { path: '/loginPaymentInfo', element: <LoginPayemtInfo /> },
-    { path: '/servicePreference', element: <ServicePreference /> },
+    // { path: '/personalDetail', element: <PersonalDetail /> },
+    // { path: '/loginAccountDetail', element: <LoginAccountDetail /> },
+    // { path: '/loginPaymentInfo', element: <LoginPayemtInfo /> },
+    // { path: '/servicePreference', element: <ServicePreference /> },
     { path: '/isMatchShoveller', element: <IsMatchShoveller /> },
     { path: '/serviceProgress', element: <ServiceProgress /> },
     { path: '/serviceFinished', element: <ServiceFinished /> },

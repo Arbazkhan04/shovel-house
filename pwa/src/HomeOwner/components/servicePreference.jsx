@@ -1,14 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { useFormContext } from "../../context/houseOwnerSignupFormContext";
 
-export default function ServicePreference() {
+export default function ServicePreference({preStep}) {
   const navigate = useNavigate();
+  const { formData, setFormData } = useFormContext(); // Access setFormData from context
 
   // State to manage selected preferences
   const [selectedPreferences, setSelectedPreferences] = useState({
     snowShoveling: false,
     lawnMowing: false,
   });
+
+  
 
   // Handle the click on the preference container
   const togglePreference = (preference) => {
@@ -19,8 +23,25 @@ export default function ServicePreference() {
   };
 
   const handleNext = () => {
-    // Submit the selected preferences or navigate to the next page
-    console.log("Selected Preferences:", selectedPreferences);
+    // Prepare the array of selected services
+    const selectedServices = Object.keys(selectedPreferences).filter(
+      (preference) => selectedPreferences[preference]
+    );
+
+    // Update the formData in the context
+  setFormData((prevData) => {
+    const updatedData = {
+      ...prevData,
+      services: selectedServices, // Update the services array in formData
+    };
+    
+    // Log the updated data to ensure it's correct
+    console.log('Updated formData inside setFormData callback:', updatedData);
+    
+    return updatedData; // Return the updated data
+  });
+
+    // Navigate to the next page
     navigate("/houseowner/HomeOwnerLocation");
   };
 
@@ -101,7 +122,7 @@ export default function ServicePreference() {
         {/* Navigation Buttons */}
         <div className="flex gap-3 items-start mt-20 w-full text-xl font-medium tracking-wider text-center whitespace-nowrap cursor-pointer">
           <div
-            onClick={handleBack}
+            onClick={preStep}
             className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-black rounded-lg bg-zinc-100"
           >
             Back

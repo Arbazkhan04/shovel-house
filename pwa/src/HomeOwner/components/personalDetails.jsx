@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFormContext } from "../../context/houseOwnerSignupFormContext";
 
-export default function PersonalDetail() {
+export default function PersonalDetail({nextStep}) {
+  const { formData, handleChange } = useFormContext();
+
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-
-  const handleNext = () => {
-    // You can add validation or state handling logic here before navigating
-    navigate("/houseowner/loginAccountDetail");
-  };
 
   const handleBack = () => {
     navigate("/signupQuestion");
@@ -41,16 +35,17 @@ export default function PersonalDetail() {
                 />
                 <input
                   type="text"
+                  name="username"
                   placeholder="User name"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
+                  value={formData.username}
+                  onChange={handleChange}
                   className="self-stretch my-auto border-none outline-none"
                 />
               </div>
             </div>
             
             {/* Email Input Field */}
-            <div className="flex flex-col justify-center p-3 mt-3 w-full whitespace-nowrap rounded-lg border-black border-solid border-[0.5px]">
+            {/* <div className="flex flex-col justify-center p-3 mt-3 w-full whitespace-nowrap rounded-lg border-black border-solid border-[0.5px]">
               <div className="flex gap-2 items-center w-full">
                 <div className="flex gap-2 items-center self-stretch my-auto">
                   <img
@@ -67,7 +62,7 @@ export default function PersonalDetail() {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Phone Input Field */}
             <div className="flex flex-col justify-center p-3 mt-3 w-full whitespace-nowrap rounded-lg border-black border-solid border-[0.5px]">
@@ -81,8 +76,9 @@ export default function PersonalDetail() {
                   <input
                     type="tel"
                     placeholder="Phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
                     className="self-stretch my-auto border-none outline-none"
                   />
                 </div>
@@ -101,8 +97,9 @@ export default function PersonalDetail() {
                   <input
                     type="text"
                     placeholder="Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
                     className="self-stretch my-auto border-none outline-none"
                   />
                 </div>
@@ -119,7 +116,7 @@ export default function PersonalDetail() {
             Back
           </button>
           <button
-            onClick={handleNext}
+            onClick={nextStep}
             className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg"
           >
             Next
