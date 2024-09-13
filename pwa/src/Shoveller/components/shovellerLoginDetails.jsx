@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useFormContext } from "../../context/houseOwnerSignupFormContext";
+import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
 
 export default function LoginAccountDetail({nextStep,preStep}) {
-  const { formData, handleChange } = useFormContext();
+    const { formData, handleChange } = useShovellerSignupContext();
   // const navigate = useNavigate();
 
   // State for form fields
@@ -23,6 +22,10 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   // const handleBack = () => {
   //   navigate("/houseowner/personalDetail");
   // };
+
+  const hadleSubmit = () => {
+    console.log(formData);
+  }
 
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
@@ -137,10 +140,10 @@ export default function LoginAccountDetail({nextStep,preStep}) {
             Back
           </div>
           <div
-            onClick={nextStep}
+            onClick={hadleSubmit}
             className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg"
           >
-            Next
+            Next 
           </div>
         </div>
       </div>

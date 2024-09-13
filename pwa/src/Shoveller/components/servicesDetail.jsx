@@ -1,15 +1,19 @@
 
-
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
 
-export default function ServiceDetail() {
+export default function ServiceDetail({nextStep,preStep}) {
   const [selectedServices, setSelectedServices] = useState([]);
+  const { setFormData } = useShovellerSignupContext();
   const navigate = useNavigate();
 
   const handleNext = () => {
-    navigate('/shoveller/shovellerPersonalDetail');
+    setFormData((prevData) => ({
+      ...prevData,
+      servicesProvide: selectedServices,
+    }));
+    nextStep();
   };
 
   const handleBack = () => {
