@@ -1,11 +1,14 @@
 
 // import { useNavigate } from "react-router-dom";
-// import { useState } from "react";
+import { useState } from "react";
 import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
+import Resizer from 'react-image-file-resizer';
 
 export default function ShovellerPersonalDetail({ nextStep,preStep }) {
   const { formData, handleChange } = useShovellerSignupContext();
 
+
+  const [selectedImage, setSelectedImage] = useState(null);
   // const navigate = useNavigate();
 
   // const [userName, setUserName] = useState("");
@@ -21,6 +24,29 @@ export default function ShovellerPersonalDetail({ nextStep,preStep }) {
   //   navigate("/shoveller/serviceDetail");
   // };
 
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const validImageTypes = ['image/jpeg', 'image/png'];
+  
+    if (file && validImageTypes.includes(file.type)) {
+      Resizer.imageFileResizer(
+        file,
+        81, // width in pixels
+        77, // height in pixels
+        file.type === 'image/jpeg' ? 'JPEG' : 'PNG', // output format
+        100, // quality percentage
+        0, // rotation degree
+        (uri) => {
+          setSelectedImage(uri);
+        },
+        'base64' // output type: 'base64' or 'blob'
+      );
+    } else {
+      setSelectedImage(null);
+    }
+  };
+
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-5 mt-5 w-full">
@@ -34,6 +60,35 @@ export default function ShovellerPersonalDetail({ nextStep,preStep }) {
           <div className="text-2xl font-medium tracking-wide text-black">
             Personal Information
           </div>
+
+          {/* Profile Image Section */}
+          <div className="flex justify-center mt-6 relative">
+            <div className="relative">
+              <img
+                src={
+                  selectedImage
+                    ? selectedImage
+                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png" // default profile image
+                }
+                alt="Profile"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+              <label htmlFor="profileImageInput" className="absolute bottom-0 right-0">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/4aafd9b5d868a2b4ab93be69d6a30800a9f772342074f271884589ac82bd5a0a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                  className="object-contain w-6 aspect-square cursor-pointer"
+                />
+              </label>
+              <input
+                id="profileImageInput"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col mt-6 w-full text-sm text-zinc-800">
             <div className="flex flex-col justify-center p-3 w-full rounded-lg border-black border-solid border-[0.5px]">
               <div className="flex gap-2 items-center w-full">
