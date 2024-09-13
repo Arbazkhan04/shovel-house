@@ -11,7 +11,7 @@ export const ShovellerSignupProvider = ({ children }) => {
     phone: '',
     address: '',
     email: '',
-    neighbourhood: '',
+    neighborhood: '',
     name: '',
     password: '',
     servicesProvide: []
