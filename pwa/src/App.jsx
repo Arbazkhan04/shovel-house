@@ -14,10 +14,10 @@ import SignupQuestion from "./sharedComp/singupQuestion";
 import Loader from './sharedComp/loader';
 
 function App() {
-  const jobId = '66e03afed4e709de47f51ce3'; // Example jobId
-  const userId = '66d82f725178d979882cc3de'; // Example userId
-  const clientId = "66d82f725178d979882cc3de";
-  const providerId = "66d82ca10001748cce7ccb1b"
+  // const jobId = '66e03afed4e709de47f51ce3'; // Example jobId
+  // const userId = '66d82f725178d979882cc3de'; // Example userId
+  // const clientId = "66d82f725178d979882cc3de";
+  // const providerId = "66d82ca10001748cce7ccb1b"
   return (
 
     <Router>
@@ -27,7 +27,7 @@ function App() {
           <Route exact path="/" element={<Login />} />
           <Route path="/question" element={<Question />} />
           <Route path ="signupQuestion" element={<SignupQuestion />} />
-          <Route path="/chat" element={<Chat jobId={jobId} userId={userId} clientId={clientId} providerId={providerId} />} />
+          {/* <Route path="/chat" element={<Chat jobId={jobId} userId={userId} clientId={clientId} providerId={providerId} />} /> */}
           {HouseOwnerRoutes.map(({ path, element }) => (
             <Route
               key={path}
