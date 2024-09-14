@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
+import { useJobPostProgressContext } from "../../context/jobPostProgressFrom";
 
 const libraries = ["places"]; // Load the Places library
 
@@ -7,8 +8,9 @@ function MapComponent() {
   const [position, setPosition] = useState(null); // Current marker position
   const [map, setMap] = useState(null); // Google Map instance
   const [autocomplete, setAutocomplete] = useState(null); // Autocomplete instance
-  const [address, setAddress] = useState(""); // Current address
   const [geocoder, setGeocoder] = useState(null); // Geocoder instance
+
+  const { jobPostProgress, setLocation } = useJobPostProgressContext(); // Access context
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDJQNAbTK3AGLlmRGVxa3VbejegSp-qB9A",
@@ -31,9 +33,11 @@ function MapComponent() {
         const { lat, lng } = place.geometry.location;
         setPosition({ lat: lat(), lng: lng() });
         map.panTo({ lat: lat(), lng: lng() });
-      }
-      if (place.formatted_address) {
-        setAddress(place.formatted_address);
+
+        // Update context with new address and coordinates
+        if (place.formatted_address) {
+          setLocation(place.formatted_address, lat(), lng());
+        }
       }
     }
   };
@@ -43,7 +47,8 @@ function MapComponent() {
     if (geocoder) {
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results[0]) {
-          setAddress(results[0].formatted_address); // Update the address in the search box
+          const newAddress = results[0].formatted_address;
+          setLocation(newAddress, lat, lng); // Update the context with the new address and coordinates
         } else {
           console.error("Geocoder failed due to: " + status);
         }
@@ -88,6 +93,7 @@ function MapComponent() {
           setPosition({ lat: latitude, lng: longitude });
           if (map) {
             map.panTo({ lat: latitude, lng: longitude });
+            reverseGeocode(latitude, longitude); // Reverse geocode to update address in context
           }
         },
         (error) => {
@@ -104,23 +110,15 @@ function MapComponent() {
   return (
     <div>
       <div className="flex gap-4 items-center p-4 mb-2 w-full text-xl tracking-wide rounded-lg bg-zinc-100 text-stone-500">
-        <div className="flex gap-3 items-center self-stretch my-auto">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a6032f4677532048706a8704524ffe1d8992163f0534e05763bdc632371b83aa?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-            className="object-contain shrink-0 self-stretch my-auto w-6 aspect-square"
-            alt="Search Icon"
+        <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
+          <input
+            type="text"
+            placeholder="Search"
+            value={jobPostProgress.location.address} // Bind the input to context state
+            onChange={(e) => setLocation(e.target.value, position?.lat, position?.lng)} // Update context on input change
+            className="flex-1 outline-none bg-transparent"
           />
-          <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
-            <input
-              type="text"
-              placeholder="Search"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="flex-1 outline-none bg-transparent"
-            />
-          </Autocomplete>
-        </div>
+        </Autocomplete>
       </div>
       <GoogleMap
         mapContainerStyle={{ height: "300px", width: "100%" }}

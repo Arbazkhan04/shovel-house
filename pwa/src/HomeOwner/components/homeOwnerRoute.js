@@ -11,13 +11,16 @@ import ServiceProgress from "./serviceProgress";
 import ServiceFinished from "./serviceFinished";
 import Transaction from "./transaction";
 import HouseOwnerSingupProcess from "./houseOwnerSingupProcess";
+import JobPostProgress from "./jobPostProgress";
 
 const route = [
     { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> },
+    { path: '/jobPostProgress', element: <JobPostProgress /> },
     { path: '/homeOwnerLocation', element: <HomeOwnerLocation /> },
     { path: '/timeDuration', element: <TimeDuration /> },
     { path: '/paymentDetail', element: <PayementDetail /> },
     { path: '/reviewDetail', element: <ReviewDetail /> },
+
     // { path: '/personalDetail', element: <PersonalDetail /> },
     // { path: '/loginAccountDetail', element: <LoginAccountDetail /> },
     // { path: '/loginPaymentInfo', element: <LoginPayemtInfo /> },
