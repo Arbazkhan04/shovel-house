@@ -8,7 +8,7 @@ function Question() {
     }
 
     const handleHouseOwner = () => {
-        navigate('/houseowner/homeOwnerLocation');
+        navigate('/houseowner/jobPostProgress');
     }
   return (
     <div className="flex flex-col pb-16 mx-auto w-full bg-white max-w-[480px]">
@@ -16,7 +16,7 @@ function Question() {
         <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 bg-black rounded-md basis-0" />
         <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 rounded-md basis-0 bg-zinc-100" />
         <div className="flex flex-1 shrink self-stretch my-auto h-2 rounded-md basis-0 bg-zinc-100 w-[65px]" />
-        <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 rounded-md basis-0 bg-zinc-100" />
+        {/* <div className="flex flex-1 shrink self-stretch my-auto w-16 h-2 rounded-md basis-0 bg-zinc-100" /> */}
         <div className="flex flex-1 shrink self-stretch my-auto h-2 rounded-md basis-0 bg-zinc-100 w-[65px]" />
       </div>
       <div className="flex flex-col self-center mt-12 w-full text-4xl text-center text-black capitalize max-w-[331px] min-h-[224px] mx-auto">
