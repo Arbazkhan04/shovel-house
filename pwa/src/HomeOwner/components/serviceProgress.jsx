@@ -5,6 +5,16 @@ export default function ServiceProgress() {
     const handleServiceFinished = () => {
         navigate('/houseowner/serviceFinished');
     }
+
+    const handleAccept = () => {
+        navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
+      };
+    
+      const handleCancel = () => {
+        //navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
+    };
+    
+
     return (
         <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
 
@@ -14,8 +24,11 @@ export default function ServiceProgress() {
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain self-end w-6 aspect-square"
                 />
-                <div className="self-start mt-5">Service in Progress</div>
+                
             </div>
+            <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+        Service In Progress!
+      </div>
             <div className="flex relative flex-col px-14 pt-40 pb-6 mt-7 w-full text-center rounded-xl aspect-[0.804]">
                 <img
                     loading="lazy"
@@ -33,15 +46,27 @@ export default function ServiceProgress() {
                         {" "}is Fulfilling
                         <br /> Your Service Request
                     </div>
-                    <div className="gap-9 self-center py-3.5 pr-12 pl-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg min-h-[52px] w-[169px]">
-                        Details
-                    </div>
+                    {/* Accept and Cancel buttons */}
+          <div className="flex justify-around mt-40">
+            <button
+              onClick={handleCancel}
+              className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAccept}
+              className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
+            >
+              Details
+            </button>
+          </div>
                 </div>
             </div>
-            <div onClick={handleServiceFinished} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-black bg-[#EEEEEE] rounded-lg max-w-[350px]">
+            <div onClick={handleServiceFinished} className="gap-9 cursor-pointer self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-black bg-[#EEEEEE] rounded-lg max-w-[350px]">
                 Chat With Provider
             </div>
-            <div onClick={handleServiceFinished} className="gap-9 self-center px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+            <div onClick={handleServiceFinished} className="gap-9 self-center cursor-pointer px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
                 Service Finished
             </div>
         </div>

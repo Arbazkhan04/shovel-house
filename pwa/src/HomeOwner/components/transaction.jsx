@@ -1,6 +1,13 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Transaction() {
+  const navigate = useNavigate();
+  const handleContinue = () => {
+    navigate('/HouseOwner/jobPostProgress'); // Navigate to the accepted job page
+  };
+
+
   return (
     <div className="flex overflow-hidden flex-col pb-60 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col self-end mt-6 mr-6 max-w-full text-3xl font-medium text-center text-black capitalize whitespace-nowrap w-[252px]">
@@ -9,7 +16,10 @@ export default function Transaction() {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b43acc558e919fa473cbcf367b1c477c8b3e999f6752c6162c0bae03bc699b9?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
           className="object-contain self-end w-6 aspect-square"
         />
-        <div className="self-start mt-14">Transaction</div>
+        
+      </div>
+      <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+        Transaction
       </div>
       <div className="flex flex-col items-center self-center mt-5 w-full max-w-[350px]">
         <div className="flex flex-col w-full leading-7 rounded-none">
@@ -41,6 +51,9 @@ export default function Transaction() {
           <div className="mt-6">Thank you for choosing Shovelhouse!</div>
         </div>
       </div>
+      <div onClick={handleContinue} className="gap-9 self-center cursor-pointer px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+                Continue
+            </div>
     </div>
   );
 }

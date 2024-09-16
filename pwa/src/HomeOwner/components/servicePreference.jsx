@@ -42,7 +42,7 @@ export default function ServicePreference({preStep}) {
   });
 
     // Navigate to the next page
-    navigate("/houseowner/HomeOwnerLocation");
+    navigate("/houseowner/jobPostProgress");
   };
 
   const handleBack = () => {
