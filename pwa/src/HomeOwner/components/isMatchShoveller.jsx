@@ -22,7 +22,7 @@ export default function IsMatchShoveller() {
   };
 
   const handleCancel = () => {
-    navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
+    //navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
   };
 
   const handleChat = () => {
