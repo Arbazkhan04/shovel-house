@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
+import serviceProgress from './serviceProgress';
 export default function IsMatchShoveller() {
   
   const jobId = '66e03afed4e709de47f51ce3'; // Example jobId
@@ -15,6 +16,15 @@ export default function IsMatchShoveller() {
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
 
+
+  const handleAccept = () => {
+    navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
+  };
+
+  const handleCancel = () => {
+    navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
+  };
+
   const handleChat = () => {
     navigate('/HouseOwner/serviceProgress');
   }
@@ -27,8 +37,12 @@ export default function IsMatchShoveller() {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
           className="object-contain self-end w-6 aspect-square"
         />
-        <div className="self-start mt-14">Matched!</div>
+        
       </div>
+      <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+        Matched!
+      </div>
+
       <div className="flex relative flex-col px-14 pt-40 pb-6 mt-7 w-full text-center rounded-xl aspect-[0.804]">
         <img
           loading="lazy"
@@ -47,12 +61,27 @@ export default function IsMatchShoveller() {
             will be coming to fulfill your service request <br />
             at <span className="">6:00 Am</span>
           </div>
-          <div className="gap-9 self-center py-3.5 pr-12 pl-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg min-h-[52px] w-[169px]">
-            Details
+          {/* Accept and Cancel buttons */}
+          <div className="flex justify-around mt-20">
+            <button
+              onClick={handleCancel}
+              className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAccept}
+              className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
+            >
+              Accept
+            </button>
           </div>
         </div>
       </div>
-      <div onClick={openChat} className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+      <div className="gap-9 self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
+            View Details
+          </div>
+      <div onClick={openChat} className="gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
         Chat With Provider
       </div>
       {/* chat modal */}

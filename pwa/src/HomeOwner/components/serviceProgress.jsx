@@ -14,8 +14,11 @@ export default function ServiceProgress() {
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain self-end w-6 aspect-square"
                 />
-                <div className="self-start mt-5">Service in Progress</div>
+                
             </div>
+            <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+        Service In Progress!
+      </div>
             <div className="flex relative flex-col px-14 pt-40 pb-6 mt-7 w-full text-center rounded-xl aspect-[0.804]">
                 <img
                     loading="lazy"
