@@ -6,6 +6,7 @@ const connectDb = require('./db/connect.js')
 const cors = require('cors')
 const http = require('http'); // Import the HTTP library
 const configureSocket = require('./socket/index.js'); // Import the Socket.IO configuration
+require('./utlis/Scheduler.js')
  
 const app = express();
 const server = http.createServer(app);
