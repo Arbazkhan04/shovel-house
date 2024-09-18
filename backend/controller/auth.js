@@ -3,6 +3,8 @@ const { StatusCodes } = require('http-status-codes');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { BadRequestError } = require('../errors')
+const sendEmail  = require('../utlis/sendEmail.js')
 
 // Initialize S3Client with credentials and region
 const s3 = new S3Client({
@@ -91,7 +93,7 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ email })
     if (!user) {
-      throw new BadRequestError('Email could not be sent')
+      throw new BadRequestError('No user with this email address')
     }
 
     // Generate and get reset password token
@@ -114,7 +116,7 @@ const login = async (req, res) => {
         subject: 'Password Reset Request',
         text: message,
       })
-
+      
       res.status(StatusCodes.OK).json({ success: true, data: 'Email sent' })
     } catch (error) {
       user.resetPasswordToken = undefined
@@ -122,7 +124,7 @@ const login = async (req, res) => {
 
       await user.save()
 
-      throw new BadRequestError('Email could not be sent')
+      throw new BadRequestError(error.message)
     }
   }
 

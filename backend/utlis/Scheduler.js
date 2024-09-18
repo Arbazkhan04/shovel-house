@@ -10,14 +10,14 @@ const deleteOldOpenJobs = async () => {
   const twentyFourHours = 24 * 60 * 60 * 1000;  // 24 hours in milliseconds
 
   try {
-    const result = await Job.deleteMany({
+    const result = await Job.updateMany({
       jobStatus: 'open',
       createdAt: { $lt: now - twentyFourHours }
-    });
+    }, {jobStatus:'not-anymore'});
 
-    console.log(`${result.deletedCount} old open jobs deleted.`);
+    console.log(`${result.deletedCount ? result.deletedCount : 0} old open jobs removed.`);
   } catch (err) {
-    console.error('Error deleting old open jobs:', err);
+    console.error('Error removing old open jobs:', err);
   }
 };
 
