@@ -4,7 +4,8 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { BadRequestError } = require('../errors')
-const sendEmail  = require('../utlis/sendEmail.js')
+const sendEmail = require('../utlis/sendEmail.js')
+const crypto = require('crypto')
 
 // Initialize S3Client with credentials and region
 const s3 = new S3Client({
@@ -129,25 +130,33 @@ const login = async (req, res) => {
   }
 
   const resetPassword = async (req, res) => {
-    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex')
+    
+    try {
+      
+      const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex')
 
-    const user = await User.findOne({
-      resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
-    })
+      const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() },
+      })
 
-    if (!user) {
-      throw new BadRequestError('Invalid or expired token')
+      if (!user) {
+        throw new BadRequestError('Invalid or expired token')
+      }
+
+      // Set new password
+      user.password = req.body.password
+      user.resetPasswordToken = undefined
+      user.resetPasswordExpire = undefined
+
+      await user.save()
+
+      res.status(StatusCodes.OK).json({ success: true, data: 'Password reset successful' })
     }
-
-    // Set new password
-    user.password = req.body.password
-    user.resetPasswordToken = undefined
-    user.resetPasswordExpire = undefined
-
-    await user.save()
-
-    res.status(StatusCodes.OK).json({ success: true, data: 'Password reset successful' })
+    catch (err) {
+      res.status(500).json({ err: err.message })
+      
+    }
   }
 
   module.exports = {

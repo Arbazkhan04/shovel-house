@@ -6,6 +6,6 @@ router.get('/', getAllUsers)
 router.post('/register', register)
 router.post('/login', login)
 router.post('/forgotPassword', forgotPassword)
-router.patch('/resetPassword', resetPassword)
+router.patch('/resetPassword/:resetToken', resetPassword)
 
 module.exports = router
