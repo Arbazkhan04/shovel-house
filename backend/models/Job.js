@@ -48,7 +48,7 @@ const jobSchema = new Schema({
   },
   jobStatus: {
     type: String,
-    enum: ['open', 'in-progress', 'completed'],
+    enum: ['open', 'in-progress', 'completed', 'not-anymore'],
     default: 'open',
     required: true,
   },
