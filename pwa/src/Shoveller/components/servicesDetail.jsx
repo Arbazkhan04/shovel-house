@@ -1,11 +1,8 @@
-
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
 
-export default function ServiceDetail({nextStep,preStep}) {
-  const [selectedServices, setSelectedServices] = useState([]);
-  const { setFormData } = useShovellerSignupContext();
+export default function ServiceDetail({ nextStep, preStep }) {
+  const { setFormData, selectedServices, setSelectedServices } = useShovellerSignupContext();
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -17,7 +14,7 @@ export default function ServiceDetail({nextStep,preStep}) {
   };
 
   const handleBack = () => {
-    navigate('/shoveller/shovellerDetails');
+    preStep();
   };
 
   const handleServiceClick = (service) => {
@@ -26,12 +23,61 @@ export default function ServiceDetail({nextStep,preStep}) {
         ? prevSelected.filter((item) => item !== service)
         : [...prevSelected, service]
     );
-    console.log(selectedServices);
   };
 
   const isSelected = (service) => selectedServices.includes(service);
 
   return (
+    // <div className="flex overflow-hidden flex-col items-center pb-12 mx-auto w-full bg-white max-w-[480px]">
+    //   <div className="flex flex-col mt-8 w-full text-black max-w-[350px]">
+    //     <div className="flex flex-col w-full">
+    //       <div className="text-2xl font-medium tracking-wide">
+    //         Services Provide
+    //       </div>
+    //       <div className="mt-3 text-xs leading-5">
+    //         Choose what services you want to provide (check all that apply, you may change this later)
+    //       </div>
+    //     </div>
+    //     <div className="flex flex-col mt-6 w-full">
+    //       <div className="flex flex-col justify-center w-full text-sm tracking-tight text-center">
+    //         <div className="flex gap-3 w-full min-h-[148px]">
+    //           <div
+    //             onClick={() => handleServiceClick('shovel')}
+    //             className={`flex flex-col flex-1 shrink justify-center p-3 rounded border-2 cursor-pointer
+    //               ${isSelected('shovel') ? 'border-black' : 'border-neutral-400'}
+    //               bg-zinc-100`}
+    //           >
+    //             <div className="flex relative flex-col justify-center items-center w-full">
+    //               <img
+    //                 loading="lazy"
+    //                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/5b8c3556e3b6558f2b9bd41359fd8d057cf3ff729275b8c54f9a9b9a9486c0a0?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+    //                 className="object-contain z-0 aspect-square w-[72px]"
+    //               />
+    //               <div className="z-0 mt-2">
+    //                 Snow Shoveling with shovel/pusher
+    //               </div>
+    //               {isSelected('shovel') && (
+    //                 <img
+    //                   loading="lazy"
+    //                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/e3f9648edb107bc2d1d18c4c4e3315a947fedb5d249b17d860f71770e8f8b800?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+    //                   className="object-contain absolute z-10 self-start w-6 h-6 aspect-square left-[-7px] top-[-7px]"
+    //                 />
+    //               )}
+    //             </div>
+    //           </div>
+    //           {/* ... Other services here */}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    //   <div className="flex mt-6 gap-2 w-full">
+    //     <button onClick={handleBack} className="btn">Back</button>
+    //     <button onClick={handleNext} className="btn">Next</button>
+    //   </div>
+    // </div>
+
+
+
     <div className="flex overflow-hidden flex-col items-center pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col mt-8 w-full text-black max-w-[350px]">
         <div className="flex flex-col w-full">
@@ -255,4 +301,3 @@ export default function ServiceDetail({nextStep,preStep}) {
     </div>
   );
 }
-

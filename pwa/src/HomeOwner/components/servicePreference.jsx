@@ -4,44 +4,35 @@ import { useFormContext } from "../../context/houseOwnerSignupFormContext";
 
 export default function ServicePreference({preStep}) {
   const navigate = useNavigate();
-  const { formData, setFormData } = useFormContext(); // Access setFormData from context
+  const { formData, setFormData } = useFormContext();
 
-  // State to manage selected preferences
+  // Initialize state with values from context
   const [selectedPreferences, setSelectedPreferences] = useState({
-    snowShoveling: false,
-    lawnMowing: false,
+    snowShoveling: formData.services.includes('snowShoveling'),
+    lawnMowing: formData.services.includes('lawnMowing'),
   });
-
-  
 
   // Handle the click on the preference container
   const togglePreference = (preference) => {
-    setSelectedPreferences((prevPreferences) => ({
-      ...prevPreferences,
-      [preference]: !prevPreferences[preference],
+    const newPreferences = {
+      ...selectedPreferences,
+      [preference]: !selectedPreferences[preference],
+    };
+    setSelectedPreferences(newPreferences);
+
+    // Update the services in the context to persist state
+    const selectedServices = Object.keys(newPreferences).filter(
+      (key) => newPreferences[key]
+    );
+
+    setFormData((prevData) => ({
+      ...prevData,
+      services: selectedServices,
     }));
   };
 
   const handleNext = () => {
-    // Prepare the array of selected services
-    const selectedServices = Object.keys(selectedPreferences).filter(
-      (preference) => selectedPreferences[preference]
-    );
-
-    // Update the formData in the context
-  setFormData((prevData) => {
-    const updatedData = {
-      ...prevData,
-      services: selectedServices, // Update the services array in formData
-    };
-    
-    // Log the updated data to ensure it's correct
-    console.log('Updated formData inside setFormData callback:', updatedData);
-    
-    return updatedData; // Return the updated data
-  });
-
-    // Navigate to the next page
+    console.log(formData);
     navigate("/houseowner/jobPostProgress");
   };
 
