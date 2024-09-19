@@ -17,6 +17,10 @@ export const ShovellerSignupProvider = ({ children }) => {
     servicesProvide: []
   });
 
+    // Add selectedServices state for tracking service selections
+    const [selectedServices, setSelectedServices] = useState([]);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -26,7 +30,7 @@ export const ShovellerSignupProvider = ({ children }) => {
   };
 
   return (
-    <ShovellerSignupContext.Provider value={{ formData, handleChange,setFormData }}>
+    <ShovellerSignupContext.Provider value={{ formData, handleChange,setFormData,selectedServices, setSelectedServices }}>
       {children}
     </ShovellerSignupContext.Provider>
   );
