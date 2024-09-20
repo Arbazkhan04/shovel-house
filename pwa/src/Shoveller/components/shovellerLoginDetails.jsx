@@ -57,9 +57,14 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   data.append('name', formData.name);
   data.append('password', formData.password);
   data.append('servicesProvide', JSON.stringify(formData.servicesProvide));
+  data.append('stripeAccountId','none');
+  data.append('stripeAccountStatus','pending')
+  data.append('chargesEnabled',false);
+  data.append('reason','User haven not setup stripe yet');
   if(formData.image){
     data.append('image', formData.image);
   }
+
   else{
     console.log("iamge is not provider")
   }
