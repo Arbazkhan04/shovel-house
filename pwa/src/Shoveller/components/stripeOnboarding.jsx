@@ -1,11 +1,17 @@
 import React, { useEffect,useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCredentials } from '../../slices/authSlice'; 
 
 export default function StripeOnboard() {
     const [loading, setLoading] = useState(false); // Loading state
     const navigate = useNavigate();
     const location = useLocation();
-    const userId = '66ed8918ffc1de1a6cb89328'; // Ideally, get this from context or some global state like Redux
+
+    const dispatch = useDispatch(); // Get the dispatch function
+    const { userInfo } = useSelector((state) => state.auth); // Get the user info from Redux store
+    const userId = userInfo ? userInfo.id : null; // Get the user ID from Redux or local storage
+    // const userId = '66ed8918ffc1de1a6cb89328'; // Ideally, get this from context or some global state like Redux
 
     const handleStripeSetup = async () => {
         setLoading(true); // Start loading
@@ -48,6 +54,7 @@ export default function StripeOnboard() {
 
             if (response.ok) {
                 const data = await response.json();
+                dispatch(setCredentials({...data})); // Save the user info to Redux store
                 console.log('Stripe connection successful:', data);
                 navigate('/success'); // Or navigate to a success page after successful onboarding
             } else {
