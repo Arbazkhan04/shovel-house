@@ -5,7 +5,7 @@ export default function StripeOnboard() {
     const [loading, setLoading] = useState(false); // Loading state
     const navigate = useNavigate();
     const location = useLocation();
-    const userId = '66ed655ba2e4a486eaf63802'; // Ideally, get this from context or some global state like Redux
+    const userId = '66ed8918ffc1de1a6cb89328'; // Ideally, get this from context or some global state like Redux
 
     const handleStripeSetup = async () => {
         setLoading(true); // Start loading
