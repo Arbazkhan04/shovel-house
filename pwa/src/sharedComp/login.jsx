@@ -22,8 +22,8 @@ function Login() {
 
 
   useEffect(() => {
-    if (userInfo && userInfo.user) {
-      if (userInfo.user.role === 'shoveller' && userInfo.user.chargesEnabled) {
+    if (userInfo) {
+      if (userInfo.userInfo.user.role === 'shoveller' && userInfo.user.chargesEnabled) {
         navigate('/shoveller/searchJobByList');
       } else if (userInfo.user.role === 'shoveller') {
         navigate('/shoveller/stripeOnboard');
