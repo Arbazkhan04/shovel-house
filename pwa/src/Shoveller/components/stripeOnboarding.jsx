@@ -11,7 +11,7 @@ export default function StripeOnboard() {
     const dispatch = useDispatch(); // Get the dispatch function
     const { userInfo } = useSelector((state) => state.auth); // Get the user info from Redux store
     const userId = userInfo ? userInfo.user.id : null; // Get the user ID from Redux or local storage
-    console.log("user id is":userId);
+    console.log("user id is"+ userId);
     // const userId = '66ed8918ffc1de1a6cb89328'; // Ideally, get this from context or some global state like Redux
 
     const handleStripeSetup = async () => {
