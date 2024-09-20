@@ -56,7 +56,8 @@ export default function StripeOnboard() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Stripe connection successful:', data);
-                dispatch(setCredentials({ userInfo: data }));
+                // dispatch(setCredentials({ userInfo: data }));
+                dispatch(setCredentials({ ...data })); // Update the user info in Redux store
                  navigate('/success'); // Or navigate to a job page after successful onboarding
             } else {
                 console.error('Error finalizing Stripe connection:', response.statusText);
