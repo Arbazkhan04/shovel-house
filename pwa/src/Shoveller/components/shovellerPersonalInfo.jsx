@@ -5,30 +5,16 @@ import { useShovellerSignupContext } from '../../context/shovllerSignupFormConte
 import Resizer from 'react-image-file-resizer';
 
 export default function ShovellerPersonalDetail({ nextStep,preStep }) {
-  const { formData, handleChange } = useShovellerSignupContext();
+  const { formData, handleChange, handleImageChange } = useShovellerSignupContext();
 
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  // const navigate = useNavigate();
-
-  // const [userName, setUserName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [phone, setPhone] = useState("");
-  // const [address, setAddress] = useState("");
-
-  // const handleNext = () => {
-  //   navigate("/shoveller/paymentSingIn");
-  // };
-  
-  // const handleBack = () => {
-  //   navigate("/shoveller/serviceDetail");
-  // };
+  const [selectedImage, setSelectedImage] = useState(formData.image);
 
 
-  const handleImageChange = (event) => {
+  const handleImageFileChange = (event) => {
     const file = event.target.files[0];
     const validImageTypes = ['image/jpeg', 'image/png'];
-  
+
     if (file && validImageTypes.includes(file.type)) {
       Resizer.imageFileResizer(
         file,
@@ -39,11 +25,13 @@ export default function ShovellerPersonalDetail({ nextStep,preStep }) {
         0, // rotation degree
         (uri) => {
           setSelectedImage(uri);
+          handleImageChange(uri); // Update context with new image
         },
         'base64' // output type: 'base64' or 'blob'
       );
     } else {
       setSelectedImage(null);
+      handleImageChange(null); // Clear image in context
     }
   };
 
@@ -84,7 +72,7 @@ export default function ShovellerPersonalDetail({ nextStep,preStep }) {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageChange}
+                onChange={handleImageFileChange}
               />
             </div>
           </div>
@@ -99,8 +87,8 @@ export default function ShovellerPersonalDetail({ nextStep,preStep }) {
                 />
                 <input
                   type="text"
-                  name="username"
-                  value={formData.username}
+                  name="userName"
+                  value={formData.userName}
                   placeholder="User name"
                   onChange={handleChange}
                   className="self-stretch my-auto border-none bg-transparent outline-none"

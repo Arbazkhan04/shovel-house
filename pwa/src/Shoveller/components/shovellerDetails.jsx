@@ -31,8 +31,8 @@ export default function ShovellerDetails({ nextStep }) {
                                 </div>
                                 <input
                                     type="text"
-                                    name="neighbourhood"
-                                    value={formData.neighbourhood}
+                                    name="neighborhood"
+                                    value={formData.neighborhood}
                                     onChange={handleChange}
                                     placeholder="e.g., Downtown, Brooklyn"
                                     className="flex gap-2 items-center px-4 py-6 mt-3 w-full text-base leading-none rounded-lg bg-zinc-100 border-none min-h-[56px]"

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import { formatDistanceToNow } from 'date-fns'; // Optional for better date formatting
 
-const socket = io('http://localhost:3001'); // Your backend URL
+const socket = io('https://shovel-house-b93eaebaf538.herokuapp.com'); // Your backend URL
 
 const Chat = ({ jobId, userId, clientId, providerId }) => {
   const [message, setMessage] = useState('');
