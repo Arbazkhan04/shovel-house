@@ -23,7 +23,7 @@ function Login() {
 
   useEffect(() => {
     if (userInfo) {
-      if(userInfo.user.role === 'shoveller') navigate('/shoveller/searchJobByList');
+      if(userInfo.user.role === 'shoveller') navigate('/shoveller/stripeOnboard');
       else if(userInfo.user.role === 'houseOwner') navigate('/houseowner/jobPostProgress');
       // else if(userInfo.user.role === 'admin') navigate('/question'); 
       // navigate('/question');

@@ -28,7 +28,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   const dispatch = useDispatch();
   useEffect(() => {
     if (userInfo) {
-      navigate('/shoveller/searchJobByList');
+      navigate('/shoveller/stripeOnboard');
     }
   }, [navigate, userInfo]);
 
@@ -67,7 +67,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
     try {
       const res = await register(data).unwrap();
       dispatch(setCredentials({ ...res }));
-      navigate('/shoveller/searchJobByList'); //for now let have dummy naviagtion
+      navigate('/shoveller/stripeOnboard'); //for now let have dummy naviagtion
     } catch (err) {
       console.log(err?.data?.message || err.error);
     }
