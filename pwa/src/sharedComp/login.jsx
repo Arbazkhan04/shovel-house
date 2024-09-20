@@ -2,14 +2,33 @@ import upperHeadImage from "../assets/images/upperhead.png";
 import homeImage from "../assets/images/home.png";
 import { useNavigate } from 'react-router-dom';
 import ForgotPassword from "./forgotpassword";
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../slices/usersApiSlice';
+import { setCredentials } from '../slices/authSlice';
+
 
 function Login() {
-  const navigate = useNavigate();
-
-  const [username, setUsername] = useState('');
+  
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [login, { isLoading }] = useLoginMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    if (userInfo) {
+      if(userInfo.user.role === 'shoveller') navigate('/shoveller/searchJobByList');
+      else if(userInfo.user.role === 'houseOwner') navigate('/houseowner/jobPostProgress');
+      // else if(userInfo.user.role === 'admin') navigate('/question'); 
+      // navigate('/question');
+    }
+  }, [navigate, userInfo]);
 
 
   const handleForgotPassword = () => {
@@ -21,10 +40,18 @@ function Login() {
   }
 
 
-  const handleNavigate = () => {
-    navigate('/question');
-    console.log('username:', username);
-    console.log('password:', password);
+  const submitHandler = async(e) => {
+    e.preventDefault();
+    console.log('Email:', email);
+    console.log('Password:',password); 
+
+    try {
+      const res = await login({ email, password }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      // navigate('/question');
+    } catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
   }
 
   const handleQuestion = () => {
@@ -47,7 +74,7 @@ function Login() {
           </div>
           <div className="flex flex-col mt-8 w-full">
             <div className="flex flex-col w-full text-sm text-zinc-800">
-              {/* Username Field */}
+              {/* email Field */}
               <div className="flex flex-col justify-center p-3 w-full rounded-lg border-black border-solid border-[0.5px]">
                 <div className="flex gap-2 items-center w-full">
                   <img
@@ -59,8 +86,8 @@ function Login() {
                   {/* <div className="self-stretch">User name</div> */}
                   <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="User name"
                     className="flex-1 outline-none bg-transparent"
                   />
@@ -110,7 +137,7 @@ function Login() {
             )}
 
             {/* Login Button */}
-            <button onClick={handleNavigate} className="mt-6 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg py-3">
+            <button onClick={submitHandler} className="mt-6 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg py-3">
               Login
             </button>
             <div className="mt-3 text-sm text-center text-neutral-600">

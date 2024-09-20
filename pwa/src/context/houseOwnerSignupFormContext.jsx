@@ -7,13 +7,14 @@ export const useFormContext = () => useContext(FormContext);
 export const FormProvider = ({ children }) => {
   const [formData, setFormData] = useState({
     userRole : "houseOwner",
-    username: '',
+    userName: '',
     phone: '',
     address: '',
     email: '',
     name: '',
     password: '',
-    services: []
+    services: [], 
+    image: null
   });
 
   const handleChange = (e) => {
@@ -24,8 +25,15 @@ export const FormProvider = ({ children }) => {
     }));
   };
 
+  const handleImageChange = (image) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      image
+    }));
+  };
+
   return (
-    <FormContext.Provider value={{ formData, handleChange,setFormData }}>
+    <FormContext.Provider value={{ formData, handleChange,setFormData,handleImageChange }}>
       {children}
     </FormContext.Provider>
   );

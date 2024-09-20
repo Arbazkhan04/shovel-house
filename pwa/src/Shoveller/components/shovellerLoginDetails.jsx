@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRegisterMutation } from '../../slices/usersApiSlice';
+import { setCredentials } from '../../slices/authSlice';
+import { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 export default function LoginAccountDetail({nextStep,preStep}) {
     const { formData, handleChange } = useShovellerSignupContext();
@@ -15,6 +20,18 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const [register, { isLoading }] = useRegisterMutation();
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/shoveller/searchJobByList');
+    }
+  }, [navigate, userInfo]);
+
   // const handleNext = () => {
   //   navigate("/houseowner/loginPaymentInfo");
   // };
@@ -23,7 +40,37 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   //   navigate("/houseowner/personalDetail");
   // };
 
-  const hadleSubmit = () => {
+  const hadleSubmit = async (e) => {
+    e.preventDefault();
+
+
+     // Create a new FormData object
+  const data = new FormData();
+  
+  // Append all the form data
+  data.append('userRole', formData.userRole);
+  data.append('userName', formData.userName);
+  data.append('phone', formData.phone);
+  data.append('address', formData.address);
+  data.append('email', formData.email);
+  data.append('neighborhood', formData.neighborhood);
+  data.append('name', formData.name);
+  data.append('password', formData.password);
+  data.append('servicesProvide', JSON.stringify(formData.servicesProvide));
+  if(formData.image){
+    data.append('image', formData.image);
+  }
+  else{
+    console.log("iamge is not provider")
+  }
+
+    try {
+      const res = await register(data).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate('/shoveller/searchJobByList'); //for now let have dummy naviagtion
+    } catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
     console.log(formData);
   }
 

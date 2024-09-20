@@ -1,9 +1,38 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "../../context/houseOwnerSignupFormContext";
+import Resizer from 'react-image-file-resizer';
 
 export default function PersonalDetail({nextStep}) {
-  const { formData, handleChange } = useFormContext();
+  const { formData, handleChange, handleImageChange } = useFormContext();
+
+
+  const [selectedImage, setSelectedImage] = useState(formData.image);
+
+
+  const handleImageFileChange = (event) => {
+    const file = event.target.files[0];
+    const validImageTypes = ['image/jpeg', 'image/png'];
+
+    if (file && validImageTypes.includes(file.type)) {
+      Resizer.imageFileResizer(
+        file,
+        81, // width in pixels
+        77, // height in pixels
+        file.type === 'image/jpeg' ? 'JPEG' : 'PNG', // output format
+        100, // quality percentage
+        0, // rotation degree
+        (uri) => {
+          setSelectedImage(uri);
+          handleImageChange(uri); // Update context with new image
+        },
+        'base64' // output type: 'base64' or 'blob'
+      );
+    } else {
+      setSelectedImage(null);
+      handleImageChange(null); // Clear image in context
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -25,8 +54,38 @@ export default function PersonalDetail({nextStep}) {
             Personal Information
           </div>
           <div className="flex flex-col mt-6 w-full text-sm text-zinc-800">
+
+             {/* Profile Image Section */}
+          <div className="flex justify-center mt-6 relative">
+            <div className="relative">
+              <img
+                src={
+                  selectedImage
+                    ? selectedImage
+                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png" // default profile image
+                }
+                alt="Profile"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+              <label htmlFor="profileImageInput" className="absolute bottom-0 right-0">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/4aafd9b5d868a2b4ab93be69d6a30800a9f772342074f271884589ac82bd5a0a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                  className="object-contain w-6 aspect-square cursor-pointer"
+                />
+              </label>
+              <input
+                id="profileImageInput"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageFileChange}
+              />
+            </div>
+          </div>
+
+
             {/* User Name Input Field */}
-            <div className="flex flex-col justify-center p-3 w-full rounded-lg border-black border-solid border-[0.5px]">
+            <div className="flex flex-col justify-center p-3 w-full mt-3 rounded-lg border-black border-solid border-[0.5px]">
               <div className="flex gap-2 items-center w-full">
                 <img
                   loading="lazy"
@@ -35,9 +94,9 @@ export default function PersonalDetail({nextStep}) {
                 />
                 <input
                   type="text"
-                  name="username"
+                  name="userName"
                   placeholder="User name"
-                  value={formData.username}
+                  value={formData.userName}
                   onChange={handleChange}
                   className="self-stretch my-auto border-none outline-none"
                 />

@@ -7,14 +7,15 @@ export const useShovellerSignupContext = () => useContext(ShovellerSignupContext
 export const ShovellerSignupProvider = ({ children }) => {
   const [formData, setFormData] = useState({
     userRole: "shoveller",
-    username: '',
+    userName: '',
     phone: '',
     address: '',
     email: '',
     neighborhood: '',
     name: '',
     password: '',
-    servicesProvide: []
+    servicesProvide: [],
+    image: null // Add image state here
   });
 
     // Add selectedServices state for tracking service selections
@@ -29,8 +30,16 @@ export const ShovellerSignupProvider = ({ children }) => {
     }));
   };
 
+  const handleImageChange = (image) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      image
+    }));
+  };
+
+
   return (
-    <ShovellerSignupContext.Provider value={{ formData, handleChange,setFormData,selectedServices, setSelectedServices }}>
+    <ShovellerSignupContext.Provider value={{ formData, handleChange,setFormData,selectedServices, setSelectedServices, handleImageChange }}>
       {children}
     </ShovellerSignupContext.Provider>
   );
