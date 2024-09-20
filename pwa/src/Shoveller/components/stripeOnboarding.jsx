@@ -57,7 +57,7 @@ export default function StripeOnboard() {
                 const data = await response.json();
                 console.log('Stripe connection successful:', data);
                 dispatch(setCredentials({ userInfo: data }));
-                 navigate('/success'); // Or navigate to a success page after successful onboarding
+                 navigate('/success'); // Or navigate to a job page after successful onboarding
             } else {
                 console.error('Error finalizing Stripe connection:', response.statusText);
             }
