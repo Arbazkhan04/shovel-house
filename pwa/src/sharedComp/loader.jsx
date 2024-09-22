@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-function loader() {
+function Loader() {
   return (
-    <div>
-      Loading...
+    <div className="flex items-center justify-center h-screen bg-white">
+      <div className="loader border-t-transparent border-solid rounded-full border-4 w-16 h-16 border-gray-300 animate-spin"></div>
     </div>
-  )
+  );
 }
 
-export default loader
+export default Loader;
