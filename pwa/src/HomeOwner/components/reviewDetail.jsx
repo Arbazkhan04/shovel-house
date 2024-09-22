@@ -1,18 +1,64 @@
 import React from 'react';
 import { useJobPostProgressContext } from '../../context/jobPostProgressFrom';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCredentials } from '../../slices/authSlice';
 
 export default function ReviewDetail({nextStpe, preStep}) {
   const { jobPostProgress } = useJobPostProgressContext();
+  const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleBack = () => {
     preStep();
   };
 
-  const handleNext = () => {
-    navigate('/houseowner/isMatchShoveller');
+  const handleNext = async () => {
+    // Convert the payment amount from dollars to cents
+    const paymentAmountInCents = Math.round(jobPostProgress.paymentOffering * 100); 
+  
+    // Transform jobPostProgress into the required format
+    const jobData = {
+      // houseOwnerId: userInfo ? userInfo.user.id : null,// Replace this with dynamic houseOwnerId
+      services: jobPostProgress.selectedServices,
+      location: {
+        type: 'Point',
+        coordinates: [jobPostProgress.location.lng, jobPostProgress.location.lat], // Extract lat/lng from jobPostProgress
+      },
+      scheduledTime: jobPostProgress.scheduledTime, // Pass the full scheduled time object
+      paymentInfo: {
+        amount: paymentAmountInCents, // Amount in cents
+        // method: 'stripe',  // Assuming payment method is Stripe (change if needed)
+      },
+      jobStatus: 'open', // Set initial job status as 'open'
+    };
+  
+    try {
+      // Send the transformed job data to your backend
+      const response = await fetch(`http://localhost:3003/api/job/createJob/${userInfo.user.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jobData), // Send the formatted jobData object
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(setCredentials({ ...data })); //udpate the user info
+        console.log('Job created successfully:', data);
+
+        // Navigate to the next step (e.g., a payment page or success page)
+        navigate('/houseowner/stripeCheckout')
+      } else {
+        console.log('Failed to create job');
+      }
+    } catch (error) {
+      console.log('Error creating job:', error);
+    }
   };
+  
 
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
@@ -104,7 +150,7 @@ export default function ReviewDetail({nextStpe, preStep}) {
           Back
         </div>
         <div onClick={handleNext} className="flex-1 shrink gap-9 self-stretch text-center py-3 text-white bg-black rounded-lg">
-          Checkout & Pay
+          Next
         </div>
       </div>
     </div>

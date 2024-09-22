@@ -12,10 +12,12 @@ import ServiceFinished from "./serviceFinished";
 import Transaction from "./transaction";
 import HouseOwnerSingupProcess from "./houseOwnerSingupProcess";
 import JobPostProgress from "./jobPostProgress";
+import StripeCheckout from "./stripeCheckout";
 
 const route = [
     { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> },
     { path: '/jobPostProgress', element: <JobPostProgress /> },
+    { path: '/stripeCheckout', element: <StripeCheckout /> },
     { path: '/homeOwnerLocation', element: <HomeOwnerLocation /> },
     { path: '/timeDuration', element: <TimeDuration /> },
     { path: '/paymentDetail', element: <PayementDetail /> },

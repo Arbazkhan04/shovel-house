@@ -27,7 +27,17 @@ function Login() {
         navigate('/shoveller/searchJobByList');
       } else if (userInfo.user.role === 'shoveller') {
         navigate('/shoveller/stripeOnboard');
-      } else if (userInfo.user.role === 'houseOwner') {
+      }
+      //  else if (userInfo.user.role === 'houseOwner') {
+      //   navigate('/houseowner/jobPostProgress');
+      // }
+      else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'authorized'){
+        navigate('/houseowner/isMatchShoveller');
+      }
+      else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'pending'){
+        navigate('/houseowner/stripeCheckout');
+      }
+      else if(userInfo.user.role === 'houseOwner'){
         navigate('/houseowner/jobPostProgress');
       }
     }
