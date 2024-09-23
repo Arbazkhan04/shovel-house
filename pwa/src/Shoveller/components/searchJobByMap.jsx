@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
 import ShovelHouseImage from "../../assets/images/shovelhouse.png";
-
+import Loading from '../../sharedComp/loader';
 const libraries = ["places"]; // Load the Places library
 
 export default function SearchJobByArea() {
@@ -109,7 +109,7 @@ export default function SearchJobByArea() {
   };
 
   if (!isLoaded) {
-    return <div>Loading map...</div>;
+    return <Loading />; // Corrected JSX syntax
   }
 
   const handleList = () => {
