@@ -2,14 +2,25 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
 import serviceProgress from './serviceProgress';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCredentials } from '../../slices/authSlice';
+import { updateJobStatus } from '../../apiManager/houseOwner/matchShvoller';
+
 export default function IsMatchShoveller() {
-  
-  const jobId = '66e03afed4e709de47f51ce3'; // Example jobId
-  const userId = '66d82f725178d979882cc3de'; // Example userId
-  const clientId = "66d82f725178d979882cc3de";
-  const providerId = "66d82ca10001748cce7ccb1b"
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const jobId = userInfo.user.jobId;
+  const userId = userInfo.user.id;
+  const clientId = userInfo.user.id;
+  const providerId = userInfo.user.shovellerId || null //when user click on accept update the redux and get the provider id that's it
+
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -17,8 +28,18 @@ export default function IsMatchShoveller() {
   const closeChat = () => setIsChatOpen(false);
 
 
-  const handleAccept = () => {
-    navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
+  const handleAccept = async () => {
+    try {
+      setLoading(true);
+      const res = await updateJobStatus(jobId, userId);
+      console.log(res);
+      dispatch(setCredentials(res));
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+    // navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
   };
 
   const handleCancel = () => {
@@ -30,14 +51,14 @@ export default function IsMatchShoveller() {
   }
   return (
     <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
-    
+
       <div className="flex flex-col self-end mt-2 mr-6 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
           className="object-contain self-end w-6 aspect-square"
         />
-        
+
       </div>
       <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         Matched!
@@ -79,9 +100,14 @@ export default function IsMatchShoveller() {
         </div>
       </div>
       <div className="gap-9 self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
-            View Details
-          </div>
-      <div onClick={openChat} className="gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+        View Details
+      </div>
+      {/* Chat with provider button */}
+      <div
+        onClick={providerId ? openChat : null} // Only open chat if providerId is not null
+        className={`gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center rounded-lg max-w-[350px] ${providerId ? 'text-white bg-black cursor-pointer' : 'text-gray-400 bg-gray-200 cursor-not-allowed'
+          }`}
+      >
         Chat With Provider
       </div>
       {/* chat modal */}
