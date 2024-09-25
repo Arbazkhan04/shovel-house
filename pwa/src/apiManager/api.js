@@ -9,9 +9,10 @@ const api = axios.create({
 // You can add request interceptors to handle common tasks like adding tokens to headers
 api.interceptors.request.use((config) => {
   // Example: Add authorization token if available
-  const userInfo = localStorage.getItem('userInfo');
-  const token = userInfo.token;
-  if (token) {
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  
+  if (userInfo && userInfo.token) {
+    const token = userInfo.token;
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
