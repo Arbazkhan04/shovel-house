@@ -6,6 +6,7 @@ import { useState,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
+import { forgotPassword } from '../apiManager/shared/ForgotPassword';
 
 
 function Login() {
@@ -51,8 +52,16 @@ function Login() {
     setIsForgotPasswordOpen(true);
   }
 
-  const handleForgotPasswordSave = (email) => {
+  const handleForgotPasswordSave = async (email) => {
     console.log('Forgot Password Email:', email);
+    try {
+      const res = await forgotPassword(email);
+      console.log(res);
+    }
+    catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
+    
   }
 
 
