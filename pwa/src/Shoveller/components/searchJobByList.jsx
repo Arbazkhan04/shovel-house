@@ -16,10 +16,11 @@ export default function SearchJobByList() {
       try {
         setLoading(true);
         const res = await getAllJobs();
+        console.log(res);
         setJobs(res);
 
       } catch (error) {
-        setError(error);
+        setError(error.message || "An error occurred while fetching jobs");
       } finally {
         setLoading(false);
       }
@@ -103,7 +104,7 @@ export default function SearchJobByList() {
         </div>
         <div className="flex flex-col mt-5 w-full tracking-tight">
           {/* List of candidates */}
-          {jobs.map((job, index) => (
+          {jobs && jobs.map((job, index) => (
             <div
               key={index}
               onClick={() => navigate(`/shoveller/isMatchHouseOwner`, { state: { houseOwnerId: job.houseOwnerId, jobId: job._id ,isHouseOwnerAccepted:job.isHouseOwnerAccepted} })}
