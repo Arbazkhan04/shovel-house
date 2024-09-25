@@ -5,6 +5,7 @@ import Loader from './sharedComp/loader';
 import 'leaflet/dist/leaflet.css';
 import HouseOwnerRoutes from "./HomeOwner/components/homeOwnerRoute";
 import ShovellerRoutes from "./Shoveller/components/shovellerRoutes";
+import AdminRoutes from './Admin/components/adminRoutes';
 // Lazy load components
 const Login = lazy(() => import('./sharedComp/login'));
 const Question = lazy(() => import('./sharedComp/question'));
@@ -25,14 +26,22 @@ function App() {
           {HouseOwnerRoutes.map(({ path, element }) => (
             <Route
               key={path}
-              path={`/houseowner${path}`} 
+              path={`/houseowner${path}`}
               element={element}
             />
           ))}
           {ShovellerRoutes.map(({ path, element }) => (
             <Route
               key={path}
-              path={`/shoveller${path}`} 
+              path={`/shoveller${path}`}
+              element={element}
+            />
+          ))}
+
+          {AdminRoutes.map(({ path, element }) => (
+            <Route
+              key={path}
+              path={`/admin${path}`}
               element={element}
             />
           ))}

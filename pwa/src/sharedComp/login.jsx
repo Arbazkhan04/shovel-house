@@ -23,6 +23,9 @@ function Login() {
 
   useEffect(() => {
     if (userInfo) {
+      if(userInfo.user.role === 'admin'){
+        navigate('/admin/dashboard');
+      }
       if (userInfo.user.role === 'shoveller' && userInfo.user.chargesEnabled) {
         navigate('/shoveller/searchJobByList');
       } else if (userInfo.user.role === 'shoveller') {
