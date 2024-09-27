@@ -1,4 +1,4 @@
-import Dashboard from './dashboard'
+import Dashboard from './user-management/dashboard'
 
 const route = [
     { path: '/dashboard', element: <Dashboard /> },
