@@ -209,34 +209,33 @@ function CustomerTable() {
                 </tbody>
             </table>
 
-            <ReactPaginate
+            <ReactPaginate className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
                 previousLabel={
-                    <span className="flex items-center justify-center w-8 h-8 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-100 transition">
+                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
                         &lt;
                     </span>
                 }
                 nextLabel={
-                    <span className="flex items-center justify-center w-8 h-8 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-100 transition">
+                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
                         &gt;
                     </span>
                 }
-                breakLabel={<span className="mx-1 text-gray-600">...</span>}
+                breakLabel={<span className="mx-2 text-gray-600">...</span>}
                 breakClassName={'break-me'}
                 pageCount={Math.ceil(rows.length / rowsPerPage)}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={'flex justify-center my-2 space-x-1'}
+                containerClassName={'flex justify-center my-4 space-x-1'}
                 pageClassName={'flex items-center'}
-                pageLinkClassName={`flex items-center justify-center w-8 h-8 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-100 transition`}
+                pageLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
                 previousClassName={'flex items-center'}
-                previousLinkClassName={`flex items-center justify-center w-8 h-8 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-100 transition`}
+                previousLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
                 nextClassName={'flex items-center'}
-                nextLinkClassName={`flex items-center justify-center w-8 h-8 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-100 transition`}
+                nextLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
                 activeClassName={'bg-black text-white'} // Active button color
                 disabledClassName={'opacity-50 cursor-not-allowed'}
             />
-
         </div>
     );
 }
