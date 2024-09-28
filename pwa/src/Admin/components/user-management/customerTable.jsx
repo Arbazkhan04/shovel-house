@@ -145,6 +145,8 @@ function CustomerTable() {
     };
 
     return (
+
+        // table header
         <div className="p-6">
             <div className="flex justify-between items-center my-10 gap-x-28">
                 <div>
@@ -174,41 +176,45 @@ function CustomerTable() {
                 </div>
             </div>
 
-            <table {...getTableProps()} className="min-w-full bg-white">
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <th
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                    {column.render('Header')}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-
-                <tbody {...getTableBodyProps()}>
-                    {paginatedRows.map((row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()} className="hover:bg-gray-100">
-                                {row.cells.map((cell) => (
-                                    <td
-                                        {...cell.getCellProps()}
-                                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+            {/* table container */}
+            <div className='overflow-x-auto'>
+                <table {...getTableProps()} className="min-w-full bg-white">
+                    <thead>
+                        {headerGroups.map((headerGroup) => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map((column) => (
+                                    <th
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                     >
-                                        {cell.render('Cell')}
-                                    </td>
+                                        {column.render('Header')}
+                                    </th>
                                 ))}
                             </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                        ))}
+                    </thead>
 
+                    <tbody {...getTableBodyProps()}>
+                        {paginatedRows.map((row) => {
+                            prepareRow(row);
+                            return (
+                                <tr {...row.getRowProps()} className="hover:bg-gray-100">
+                                    {row.cells.map((cell) => (
+                                        <td
+                                            {...cell.getCellProps()}
+                                            className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                        >
+                                            {cell.render('Cell')}
+                                        </td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* paginator */}
             <ReactPaginate className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
                 previousLabel={
                     <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
