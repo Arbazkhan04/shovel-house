@@ -6,12 +6,12 @@ export const getAllJobs = async () => {
 }
 
 export const updateJobStatus = async (jobId, shovellerId,decision) => {
-    const res = await api.post('/updateJobStatusForShovellerAcceptedJob', { jobId,shovellerId,decision });
+    const res = await api.post('/job/updateJobStatusForShovellerAcceptedJob', { jobId,shovellerId,decision });
     return res.data;
 }
 
 
 export const getAppliedJobs = async (shovellerId) => {
-    const res = await api.get(`/getJobsInWhichShovllerApplied/${shovellerId}`);
+    const res = await api.get(`/job/getJobsInWhichShovllerApplied/${shovellerId}`);
     return res.data;
 }
