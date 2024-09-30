@@ -4,7 +4,7 @@ import {updateJobStatus} from '../../apiManager/shoveller/matchJobApi'
 import Loader from '../../sharedComp/loader';
 
 import { useState } from "react";
-import Chat from '../../sharedComp/chat';
+// import Chat from '../../sharedComp/chat';
 
 export default function IsMatchShoveller() {
 
@@ -14,33 +14,37 @@ export default function IsMatchShoveller() {
   const { houseOwnerId, jobId,isHouseOwnerAccepted } = location.state || {};  // Extract values from state
 
 
-  const clientId = houseOwnerId;
+  // const clientId = houseOwnerId;
   // const providerId = "66d82ca10001748cce7ccb1b"
 
   const { userInfo } = useSelector((state) => state.auth);
   const userId = userInfo.user.id;
-  const providerId = userId;
-  // const {jobId} = useParams();
+  // const providerId = userId;
+  // // const {jobId} = useParams();
 
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const openChat = () => setIsChatOpen(true);
-  const closeChat = () => setIsChatOpen(false);
+  // const openChat = () => setIsChatOpen(true);
+  // const closeChat = () => setIsChatOpen(false);
 
   const navigate = useNavigate();
-  const handleChat = () => {
-    navigate('/shoveller/serviceProgressShoveller');
-  }
+  // const handleChat = () => {
+  //   navigate('/shoveller/serviceProgressShoveller');
+  // }
 
   const handleCancel = () => {
-
+    navigate('/shoveller/searchJobByList');
   }
-  const handleAccept = async () => {
+
+  const handleAccept = async (decision) => {
     try {
       setLoading(true);
-      const res = await updateJobStatus(jobId, houseOwnerId);
+      console.log(jobId,userId);
+      const res = await updateJobStatus(jobId, userId,decision);
       console.log(res);
       setLoading(false);
+      //navigate to the search job by list  
+      navigate('/shoveller/searchJobByList');
     } catch (error) {
       setError(error);
     }finally{
@@ -88,13 +92,13 @@ export default function IsMatchShoveller() {
           {/* Accept and Cancel buttons */}
           <div className="flex justify-around mt-20">
             <button
-              onClick={handleCancel}
+              onClick={()=> handleAccept(false)}
               className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
             >
               Cancel
             </button>
             <button
-              onClick={handleAccept}
+              onClick={()=> handleAccept(true)}
               className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
             >
               Accept
@@ -105,14 +109,13 @@ export default function IsMatchShoveller() {
       <div className="gap-9 self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
             View Details
           </div>
-       <div
+       {/* <div
         onClick={isHouseOwnerAccepted ? openChat : null}  // Only open chat if not disabled
         className={`gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center rounded-lg max-w-[350px] 
           ${!isHouseOwnerAccepted ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-black text-white cursor-pointer"}`}
       >
         Chat With Provider
       </div>
-      {/* chat modal */}
       {isChatOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
           <div className="bg-white rounded-lg p-6 w-96 relative">
@@ -123,7 +126,7 @@ export default function IsMatchShoveller() {
               &times;
             </button>
 
-            {/* Chat Component */}
+            
             <Chat
               jobId={jobId}
               userId={userId}
@@ -132,7 +135,7 @@ export default function IsMatchShoveller() {
             />
           </div>
         </div>
-      )}
+      )} */}
 
     </div>
   )

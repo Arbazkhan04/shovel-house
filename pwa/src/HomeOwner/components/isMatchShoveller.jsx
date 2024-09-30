@@ -5,50 +5,62 @@ import serviceProgress from './serviceProgress';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCredentials } from '../../slices/authSlice';
 import { updateJobStatus } from '../../apiManager/houseOwner/matchShvoller';
+import { useLocation } from "react-router-dom";
 
 export default function IsMatchShoveller() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const location = useLocation();
+  const { shovelerId,applicantName,formattedScheduledTime } = location.state || {};
   const { userInfo } = useSelector((state) => state.auth);
 
   const jobId = userInfo.user.jobId;
-  const userId = userInfo.user.id;
-  const clientId = userInfo.user.id;
-  const providerId = userInfo.user.shovellerId || null //when user click on accept update the redux and get the provider id that's it
+  // const userId = userInfo.user.id;
+  // const clientId = userInfo.user.id;
+  // const providerId = userInfo.user.shovellerId || null //when user click on accept update the redux and get the provider id that's it
 
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const openChat = () => setIsChatOpen(true);
-  const closeChat = () => setIsChatOpen(false);
+  // const openChat = () => setIsChatOpen(true);
+  // const closeChat = () => setIsChatOpen(false);
 
 
-  const handleAccept = async () => {
+  const handleDecision = async (decision) => {
+    setLoading(true); // Set loading to true immediately
     try {
-      setLoading(true);
-      const res = await updateJobStatus(jobId, userId);
+      const res = await updateJobStatus(jobId, shovelerId, decision);
       console.log(res);
-      dispatch(setCredentials(res));
+  
+      // If the decision is to accept, set credentials and navigate to service progress
+      if (decision) {
+        dispatch(setCredentials(res));
+        navigate('/HouseOwner/serviceProgress');
+      } else {
+        // If the decision is to reject, navigate to the list of shovellers applied
+        navigate('/houseOwner/listOfShovellerApplied');
+      }
     } catch (error) {
       setError(error);
     } finally {
-      setLoading(false);
+      setLoading(false); // Ensure loading is set to false in the finally block
     }
-    // navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
   };
+  
 
-  const handleCancel = () => {
-    //navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
-  };
 
+
+  
   const handleChat = () => {
     navigate('/HouseOwner/serviceProgress');
   }
+
+  if(error) return <p>{error.message}</p>
   return (
     <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
 
@@ -77,21 +89,21 @@ export default function IsMatchShoveller() {
         />
         <div className="flex relative flex-col mt-8 w-full">
           <div className="w-full text-2xl capitalize text-zinc-800">
-            <span className="">Huzaifa</span>
+            <span className="">{applicantName}</span>
             <br />
             will be coming to fulfill your service request <br />
-            at <span className="">6:00 Am</span>
+            at <span className="">{formattedScheduledTime}</span>
           </div>
           {/* Accept and Cancel buttons */}
           <div className="flex justify-around mt-20">
             <button
-              onClick={handleCancel}
+              onClick={() => handleDecision(false)}
               className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
             >
               Cancel
             </button>
             <button
-              onClick={handleAccept}
+              onClick={() => handleDecision(true)}
               className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
             >
               Accept
@@ -103,15 +115,15 @@ export default function IsMatchShoveller() {
         View Details
       </div>
       {/* Chat with provider button */}
-      <div
+      {/* <div
         onClick={providerId ? openChat : null} // Only open chat if providerId is not null
         className={`gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center rounded-lg max-w-[350px] ${providerId ? 'text-white bg-black cursor-pointer' : 'text-gray-400 bg-gray-200 cursor-not-allowed'
           }`}
       >
         Chat With Provider
-      </div>
+      </div> */}
       {/* chat modal */}
-      {isChatOpen && (
+      {/* {isChatOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
           <div className="bg-white rounded-lg p-6 w-96 relative">
             <button
@@ -121,7 +133,7 @@ export default function IsMatchShoveller() {
               &times;
             </button>
 
-            {/* Chat Component */}
+            
             <Chat
               jobId={jobId}
               userId={userId}
@@ -130,7 +142,7 @@ export default function IsMatchShoveller() {
             />
           </div>
         </div>
-      )}
+      )} */}
 
     </div>
   );

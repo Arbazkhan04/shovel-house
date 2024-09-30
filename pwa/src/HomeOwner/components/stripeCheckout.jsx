@@ -136,7 +136,7 @@ const StripeCheckout = () => {
           Thank you, your payment is authorized! Your job is now confirmed.
         </p>
         <button
-          onClick={() => navigate('/houseowner/isMatchShoveller')} // Navigate to matching dashboard
+          onClick={() => navigate('/houseOwner/listOfShovellerApplied')} // Navigate to matching dashboard
           className="mt-8 py-2 px-4 bg-black text-white rounded hover:bg-black-500 transition"
         >
           Go to Matching Dashboard
