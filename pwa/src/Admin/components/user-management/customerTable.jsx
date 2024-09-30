@@ -93,11 +93,10 @@ function CustomerTable() {
                     const currentStatus = selectedStatus[row.index] || row.original.status;
 
                     // Define the className based on the status
-                    const className = `px-3 py-1 rounded ${currentStatus === 'Pending' ? 'bg-yellow-500 text-white'
-                        : currentStatus === 'Completed' ? 'bg-green-500 text-white'
-                            : currentStatus === 'Canceled' ? 'bg-red-500 text-white'
-                                : currentStatus === 'In-progress' ? 'bg-blue-500 text-white'
-                                    : 'bg-yellow-500 text-white'// Default for any other status
+                    const className = `px-3 py-1 rounded ${currentStatus === 'Suspend' ? 'bg-yellow-500 text-white'
+                        : currentStatus === 'Activate' ? 'bg-green-500 text-white'
+                            : currentStatus === 'Deactivate' ? 'bg-red-500 text-white'
+                                : 'bg-zinc-500 text-white'// Default for any other status
                         }`;
 
                     return (
@@ -106,10 +105,9 @@ function CustomerTable() {
                             value={currentStatus} // Use the current status as the value
                             onChange={(e) => handleStatusChange(row.index, e.target.value)} // Update the status on change
                         >
-                            <option value="Pending">Pending</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Canceled">Canceled</option>
-                            <option value="In-progress">In-progress</option>
+                            <option value="Activate">Activate</option>
+                            <option value="Deactivate">Deactivate</option>
+                            <option value="Suspend">Suspend</option>
                         </select>
                     );
                 },
@@ -183,9 +181,9 @@ function CustomerTable() {
                         onChange={(e) => setSortBy(e.target.value)}
                     >
                         <option value="Pending">Pending</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Canceled">Canceled</option>
-                        <option value="In-progress">In-progress</option>
+                        <option value="Completed">Activate</option>
+                        <option value="Canceled">Deactivate</option>
+                        <option value="In-progress">Suspend</option>
                         {/* Add more sorting options as needed */}
                     </select>
                 </div>
