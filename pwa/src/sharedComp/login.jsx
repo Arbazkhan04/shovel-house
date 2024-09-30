@@ -36,7 +36,7 @@ function Login() {
       //   navigate('/houseowner/jobPostProgress');
       // }
       else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'authorized'){
-        navigate('/houseowner/isMatchShoveller');
+        navigate('/houseOwner/listOfShovellerApplied');
       }
       else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'pending'){
         navigate('/houseowner/stripeCheckout');

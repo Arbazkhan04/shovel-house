@@ -13,6 +13,7 @@ import Transaction from "./transaction";
 import HouseOwnerSingupProcess from "./houseOwnerSingupProcess";
 import JobPostProgress from "./jobPostProgress";
 import StripeCheckout from "./stripeCheckout";
+import ListOfShovellerApplied from "./ListOfShovellerApplied"
 
 const route = [
     { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> },
@@ -22,6 +23,7 @@ const route = [
     { path: '/timeDuration', element: <TimeDuration /> },
     { path: '/paymentDetail', element: <PayementDetail /> },
     { path: '/reviewDetail', element: <ReviewDetail /> },
+    { path:'/listOfShovellerApplied', element: <ListOfShovellerApplied />},
 
     // { path: '/personalDetail', element: <PersonalDetail /> },
     // { path: '/loginAccountDetail', element: <LoginAccountDetail /> },
