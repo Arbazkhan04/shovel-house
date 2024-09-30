@@ -3,11 +3,9 @@ import SidebarItem from '../shared/sidebarItem';
 
 function Sidebar() {
     const menuItems = [
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/f59f55fecaa19395323b60794e479c8c915e2572f3f98ff2a48109bad571f9a6?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "User Management", active: true, to: "/communications" },
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/14deeb521df38342947304b41e7ab52385d7b5f4272f3507befe776e01d84543?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Services Request", to: "/services-request" },
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/265550a4a888f445a0bb2eeb5c6925a6a2d35db492f8d06f7e3d5292449e464e?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Payment", to: "/payment-management" },
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/ee619a1c94e9930081c8a0ab3ce1453e44df47b07a15114e07eca83974363c82?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Communication", to: "/communications" },
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/23802196c9edb9abe1625e5dde6bf76d00fab0b05e993bf0eac2bed62ff0fa8e?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Queries", to: "/queries-management" }
+        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/f59f55fecaa19395323b60794e479c8c915e2572f3f98ff2a48109bad571f9a6?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "User Management", active: true, to: "/admin/Dashboard" },
+        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/14deeb521df38342947304b41e7ab52385d7b5f4272f3507befe776e01d84543?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Services Management", to: "/admin/ServiceDashboard" },
+        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/23802196c9edb9abe1625e5dde6bf76d00fab0b05e993bf0eac2bed62ff0fa8e?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Queries", to: "/admin/QueryDashboard" }
     ];
 
     return (

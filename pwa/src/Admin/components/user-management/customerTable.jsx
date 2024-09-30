@@ -10,32 +10,32 @@ function CustomerTable() {
     const rowsPerPage = 8;
 
     const customers = [
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', status: 'Active', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', status: 'Active', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', status: 'Active', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', status: 'Active', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Floyd Miles', address: '56/11-A', phone: '(205) 555-0100', email: 'floyd@yahoo.com', signUpDate: '08/04/2024', status: 'Inactive', rating: 3, avgPrice: '$180', servicesPrice: '$120', cancelledServices: 1, receivedPayments: '$400' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', status: 'Inactive', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', status: 'Inactive', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', status: 'Inactive', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', status: 'Inactive', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', status: 'Active', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
-        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', status: 'Active', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', status: 'Active', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', status: 'Active', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', status: 'Active', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', status: 'Active', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Kathryn Murphy', address: '56/11-A', phone: '(406) 555-0120', email: 'kathryn@microsoft.com', signUpDate: '17/06/2024', status: 'Active', rating: 3, avgPrice: '$190', servicesPrice: '$130', cancelledServices: 2, receivedPayments: '$300' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', status: 'Active', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', status: 'Active', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', status: 'Active', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', status: 'Active', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', status: 'Active', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', status: 'Inactive', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', status: 'Inactive', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', status: 'Inactive', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', status: 'Inactive', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', status: 'Inactive', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
+        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
+        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
+        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
+        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
+        { name: 'Floyd Miles', address: '56/11-A', phone: '(205) 555-0100', email: 'floyd@yahoo.com', signUpDate: '08/04/2024', rating: 3, avgPrice: '$180', servicesPrice: '$120', cancelledServices: 1, receivedPayments: '$400' },
+        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
+        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
+        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
+        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
+        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
+        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
+        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
+        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
+        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
+        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
+        { name: 'Kathryn Murphy', address: '56/11-A', phone: '(406) 555-0120', email: 'kathryn@microsoft.com', signUpDate: '17/06/2024', rating: 3, avgPrice: '$190', servicesPrice: '$130', cancelledServices: 2, receivedPayments: '$300' },
+        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
+        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
+        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
+        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
+        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
+        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
+        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
+        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
+        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
+        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
         // Add more data as needed...
     ];
 
@@ -88,19 +88,31 @@ function CustomerTable() {
             {
                 Header: 'Status',
                 accessor: 'status',
-                Cell: ({ row }) => (
-                    <select
-                        className={`px-3 py-1 rounded ${selectedStatus[row.index] === 'Active' || row.original.status === 'Active'
-                            ? 'bg-black text-white'
-                            : 'bg-gray-300 text-black'
-                            }`}
-                        value={selectedStatus[row.index] || row.original.status}
-                        onChange={(e) => handleStatusChange(row.index, e.target.value)}
-                    >
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                ),
+                Cell: ({ row }) => {
+                    // Determine the current status
+                    const currentStatus = selectedStatus[row.index] || row.original.status;
+
+                    // Define the className based on the status
+                    const className = `px-3 py-1 rounded ${currentStatus === 'Pending' ? 'bg-yellow-500 text-white'
+                        : currentStatus === 'Completed' ? 'bg-green-500 text-white'
+                            : currentStatus === 'Canceled' ? 'bg-red-500 text-white'
+                                : currentStatus === 'In-progress' ? 'bg-blue-500 text-white'
+                                    : 'bg-yellow-500 text-white'// Default for any other status
+                        }`;
+
+                    return (
+                        <select
+                            className={className} // Apply the className based on status
+                            value={currentStatus} // Use the current status as the value
+                            onChange={(e) => handleStatusChange(row.index, e.target.value)} // Update the status on change
+                        >
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Canceled">Canceled</option>
+                            <option value="In-progress">In-progress</option>
+                        </select>
+                    );
+                },
             },
             {
                 Header: 'Average Price',
@@ -166,11 +178,14 @@ function CustomerTable() {
                     </div>
 
                     <select
-                        className="border border-gray-300 rounded-md px-4 "
+                        className="border border-gray-300 rounded-md px-4"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <option value="Status">Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Canceled">Canceled</option>
+                        <option value="In-progress">In-progress</option>
                         {/* Add more sorting options as needed */}
                     </select>
                 </div>

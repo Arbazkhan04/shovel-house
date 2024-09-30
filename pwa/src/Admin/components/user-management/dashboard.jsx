@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from '../shared/sidebar';
-import Header from './header';
+import Header from '../shared/header';
 import StatCard from '../user-management/statCard';
 import CustomerTable from './customerTable';
 
@@ -9,7 +9,7 @@ import CustomerTable from './customerTable';
 function Dashboard() {
   return (
 
-    <div className="overflow-hidden bg-white">
+    <div className="overflow-hidden bg-zinc-50">
       <div className="flex gap-5 max-md:flex-col">
         <Sidebar />
         <main className="flex flex-col ml-5 w-[78%] max-md:ml-0 max-md:w-full">
