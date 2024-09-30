@@ -1,7 +1,7 @@
 import api from '../api';
 
 export const getAllJobs = async () => {
-    const res = await api.get('/getAllJobs');
+    const res = await api.get('/job/getAllJobs');
     return res.data.jobs;
 }
 

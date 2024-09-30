@@ -20,19 +20,19 @@ const ForgotPassword = ({ isOpen, onClose, onSave }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-zinc-400"
           />
   
           <div className="flex justify-center space-x-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="px-4 py-2 bg-zinc-100 text-black rounded hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 bg-black text-white rounded hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Save
             </button>
