@@ -252,9 +252,10 @@ function CustomerTable() {
                 previousLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
                 nextClassName={'flex items-center'}
                 nextLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
-                activeClassName={'bg-black text-white'} // Active button color
+                activeClassName={'bg-zinc-800 text-white w-5 h-5 rounded-md flex items-center justify-center font-bold'} // Active button color
                 disabledClassName={'opacity-50 cursor-not-allowed'}
             />
+
         </div>
     );
 }

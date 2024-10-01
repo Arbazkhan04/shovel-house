@@ -130,38 +130,40 @@ function CustomerTable() {
     return (
         <section className="flex flex-col self-stretch py-9 mt-10 w-full bg-white rounded-[30px] shadow-[0px_10px_60px_rgba(226,236,249,0.5)] max-md:max-w-full">
             <div className="flex flex-col pr-0.5 pl-10 w-full max-md:pl-5 max-md:max-w-full">
-                <div className="flex flex-wrap gap-5 justify-between max-w-full w-[914px]">
+                <div className="flex flex-wrap gap-24 justify-between max-w-full w-[914px]">
                     <div className="flex flex-col">
                         <h2 className="text-2xl font-semibold tracking-tight text-black">All Customers</h2>
                         <div className="self-start mt-2 text-sm tracking-normal text-zinc-800">Active Members</div>
                     </div>
-                    <div className="flex flex-wrap flex-auto gap-3.5 my-auto text-xs tracking-normal text-zinc-500 max-md:max-w-full">
-                        <form className="flex gap-2 px-2 py-2 text-gray-400 whitespace-nowrap rounded-xl bg-neutral-100">
+                    <div className="flex flex-wrap flex-auto gap-5 my-auto text-xs tracking-normal text-zinc-500 max-md:max-w-full">
+                        <form className=" flex gap-2 px-2 py-2 text-gray-400 whitespace-nowrap rounded-xl bg-neutral-100 ">
                             <FaSearch className="self-center w-5 h-5 text-gray-400" />
                             <label htmlFor="tableSearch" className="sr-only">Search</label>
                             <input
                                 type="text"
                                 id="tableSearch"
                                 placeholder="Search"
-                                className="bg-transparent border-none focus:outline-none"
+                                className="bg-transparent border-none focus:outline-none "
                             />
                         </form>
 
-                        {/* Dropdown for Sorting by Status */}
-                        <div className="flex items-center">
-                            <label htmlFor="sortByStatus" className="mr-2 text-gray-600">Sort by: Status</label>
-                            <select id="sortByStatus" className="border rounded-md px-2 py-1 bg-white text-gray-700">
-                                <option value="">Select Status</option>
-                                <option value="active">Completed</option>
-                                <option value="inactive">Pending</option>
+                        {/* Status Sorting Field */}
+                        <div className="flex gap-3.5 px-3.5 py-2.5 rounded-xl bg-neutral-100">
+                            <label htmlFor="statusSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
+                            <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
+                                <option value="status">Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="canceled">Canceled</option>
+                                <option value="in-progress">In-progress</option>
                             </select>
                         </div>
 
-                        {/* Dropdown for Sorting by Signed Up Date */}
-                        <div className="flex items-center">
-                            <label htmlFor="sortByDate" className="mr-2 text-gray-600">Sort by: Signed Up Date</label>
-                            <select id="sortByDate" className="border rounded-md px-2 py-1 bg-white text-gray-700">
-                                <option value="">Sign Up Date</option>
+                        {/* SignUp Date Sorting Field */}
+                        <div className="flex gap-5 py-2.5 pl-4 rounded-xl bg-neutral-100">
+                            <label htmlFor="signupDateSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
+                            <select id="signupDateSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
+                                <option value="signupDate">SignUp Date</option>
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
                             </select>
@@ -215,21 +217,34 @@ function CustomerTable() {
             </div>
 
             {/* Pagination */}
-            <ReactPaginate
-                previousLabel={'Previous'}
-                nextLabel={'Next'}
-                breakLabel={'...'}
+            <ReactPaginate className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
+                previousLabel={
+                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                        &lt;
+                    </span>
+                }
+                nextLabel={
+                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                        &gt;
+                    </span>
+                }
+                breakLabel={<span className="mx-2 text-gray-600">...</span>}
+                breakClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
                 pageCount={pageCount}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={'flex justify-center my-4'}
-                pageClassName={'mx-1'}
-                previousClassName={'mx-1'}
-                nextClassName={'mx-1'}
-                activeClassName={'text-black font-bold'}
-                disabledClassName={'text-gray-400'}
+                containerClassName={'flex justify-center my-4 space-x-1'} // Centers pagination container with spacing
+                pageClassName={'mx-1 flex items-center'}
+                pageLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'} // Entire button is clickable
+                previousClassName={'mx-1 flex items-center'}
+                previousLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
+                nextClassName={'mx-1 flex items-center'}
+                nextLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
+                activeClassName={'bg-black text-white w-5 h-5 rounded-md flex items-center justify-center font-bold'} // Active button styling
+                disabledClassName={'opacity-50 cursor-not-allowed w-5 h-5 rounded-md flex justify-center items-center'} // Disabled button styling
             />
+
         </section >
     );
 }
