@@ -1,9 +1,11 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom'; // For determining the current path
 import SidebarItem from '../shared/sidebarItem';
 
 function Sidebar() {
+    const location = useLocation(); // Get the current location
     const menuItems = [
-        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/f59f55fecaa19395323b60794e479c8c915e2572f3f98ff2a48109bad571f9a6?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "User Management", active: true, to: "/admin/Dashboard" },
+        { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/f59f55fecaa19395323b60794e479c8c915e2572f3f98ff2a48109bad571f9a6?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "User Management", to: "/admin/Dashboard" },
         { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/14deeb521df38342947304b41e7ab52385d7b5f4272f3507befe776e01d84543?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Services Management", to: "/admin/ServiceDashboard" },
         { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/23802196c9edb9abe1625e5dde6bf76d00fab0b05e993bf0eac2bed62ff0fa8e?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Queries", to: "/admin/QueryDashboard" }
     ];
@@ -20,8 +22,8 @@ function Sidebar() {
                         key={index}
                         icon={item.icon}
                         label={item.label}
-                        active={item.active}
-                        to={item.to} // Pass the route
+                        active={location.pathname === item.to} // Set active based on the current path
+                        to={item.to}
                     />
                 ))}
             </div>

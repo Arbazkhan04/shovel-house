@@ -137,7 +137,7 @@ function CustomerTable() {
     return (
         <section className="flex flex-col self-stretch py-9 mt-10 w-full bg-white rounded-[30px] shadow-[0px_10px_60px_rgba(226,236,249,0.5)] max-md:max-w-full">
             <div className="flex flex-col pr-0.5 pl-10 w-full max-md:pl-5 max-md:max-w-full">
-                <div className="flex flex-wrap gap-5 justify-between max-w-full w-[914px]">
+                <div className="flex flex-wrap gap-24 justify-between max-w-full w-[914px]">
                     <div className="flex flex-col">
                         <h2 className="text-2xl font-semibold tracking-tight text-black">All Customers</h2>
                         <div className="self-start mt-2 text-sm tracking-normal text-zinc-800">Active Members</div>
@@ -165,7 +165,7 @@ function CustomerTable() {
                                 <option value="in-progress">In-progress</option>
                             </select>
                         </div>
-                        
+
                         {/* SignUp Date Sorting Field */}
                         <div className="flex gap-5 py-2.5 pl-4 rounded-xl bg-neutral-100">
                             <label htmlFor="signupDateSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
@@ -211,22 +211,38 @@ function CustomerTable() {
                         </tbody>
                     </table>
                 </div>
+
                 {/* Pagination */}
                 <ReactPaginate
-                    previousLabel={'Previous'}
-                    nextLabel={'Next'}
-                    breakLabel={'...'}
+                    className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
+                    previousLabel={
+                        <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                            &lt;
+                        </span>
+                    }
+                    nextLabel={
+                        <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                            &gt;
+                        </span>
+                    }
+                    breakLabel={<span className="mx-2 text-gray-600">...</span>}
+                    breakClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePageClick}
-                    containerClassName={'flex justify-center my-4'}
-                    pageClassName={'mx-1'}
-                    previousClassName={'mx-1'}
-                    nextClassName={'mx-1'}
-                    activeClassName={'font-bold text-blue-600'}
-                    disabledClassName={'text-gray-400'}
+                    containerClassName={'flex justify-center my-4 space-x-1'} // Centers pagination container with spacing
+                    pageClassName={'flex items-center'}
+                    pageLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'} // Entire button is clickable
+                    previousClassName={'flex items-center'}
+                    previousLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
+                    nextClassName={'flex items-center'}
+                    nextLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
+                    activeClassName={'bg-black text-white w-5 h-5 rounded-md flex items-center justify-center font-bold'}  // Active button styling
+                    disabledClassName={'opacity-50 cursor-not-allowed w-5 h-5 rounded-md flex justify-center items-center'}  // Disabled button styling
                 />
+
+
             </div>
         </section>
     );
