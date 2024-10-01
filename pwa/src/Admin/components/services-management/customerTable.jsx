@@ -214,34 +214,28 @@ function CustomerTable() {
 
                 {/* Pagination */}
                 <ReactPaginate
-                    className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
+                    className='pagination-container flex justify-end me-32 mt-10 gap-x-5'
                     previousLabel={
-                        <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                        <span className="flex items-center justify-center px-2 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out">
                             &lt;
                         </span>
                     }
                     nextLabel={
-                        <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                        <span className="flex items-center justify-center px-2 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out">
                             &gt;
                         </span>
                     }
                     breakLabel={<span className="mx-2 text-gray-600">...</span>}
-                    breakClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
+                    breakClassName={`break-me`}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePageClick}
-                    containerClassName={'flex justify-center my-4 space-x-1'} // Centers pagination container with spacing
-                    pageClassName={'flex items-center'}
-                    pageLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'} // Entire button is clickable
-                    previousClassName={'flex items-center'}
-                    previousLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
-                    nextClassName={'flex items-center'}
-                    nextLinkClassName={'flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out'}
-                    activeClassName={'bg-black text-white w-5 h-5 rounded-md flex items-center justify-center font-bold'}  // Active button styling
-                    disabledClassName={'opacity-50 cursor-not-allowed w-5 h-5 rounded-md flex justify-center items-center'}  // Disabled button styling
+                    containerClassName={`flex items-center`}
+                    pageLinkClassName={`bg-gray-200 px-2 py-1 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out`}
+                    activeLinkClassName={`bg-zinc-900 text-white rounded-md`}
+                    disabledClassName={`opacity-50 cursor-not-allowed`}
                 />
-
 
             </div>
         </section>
