@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { FaStar, FaSearch } from 'react-icons/fa';
 import { useTable, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
+import "./UserManagement.css"
+
 
 function CustomerTable() {
     const [sortBy, setSortBy] = useState('Status');
@@ -93,7 +95,7 @@ function CustomerTable() {
                     const currentStatus = selectedStatus[row.index] || row.original.status;
 
                     // Define the className based on the status
-                    const className = `px-3 py-1 rounded ${currentStatus === 'Suspend' ? 'bg-yellow-500 text-white'
+                    const className = `px-2 py-1 rounded ${currentStatus === 'Suspend' ? 'bg-yellow-500 text-white'
                         : currentStatus === 'Activate' ? 'bg-green-500 text-white'
                             : currentStatus === 'Deactivate' ? 'bg-red-500 text-white'
                                 : 'bg-zinc-500 text-white'// Default for any other status
@@ -170,7 +172,7 @@ function CustomerTable() {
                             placeholder="Search"
                             id="gsearch"
                             name="gsearch"
-                            className="w-full border bg-gray-100 border-gray-300 rounded-md px-10 py-2"
+                            className="w-full border bg-gray-100 border-gray-300 rounded-md px-10 py-1"
                         />
                         <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
                     </div>
@@ -228,32 +230,28 @@ function CustomerTable() {
             </div>
 
             {/* paginator */}
-            <ReactPaginate className='pagination-container flex justify-end me-32 mt-2 gap-x-5'
+            <ReactPaginate
+                className='pagination-container flex justify-end me-32 mt-10 gap-x-5'
                 previousLabel={
-                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                    <span className="flex items-center justify-center px-2 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out">
                         &lt;
                     </span>
                 }
                 nextLabel={
-                    <span className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out">
+                    <span className="flex items-center justify-center px-2 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out">
                         &gt;
                     </span>
                 }
                 breakLabel={<span className="mx-2 text-gray-600">...</span>}
-                breakClassName={'break-me'}
+                breakClassName='break-me'
                 pageCount={Math.ceil(rows.length / rowsPerPage)}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={'flex justify-center my-4 space-x-1'}
-                pageClassName={'flex items-center'}
-                pageLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
-                previousClassName={'flex items-center'}
-                previousLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
-                nextClassName={'flex items-center'}
-                nextLinkClassName={`flex items-center justify-center w-5 h-5 border border-gray-300 rounded-md text-gray-600 bg-white hover:bg-gray-200 transition duration-200 ease-in-out`}
-                activeClassName={'bg-zinc-800 text-white w-5 h-5 rounded-md flex items-center justify-center font-bold'} // Active button color
-                disabledClassName={'opacity-50 cursor-not-allowed'}
+                containerClassName={`flex items-center`}
+                pageLinkClassName={`bg-gray-200 px-2 py-1 rounded-md border border-gray-300 hover:bg-gray-300 transition duration-200 ease-in-out`}
+                activeLinkClassName={`bg-zinc-900 text-white rounded-md`}
+                disabledClassName={`opacity-50 cursor-not-allowed`}
             />
 
         </div>
