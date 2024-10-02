@@ -15,7 +15,6 @@ function ServiceDashboard() {
                 <Sidebar />
                 <main className="flex flex-col ml-5 w-[78%] max-md:ml-0 max-md:w-full">
                     <div className="flex flex-col items-start self-stretch w-full max-md:mt-10 max-md:max-w-full">
-                        <Header className="mb-5" />
                         <div className="flex items-start justify-center self-stretch w-full mt-10 gap-x-10 rounded-[25px]">
                             <ServiceSection />
                             <UserSection />

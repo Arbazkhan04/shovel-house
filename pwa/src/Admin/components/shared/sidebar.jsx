@@ -10,6 +10,9 @@ function Sidebar() {
         { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/23802196c9edb9abe1625e5dde6bf76d00fab0b05e993bf0eac2bed62ff0fa8e?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf", label: "Queries", to: "/admin/QueryDashboard" }
     ];
 
+    // Check if the current path is not one of the defined routes
+    const isDefaultActive = !menuItems.some(item => item.to === location.pathname);
+
     return (
         <nav className="flex flex-col w-[22%] max-md:ml-0 max-md:w-full">
             <div className="flex flex-col px-7 pt-9 mx-auto w-full text-sm font-medium tracking-normal bg-white pb-[714px] shadow-[0px_10px_60px_rgba(226,236,249,0.5)] text-neutral-500 max-md:px-5 max-md:pb-24 max-md:mt-10">
@@ -22,7 +25,7 @@ function Sidebar() {
                         key={index}
                         icon={item.icon}
                         label={item.label}
-                        active={location.pathname === item.to} // Set active based on the current path
+                        active={isDefaultActive && item.to === "/admin/Dashboard" || location.pathname === item.to} // Set active based on the current path or if default
                         to={item.to}
                     />
                 ))}

@@ -6,7 +6,7 @@ function ServicesSection() {
   return (
     <section className="flex flex-col max-md:ml-0 w-[50%] overflow-hidden bg-white p-5 rounded-[25px]">
       <h2 className="text-2xl font-semibold tracking-tight text-black">Services</h2>
-      <div className="flex relative grow gap-4 items-center justify-start px-4 py-4 min-h-[290px] ">
+      <div className="flex flex-col xl:flex-row relative grow gap-4 items-center justify-start px-4 py-4 min-h-[290px]">
         <ServiceCard image={cutGrassImage} title="Lawn Mowing" />
         <ServiceCard image={snowShovelImage} title="Snow Shoveling" />
       </div>
