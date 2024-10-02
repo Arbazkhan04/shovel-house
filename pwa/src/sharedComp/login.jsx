@@ -113,7 +113,7 @@ function Login() {
                     type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="User name"
+                    placeholder="Email"
                     className="flex-1 outline-none bg-transparent"
                   />
                 </div>

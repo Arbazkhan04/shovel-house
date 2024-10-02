@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {resetPassword} from '../apiManager/shared/ForgotPassword';
+import { resetPassword } from "../apiManager/shared/ForgotPassword";
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
@@ -11,38 +11,50 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   // Function to handle password change
-    const handleChangePassword = async () => {
-      if (!newPassword || !confirmPassword) {
-        setErrorMessage("Please enter both passwords!");
-        setSuccessMessage("");
-        return;
-        }
-        if (newPassword.length < 8) {
-            setErrorMessage("Password must be at least 8 characters long!");
-            setSuccessMessage("");
-            return;
-        }
-        if (newPassword === confirmPassword) {
-            try {
-                const res = await resetPassword(newPassword, window.location.pathname.split('/')[2]);
-                console.log(res);
-                setSuccessMessage("Password changed successfully!");
-                setErrorMessage("");
-                navigate("/"); // Navigate to the login page after password change
-            } catch (err) { 
-                setErrorMessage("Something went wrong. Please try again!");
-                setSuccessMessage("");
-            }
-       
-    } else {
+  const handleChangePassword = async () => {
+    // Check if passwords are empty
+    if (!newPassword || !confirmPassword) {
+      setErrorMessage("Please enter both passwords!");
+      setSuccessMessage("");
+      return;
+    }
+
+    // Check for minimum length
+    if (newPassword.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long!");
+      setSuccessMessage("");
+      return;
+    }
+
+    // Check if passwords match
+    if (newPassword !== confirmPassword) {
       setErrorMessage("Passwords do not match!");
+      setSuccessMessage("");
+      return;
+    }
+
+    // If validation passes, proceed with the reset
+    try {
+      const res = await resetPassword(newPassword, window.location.pathname.split('/')[2]);
+      console.log(res);
+      if (res.err) {
+        setErrorMessage(res.err)
+      }
+      else {
+        setSuccessMessage("Password changed successfully!");
+      setErrorMessage("");
+      navigate("/"); // Navigate to the login page after password change
+      }
+    } catch (err) {
+      console.log(err)
+      setErrorMessage(err || "An error occurred while resetting the password.");
       setSuccessMessage("");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className=" p-6 rounded-lg shadow-md w-full max-w-md">
+      <div className="p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-3xl font-semibold mb-6 text-center">Reset Password</h2>
 
         {/* New Password Input */}
@@ -88,7 +100,7 @@ export default function ResetPassword() {
         {/* Change Password Button */}
         <button
           onClick={handleChangePassword}
-          className="w-full py-2 bg-zinc-900 text-white rounded-lg  focus:outline-none focus:bg-indigo-700"
+          className="w-full py-2 bg-zinc-900 text-white rounded-lg focus:outline-none focus:bg-indigo-700"
         >
           Change Password
         </button>
