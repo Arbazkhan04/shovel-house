@@ -28,6 +28,9 @@ function SidebarItem({ icon, label, active, to }) {
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e195e775766d2c899e594275c312875d7c79728f8d03d0a274ce8648fbe4968?placeholderIfAbsent=true&apiKey=fc6d299c0cd342d3a58ffeb43ac7bebf"
                     alt=""
+
+
+                    
                     className={`object-contain shrink-0 my-auto w-4 aspect-square transition duration-200`}
                     style={{
                         filter: active
