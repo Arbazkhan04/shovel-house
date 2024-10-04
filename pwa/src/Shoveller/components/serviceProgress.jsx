@@ -2,8 +2,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
+import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 
 export default function ServiceProgress() {
+
+    const [error,setError] = useState('');
+    const [loading,setLoading] = useState(false);
+
     const location = useLocation();
     const { jobId, houseOwnerId, jobStatus, houseOwnerAction } = location.state || {};
 
@@ -18,13 +23,29 @@ export default function ServiceProgress() {
     const providerId = userInfo.user.id;
     const userId = userInfo.user.id;  // This is the same as providerId, so it should be removed
 
-    const handleServiceFinished = () => {
-        navigate('/shoveller/serviceFinishedByShoveller');
+    const handleServiceFinished = async () => {
+        setLoading(true);
+        try {
+            const res = await jobCompleted(jobId, providerId, "shoveller");
+            
+                console.log(res)
+                // setLoading(false);
+                navigate('/shoveller/serviceFinishedByShoveller');
+        } catch (error) {
+            console.log(error)
+            setError(error.response.data.error);
+        }finally{
+            setLoading(false);
+        }
+
     };
 
     const handleGoBack = () => {
         navigate(-1); // Navigate back to the previous page
     };
+
+    if(error) return <div>{error}</div>
+    if(loading) return <div>Loading...</div>
 
     return (
         <div className="flex flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
