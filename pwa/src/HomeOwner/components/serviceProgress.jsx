@@ -2,8 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
+import { cancelJob } from '../../apiManager/houseOwner/matchShvoller';
+import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 
 export default function ServiceProgress() {
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
     const { userInfo } = useSelector((state) => state.auth);
 
@@ -16,8 +21,14 @@ export default function ServiceProgress() {
     const userId = userInfo.user.houseOwnerId;
     const clientId = userInfo.user.houseOwnerId;
     const providerId = userInfo.user.shovellerId || null;
-
-    const handleServiceFinished = () => {
+    
+    const handleServiceFinished = async() => {
+        try {
+            const res = await jobCompleted(jobId, providerId, "houseOwner");
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
         navigate('/houseowner/serviceFinished');
     }
 
@@ -25,9 +36,28 @@ export default function ServiceProgress() {
         navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
     };
 
-    const handleCancel = () => {
+    const handleCancel = async() => {
+        setLoading(true);
+        try {
+            const res = await cancelJob(jobId, providerId);
+            if(res.err){
+                setError(res.err);
+            }
+            else{
+                //clear the localstorage and navigate to the tot he home page
+            }
+            console.log(res);
+            
+        } catch (error) {
+            setError(error);
+        }finally{
+            setLoading(false);
+        }
         // navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
     };
+
+    if(error) return <div>{error}</div>
+    if(loading) return <div>Loading...</div>
 
     return (
         <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
