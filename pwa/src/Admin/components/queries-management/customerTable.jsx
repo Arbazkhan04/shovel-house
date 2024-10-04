@@ -4,33 +4,34 @@ import ReactPaginate from 'react-paginate';
 import { FaSearch, FaStar } from 'react-icons/fa'; // Import icons
 
 const Customers = [
-    { name: "Jane Cooper", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Alice Johnson", query: "Service Not Completed", status: "Completed", rating: 4 },
-    { name: "Floyd Miles", query: "Payment Stuck", status: "Completed", rating: 3 },
-    { name: "Bob Brown", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Charlie Davis", query: "Payment Stuck", status: "Completed", rating: 2 },
-    { name: "Daisy Evans", query: "Payment Stuck", status: "Completed", rating: 4 },
-    { name: "Edward Harris", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Fiona Green", query: "Payment Stuck", status: "Completed", rating: 3 },
-    { name: "George Hill", query: "Payment Stuck", status: "Completed", rating: 2 },
-    { name: "Hannah White", query: "Payment Stuck", status: "Completed", rating: 4 },
-    { name: "Isaac Black", query: "Payment Stuck", status: "Completed", rating: 3 },
-    { name: "Julia Martin", query: "Service Not Completed", status: "Completed", rating: 4 },
-    { name: "Kevin Lee", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Laura King", query: "Payment Stuck", status: "Completed", rating: 2 },
-    { name: "Michael Wright", query: "Payment Stuck", status: "Completed", rating: 4 },
-    { name: "Nina Taylor", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Oliver Scott", query: "Payment Stuck", status: "Completed", rating: 3 },
-    { name: "Paula Young", query: "Payment Stuck", status: "Completed", rating: 4 },
-    { name: "Quentin Adams", query: "Service Not Completed", status: "Completed", rating: 3 },
-    { name: "Rachel Brown", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Steven Miller", query: "Payment Stuck", status: "Completed", rating: 4 },
-    { name: "Tina Wilson", query: "Payment Stuck", status: "Completed", rating: 2 },
-    { name: "Victor James", query: "Service Not Completed", status: "Completed", rating: 4 },
-    { name: "Wendy Clark", query: "Payment Stuck", status: "Completed", rating: 5 },
-    { name: "Yvonne Harris", query: "Service Not Completed", status: "Completed", rating: 3 },
-    { name: "Zachary Lee", query: "Payment Stuck", status: "Completed", rating: 4 }
+    { name: "Jane Cooper", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "John Smith" },
+    { name: "Alice Johnson", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Paul Green" },
+    { name: "Floyd Miles", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Lisa White" },
+    { name: "Bob Brown", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Mike Black" },
+    { name: "Charlie Davis", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Nancy Blue" },
+    { name: "Daisy Evans", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Tom Yellow" },
+    { name: "Edward Harris", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Sara Orange" },
+    { name: "Fiona Green", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Jake Red" },
+    { name: "George Hill", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Ella Purple" },
+    { name: "Hannah White", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Chris Brown" },
+    { name: "Isaac Black", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Tina Pink" },
+    { name: "Julia Martin", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Greg Grey" },
+    { name: "Kevin Lee", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Laura Silver" },
+    { name: "Laura King", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Sam Gold" },
+    { name: "Michael Wright", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Amy Copper" },
+    { name: "Nina Taylor", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Randy Brass" },
+    { name: "Oliver Scott", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Betty Iron" },
+    { name: "Paula Young", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Nina Steel" },
+    { name: "Quentin Adams", query: "Service Not Completed", status: "Completed", rating: 3, shoveler: "Larry Lead" },
+    { name: "Rachel Brown", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Zoe Zinc" },
+    { name: "Steven Miller", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Frank Nickel" },
+    { name: "Tina Wilson", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Clara Tin" },
+    { name: "Victor James", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Daisy Glass" },
+    { name: "Wendy Clark", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Jake Wood" },
+    { name: "Yvonne Harris", query: "Service Not Completed", status: "Completed", rating: 3, shoveler: "Kate Fiber" },
+    { name: "Zachary Lee", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Mike Fabric" }
 ];
+
 
 function CustomerTable() {
     const [customers, setCustomers] = useState(Customers);
@@ -59,7 +60,7 @@ function CustomerTable() {
             },
             {
                 Header: 'Query',
-                accessor: 'query', // Ensure this matches the property in the data
+                accessor: 'query',
                 Cell: ({ row }) => (
                     <span className="text-left">{row.original.query}</span>
                 ),
@@ -93,9 +94,16 @@ function CustomerTable() {
                         </div>
                     );
                 },
-            }
+            },
+            {
+                Header: 'Shoveler',
+                accessor: 'shoveler',
+                Cell: ({ row }) => (
+                    <span className="text-left">{row.original.shoveler}</span>
+                ),
+            },
         ],
-        [customers]
+        [customers] // Include customers in dependencies to re-render on state change
     );
 
     const {
