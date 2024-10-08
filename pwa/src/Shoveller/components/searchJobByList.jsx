@@ -36,9 +36,11 @@ export default function SearchJobByList() {
   const navigateToHouseOwnerJob = (job) => {
     navigate("/shoveller/isMatchHouseOwner", {
       state: {
-        houseOwnerId: job.houseOwnerId,
+        houseOwnerId: job.houseOwnerId._id,
         jobId: job._id,
-        isHouseOwnerAccepted: job.isHouseOwnerAccepted
+        // isHouseOwnerAccepted: job.isHouseOwnerAccepted,
+        scheduledTime: job.scheduledTime,
+        name : job.houseOwnerId.name, 
       }
     });
   };
@@ -120,12 +122,12 @@ export default function SearchJobByList() {
             >
               <div className="flex items-center gap-4">
                 <img
-                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/cbbaae0db0d05a01e1fe05609a37a79bd82fad33480da6c5339d119d98591928?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                  className="w-12 h-12 object-contain"
+                  srcSet = {job.houseOwnerId.imageUrl}
+                  className="w-12 h-12 object-cover rounded-full"
                   alt="Job Icon"
                 />
                 <div>
-                  <div className="text-lg font-medium">{job.houseOwnerId}</div>
+                  <div className="text-lg font-medium">{job.houseOwnerId.name}</div>
                   <div className="text-sm text-gray-500">{job.services[0]}</div>
                 </div>
               </div>

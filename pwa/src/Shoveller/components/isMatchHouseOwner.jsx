@@ -1,6 +1,6 @@
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {updateJobStatus} from '../../apiManager/shoveller/matchJobApi'
+import { updateJobStatus } from '../../apiManager/shoveller/matchJobApi'
 import Loader from '../../sharedComp/loader';
 
 import { useState } from "react";
@@ -8,10 +8,12 @@ import { useState } from "react";
 
 export default function IsMatchShoveller() {
 
-  const [loading,setLoading] = useState(false);
-  const [error,setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const location = useLocation();
-  const { houseOwnerId, jobId,isHouseOwnerAccepted } = location.state || {};  // Extract values from state
+  const { houseOwnerId, jobId, scheduledTime, name } = location.state || {};  // Extract values from state
+  console.log(houseOwnerId, jobId, scheduledTime, name);
+
 
 
   // const clientId = houseOwnerId;
@@ -39,33 +41,33 @@ export default function IsMatchShoveller() {
   const handleAccept = async (decision) => {
     try {
       setLoading(true);
-      console.log(jobId,userId);
-      const res = await updateJobStatus(jobId, userId,decision);
+      console.log(jobId, userId);
+      const res = await updateJobStatus(jobId, userId, decision);
       console.log(res);
       setLoading(false);
       //navigate to the search job by list  
       navigate('/shoveller/searchJobByList');
     } catch (error) {
       setError(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   }
 
-  if(loading) return <Loader />
-  if(error) return <div>{error}</div>
+  if (loading) return <Loader />
+  if (error) return <div>{error}</div>
 
   return (
 
     <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
-    
+
       <div className="flex flex-col self-end mt-2 mr-6 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
           className="object-contain self-end w-6 aspect-square"
         />
-        
+
       </div>
       <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         Matched!
@@ -86,19 +88,20 @@ export default function IsMatchShoveller() {
           <div className="w-full text-2xl capitalize text-zinc-800">
             <span className="">You will fulfill</span>
             <br />
-             Arbaz khan request <br />
-            at <span className="">6:00 Am</span>
+           {`${name} request`}<br />
+            at <span>{`${scheduledTime.hour}:${scheduledTime.minute} ${scheduledTime.period}`}</span>
+
           </div>
           {/* Accept and Cancel buttons */}
           <div className="flex justify-around mt-20">
             <button
-              onClick={()=> handleAccept(false)}
+              onClick={() => handleAccept(false)}
               className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
             >
               Cancel
             </button>
             <button
-              onClick={()=> handleAccept(true)}
+              onClick={() => handleAccept(true)}
               className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
             >
               Accept
@@ -107,9 +110,9 @@ export default function IsMatchShoveller() {
         </div>
       </div>
       <div className="gap-9 self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
-            View Details
-          </div>
-       {/* <div
+        View Details
+      </div>
+      {/* <div
         onClick={isHouseOwnerAccepted ? openChat : null}  // Only open chat if not disabled
         className={`gap-9 self-center px-12 py-4 mt-5 w-full text-xl font-medium tracking-wider text-center rounded-lg max-w-[350px] 
           ${!isHouseOwnerAccepted ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-black text-white cursor-pointer"}`}
