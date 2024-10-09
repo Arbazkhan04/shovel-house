@@ -45,6 +45,21 @@ export default function SearchJobByList() {
     });
   };
 
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+    return distance.toFixed(2); // Return the distance rounded to two decimal places
+  };
+
+
   // Filter out jobs where the shoveller has already applied
   const availableJobs = jobs.filter(job => !job.ShovelerInfo?.some(shoveller => shoveller.ShovelerId === shovellerId));
 
@@ -132,7 +147,12 @@ export default function SearchJobByList() {
                 </div>
               </div>
               <div className="text-sm text-black">
-                {job.location.coordinates[0] - job.location.coordinates[1]}
+                 {calculateDistance(
+                  userInfo.user.latitude,
+                  userInfo.user.longitude,
+                  job.location.coordinates[1], //lat
+                  job.location.coordinates[0] //long
+                )} km
               </div>
             </div>
           ))

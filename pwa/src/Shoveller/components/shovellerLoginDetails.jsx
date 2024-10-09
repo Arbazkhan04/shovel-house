@@ -53,7 +53,15 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   data.append('phone', formData.phone);
   data.append('address', formData.address);
   data.append('email', formData.email);
-  data.append('neighborhood', formData.neighborhood);
+  // data.append('neighborhood', formData.neighborhood);
+  //store lat and long in the form of number
+  data.append('latitude', Number(formData.latitude));
+  data.append('longitude', Number(formData.longitude));
+
+  if (formData.referredBy && formData.referredBy.trim().length > 0) {
+    data.append('referredBy', formData.referredBy);
+  }
+  
   data.append('name', formData.name);
   data.append('password', formData.password);
   data.append('servicesProvide', JSON.stringify(formData.servicesProvide));
@@ -64,7 +72,6 @@ export default function LoginAccountDetail({nextStep,preStep}) {
   if(formData.image){
     data.append('image', formData.image);
   }
-
   else{
     console.log("iamge is not provider")
   }
@@ -74,8 +81,10 @@ export default function LoginAccountDetail({nextStep,preStep}) {
       dispatch(setCredentials({ ...res }));
       navigate('/shoveller/stripeOnboard'); //for now let have dummy naviagtion
     } catch (err) {
+      console.log(err)
       console.log(err?.data?.message || err.error);
     }
+    console.log(data);
     console.log(formData);
   }
 
