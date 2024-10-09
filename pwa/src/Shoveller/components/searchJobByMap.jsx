@@ -7,10 +7,14 @@ import Loading from '../../sharedComp/loader';
 const libraries = ["places"];
 
 export default function SearchJobByArea() {
-  const [position, setPosition] = useState(null);
-  const [map, setMap] = useState(null);
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [address, setAddress] = useState("");
+
+
+  const [position, setPosition] = useState({ lat: 0, lng: 0 }); // Default position
+  const [map, setMap] = useState(null); // Google Map instance
+  const [autocomplete, setAutocomplete] = useState(null); // Autocomplete instance
+  const [geocoder, setGeocoder] = useState(null); // Geocoder instance
+  const [location, setLocation] = useState({ address: '', lat: null, lng: null });
+
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const navigate = useNavigate();
@@ -22,13 +26,18 @@ export default function SearchJobByArea() {
 
   const onLoad = (mapInstance) => {
     setMap(mapInstance);
+    setGeocoder(new window.google.maps.Geocoder()); // Initialize Geocoder
   };
 
   const onAutocompleteLoad = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
 
+
+
   const handlePlaceSelect = () => {
+    console.log('Place selected'); // Debugging statement
+
     if (autocomplete) {
       const place = autocomplete.getPlace();
       if (place.geometry) {
@@ -36,13 +45,14 @@ export default function SearchJobByArea() {
         setPosition({ lat: lat(), lng: lng() });
         map.panTo({ lat: lat(), lng: lng() });
         fetchNearbyJobs(lat(), lng());
-      }
-
-      if (place.formatted_address) {
-        setAddress(place.formatted_address);
+        // Update context with new address and coordinates
+        if (place.formatted_address) {
+          setLocation({ address: place.formatted_address, lat: lat(), lng: lng() });
+        }
       }
     }
   };
+
 
   const debounce = (func, timeout = 200) => {
     let timer;
@@ -54,18 +64,20 @@ export default function SearchJobByArea() {
     };
   };
 
-  const geocodeLatLng = (lat, lng) => {
-    const geocoder = new window.google.maps.Geocoder();
-    const latlng = { lat, lng };
-    geocoder.geocode({ location: latlng }, (results, status) => {
-      if (status === "OK") {
-        if (results[0]) {
-          setAddress(results[0].formatted_address);
+
+
+  // Reverse geocode to get address from lat and lng
+  const reverseGeocode = (lat, lng) => {
+    if (geocoder) {
+      geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const newAddress = results[0].formatted_address;
+          setLocation({ address: newAddress, lat: lat, lng: lng }); // Update the context with the new address and coordinates
+        } else {
+          console.error("Geocoder failed due to: " + status);
         }
-      } else {
-        console.error("Geocoder failed due to: " + status);
-      }
-    });
+      });
+    }
   };
 
   const handleMapCenterChanged = useCallback(
@@ -75,31 +87,38 @@ export default function SearchJobByArea() {
         const newLat = newPosition.lat();
         const newLng = newPosition.lng();
 
+        // Only update the position if it's different from the current one
         if (newLat !== position?.lat || newLng !== position?.lng) {
           setPosition({ lat: newLat, lng: newLng });
-          geocodeLatLng(newLat, newLng); // Geocode to get the new address
-          fetchNearbyJobs(newLat, newLng);
+          reverseGeocode(newLat, newLng); // Reverse geocode to get the updated address
+          fetchNearbyJobs(newLat, newLng); // Fetch nearby jobs based on new position
         }
       }
-    }, 600),
-    [map, position]
+    }, 300), // Debounce for 300ms
+    [map, position, geocoder]
   );
+
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (location) => {
           const { latitude, longitude } = location.coords;
-          const currentPosition = { lat: latitude, lng: longitude };
-          setPosition(currentPosition);
+          setPosition({ lat: latitude, lng: longitude });
           fetchNearbyJobs(latitude, longitude);
+          // console.log(position)
+          if (map) {
+            map.panTo({ lat: latitude, lng: longitude });
+            reverseGeocode(latitude, longitude); // Reverse geocode to update address in context
+          }
         },
         (error) => {
           console.error("Error getting location", error);
         }
       );
     }
-  }, []);
+  }, [map]);
+
 
   const fetchNearbyJobs = (lat, lng) => {
     setLoadingJobs(true);
@@ -112,6 +131,7 @@ export default function SearchJobByArea() {
         { id: 4, latitude: lat - 0.02, longitude: lng + 0.02, title: "Job 4" },
       ];
       setJobs(dummyJobs);
+      console.log("duumy jobs: " + (dummyJobs));
       setLoadingJobs(false);
     }, 1000);
   };
@@ -145,9 +165,9 @@ export default function SearchJobByArea() {
           <Autocomplete onLoad={onAutocompleteLoad} onPlaceChanged={handlePlaceSelect}>
             <input
               type="text"
-              value={address}
+              value={location.address}
               placeholder="Search for a location"
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={(e) => setLocation({ ...location, address: e.target.value })}
               className="w-full bg-transparent outline-none text-lg"
             />
           </Autocomplete>
@@ -166,7 +186,7 @@ export default function SearchJobByArea() {
         </div>
         <button onClick={handleList}
           className="flex gap-2 items-center text-gray-500 hover:text-black transition-all cursor-pointer"
-          
+
         >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/0bd2b5a75a465655bc5be8b6e7a9691ff635ef742d1258053409dd2bf0cf65d2?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
@@ -187,14 +207,20 @@ export default function SearchJobByArea() {
             zoom={14}
             mapContainerStyle={{ width: "100%", height: "100%" }}
           >
-            {/* Center Marker */}
-            {position && <Marker position={position} draggable={true} onDragEnd={(event) => {
-              const newLat = event.latLng.lat();
-              const newLng = event.latLng.lng();
-              setPosition({ lat: newLat, lng: newLng });
-              geocodeLatLng(newLat, newLng); // Update address based on marker drag
-              fetchNearbyJobs(newLat, newLng);
-            }} />}
+            {position && <Marker
+              position={position}
+              draggable={true}
+              onDragEnd={(event) => {
+                console.log('Marker dragged');
+                const newLat = event.latLng.lat();
+                const newLng = event.latLng.lng();
+                console.log('Marker dragged:', { newLat, newLng }); // Log the new position
+
+                setPosition({ lat: newLat, lng: newLng });
+                reverseGeocode(newLat, newLng); // Reverse geocode to update address based on marker drag
+                fetchNearbyJobs(newLat, newLng); // Fetch nearby jobs based on new position
+              }} />}
+
 
             {/* Job Markers */}
             {jobs.map((job) => (
@@ -228,3 +254,4 @@ export default function SearchJobByArea() {
     </div>
   );
 }
+
