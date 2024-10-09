@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
 import ShovelHouseImage from "../../assets/images/shovelhouse.png";
 import Loading from '../../sharedComp/loader';
+import { getAllJobs } from '../../apiManager/shoveller/matchJobApi';
 
 const libraries = ["places"];
 
@@ -120,20 +121,30 @@ export default function SearchJobByArea() {
   }, [map]);
 
 
-  const fetchNearbyJobs = (lat, lng) => {
-    setLoadingJobs(true);
-    setTimeout(() => {
-      // Simulated jobs data around the provided lat/lng
-      const dummyJobs = [
-        { id: 1, latitude: lat + 0.01, longitude: lng + 0.01, title: "Job 1" },
-        { id: 2, latitude: lat - 0.01, longitude: lng - 0.01, title: "Job 2" },
-        { id: 3, latitude: lat + 0.02, longitude: lng - 0.02, title: "Job 3" },
-        { id: 4, latitude: lat - 0.02, longitude: lng + 0.02, title: "Job 4" },
-      ];
-      setJobs(dummyJobs);
-      console.log("duumy jobs: " + (dummyJobs));
+  const fetchNearbyJobs = async(lat, lng) => {
+    try {
+      setLoadingJobs(true);
+      const res = await getAllJobs();
+      console.log(res)
+      setJobs(res);
+    } catch (error) {
+      console.log(error);
+    }finally{
       setLoadingJobs(false);
-    }, 1000);
+    }
+    // setLoadingJobs(true);
+    // setTimeout(() => {
+    //   // Simulated jobs data around the provided lat/lng
+    //   const dummyJobs = [
+    //     { id: 1, latitude: lat + 0.01, longitude: lng + 0.01, title: "Job 1" },
+    //     { id: 2, latitude: lat - 0.01, longitude: lng - 0.01, title: "Job 2" },
+    //     { id: 3, latitude: lat + 0.02, longitude: lng - 0.02, title: "Job 3" },
+    //     { id: 4, latitude: lat - 0.02, longitude: lng + 0.02, title: "Job 4" },
+    //   ];
+    //   setJobs(dummyJobs);
+    //   console.log("duumy jobs: " + (dummyJobs));
+    //   setLoadingJobs(false);
+    // }, 1000);
   };
 
   if (!isLoaded) {
@@ -225,8 +236,8 @@ export default function SearchJobByArea() {
             {/* Job Markers */}
             {jobs.map((job) => (
               <Marker
-                key={job.id}
-                position={{ lat: job.latitude, lng: job.longitude }}
+                key={job._id}
+                position={{ lat: Number(job.location.coordinates[1]), lng: Number(job.location.coordinates[0]) }}
                 icon={{
                   url: ShovelHouseImage, // Replace with your job icon URL
                   scaledSize: new window.google.maps.Size(30, 30), // Adjust size as needed
@@ -244,9 +255,9 @@ export default function SearchJobByArea() {
           <Loading />
         ) : (
           jobs.map((job) => (
-            <div key={job.id} className="p-3 border-b border-gray-200">
-              <div>{job.title}</div>
-              <div className="text-gray-500">Lat: {job.latitude}, Lng: {job.longitude}</div>
+            <div key={job._id} className="p-3 border-b border-gray-200">
+              <div>{job.services[0]}</div>
+              <div className="text-gray-500">Lat: {Number(job.location.coordinates[1])}, Lng: {Number(job.location.coordinates[0])}</div>
             </div>
           ))
         )}
