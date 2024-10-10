@@ -8,6 +8,8 @@ export default function SearchJobByList() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const {userInfo} = useSelector((state) => state.auth);
@@ -59,6 +61,28 @@ export default function SearchJobByList() {
     return distance.toFixed(2); // Return the distance rounded to two decimal places
   };
 
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      console.log('called')
+      if (searchQuery.trim()) {
+        const filtered = jobs.filter((job) =>
+          job.services.some((service) =>
+            service.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        );
+        setFilteredJobs(filtered);
+      } else {
+        setFilteredJobs(jobs); // Reset to all jobs if the search query is empty
+      }
+    }, 500); // Debounce delay of 500ms
+
+    return () => clearTimeout(debounceTimeout); // Clean up timeout on component unmount or searchQuery change
+  }, [searchQuery, jobs]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
 
   // Filter out jobs where the shoveller has already applied
   const availableJobs = jobs.filter(job => !job.ShovelerInfo?.some(shoveller => shoveller.ShovelerId === shovellerId));
@@ -82,7 +106,7 @@ export default function SearchJobByList() {
             className="w-6 h-6 object-contain"
             alt="Search Icon"
           />
-          <p onClick={ () => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500">Applied Jobs</p>
+          <p onClick={ () => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
         </div>
         <div className="flex flex-col mt-4">
           <h1 className="text-3xl font-semibold text-black mb-4">
@@ -96,7 +120,9 @@ export default function SearchJobByList() {
             />
             <input
               type="text"
-              placeholder="Search Location"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="search services"
               className="w-full p-2 bg-zinc-100 rounded-lg focus:outline-none text-gray-700"
             />
           </div>
@@ -128,8 +154,8 @@ export default function SearchJobByList() {
 
       {/* List of Jobs */}
       <div className="flex flex-col mt-5 w-full">
-        {availableJobs.length > 0 ? (
-          availableJobs.map((job, index) => (
+        {filteredJobs.length > 0 ? (
+          filteredJobs.map((job, index) => (
             <div
               key={index}
               onClick={() => navigateToHouseOwnerJob(job)}
@@ -157,7 +183,7 @@ export default function SearchJobByList() {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">No jobs found in your area.</p>
+          <p className="text-center text-gray-500">No jobs found</p>
         )}
       </div>
     </div>

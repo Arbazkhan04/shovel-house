@@ -79,11 +79,11 @@ export default function AppliedJobsList() {
               className="flex justify-between items-center p-4 bg-zinc-100 rounded-lg mb-3 hover:bg-zinc-200 transition-all cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <img
-                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/cbbaae0db0d05a01e1fe05609a37a79bd82fad33480da6c5339d119d98591928?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                {/* <img
+                  srcSet={job.imageUrl}
                   className="w-12 h-12 object-contain"
                   alt="Job Icon"
-                />
+                /> */}
                 <div>
                   <div className="text-lg font-medium">{job.services[0]}</div>
                   <div className="text-sm text-gray-500">
