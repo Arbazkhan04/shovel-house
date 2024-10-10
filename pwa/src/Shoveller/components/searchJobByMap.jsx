@@ -4,6 +4,7 @@ import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-m
 import ShovelHouseImage from "../../assets/images/shovelhouse.png";
 import Loading from '../../sharedComp/loader';
 import { getAllJobs } from '../../apiManager/shoveller/matchJobApi';
+import { useSelector } from "react-redux";
 
 const libraries = ["places"];
 
@@ -19,6 +20,8 @@ export default function SearchJobByArea() {
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const navigate = useNavigate();
+  const {userInfo} = useSelector((state) => state.auth);
+  const shovellerId = userInfo.user.id;
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDJQNAbTK3AGLlmRGVxa3VbejegSp-qB9A",
@@ -147,6 +150,18 @@ export default function SearchJobByArea() {
     // }, 1000);
   };
 
+  const navigateToHouseOwnerJob = (job) => {
+    navigate("/shoveller/isMatchHouseOwner", {
+      state: {
+        houseOwnerId: job.houseOwnerId._id,
+        jobId: job._id,
+        // isHouseOwnerAccepted: job.isHouseOwnerAccepted,
+        scheduledTime: job.scheduledTime,
+        name : job.houseOwnerId.name, 
+      }
+    });
+  };
+
   if (!isLoaded) {
     return <Loading />;
   }
@@ -165,7 +180,7 @@ export default function SearchJobByArea() {
             className="w-6 h-6 object-contain"
             alt="Search Icon"
           />
-          <p className="text-gray-500">Applied Jobs</p>
+          <p onClick={() =>navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
         </div>
         <div className="text-3xl font-semibold mt-4">Search Jobs in Your Area</div>
       </div>
@@ -255,9 +270,9 @@ export default function SearchJobByArea() {
           <Loading />
         ) : (
           jobs.map((job) => (
-            <div key={job._id} className="p-3 border-b border-gray-200">
+            <div onClick={() => navigateToHouseOwnerJob(job)} key={job._id} className="p-3 border-b border-gray-200 cursor-pointer">
               <div>{job.services[0]}</div>
-              <div className="text-gray-500">Lat: {Number(job.location.coordinates[1])}, Lng: {Number(job.location.coordinates[0])}</div>
+              <div className="text-gray-500">Scheduled at {`${job.scheduledTime.hour}:${job.scheduledTime.minute}:${job.scheduledTime.period}`}</div>
             </div>
           ))
         )}
