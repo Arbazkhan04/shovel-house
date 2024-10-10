@@ -3,11 +3,15 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
+import QueryModal  from '../../sharedComp/Query';
 
 export default function ServiceProgress() {
 
     const [error,setError] = useState('');
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    
+    const [isOpenQuery, setIsOpenQuery] = useState(false)
+
 
     const location = useLocation();
     const { jobId, houseOwnerId, jobStatus, houseOwnerAction } = location.state || {};
@@ -40,6 +44,19 @@ export default function ServiceProgress() {
 
     };
 
+
+    const closeQuery = () => { 
+        setIsOpenQuery(false)
+    }
+
+    const saveQuery = (query) => {
+        console.log(query)
+    }
+
+    const openQuery = () => {
+        setIsOpenQuery(true)
+    }
+
     const handleGoBack = () => {
         navigate(-1); // Navigate back to the previous page
     };
@@ -56,11 +73,21 @@ export default function ServiceProgress() {
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain self-end w-6 aspect-square"
+                    onClick={openQuery}
                 />
                 <div className="self-start mt-5">
                     {houseOwnerAction === "canceled" ? "Request Cancelled" : "Service in Progress"}
                 </div>
             </div>
+
+            {/* Query Modal */}
+            {isOpenQuery && (
+                <QueryModal
+                    isOpen={openQuery}
+                    onClose={closeQuery }
+                    onSave={saveQuery}
+                />
+            )}
 
             {/* Conditional Rendering Based on houseOwnerAction */}
             {houseOwnerAction === "canceled" && (
