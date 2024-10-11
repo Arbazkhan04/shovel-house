@@ -44,7 +44,7 @@ export default function AppliedShovellers() {
 
   useEffect(() => {
     if( userInfo.user.shovellerId){
-      navigate('/HouseOwner/serviceProgress')
+      navigate('/houseowner/serviceProgress')
     }
     getApplicants(); // Fetch applicants on component mount
   }, [jobId]);
@@ -54,7 +54,7 @@ export default function AppliedShovellers() {
   };
 
   const handleMatchingShoveller = () => {
-    navigate('/houseOwner/isMatchShoveller');
+    navigate('/houseowner/isMatchShoveller');
   }
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -103,7 +103,7 @@ export default function AppliedShovellers() {
         )}
       </div>
       <p className="text-center text-gray-500 mt-4">
-        Once you review the applicants, you can reach out to them directly using their contact information.
+        Once you review the applicants, you can accept and cancel the candiate.
       </p>
     </div>
   );

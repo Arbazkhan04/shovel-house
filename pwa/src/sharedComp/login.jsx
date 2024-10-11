@@ -35,8 +35,11 @@ function Login() {
       //  else if (userInfo.user.role === 'houseOwner') {
       //   navigate('/houseowner/jobPostProgress');
       // }
+      else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'authorized' && userInfo.user.jobStatus === 'in-progress'){
+        navigate('/houseowner/serviceProgress');
+      }
       else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'authorized'){
-        navigate('/houseOwner/listOfShovellerApplied');
+        navigate('/houseowner/listOfShovellerApplied');
       }
       else if(userInfo.user.role === 'houseOwner' && userInfo.user.paymentStatus === 'pending'){
         navigate('/houseowner/stripeCheckout');

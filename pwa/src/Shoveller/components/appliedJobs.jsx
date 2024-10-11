@@ -35,9 +35,10 @@ export default function AppliedJobsList() {
     navigate("/shoveller/serviceProgressShoveller", {
       state: {
         jobId: job._id,
-        houseOwnerId: job.houseOwnerId,
+        houseOwnerId: job.houseOwnerId._id,
         jobStatus: job.jobStatus, //open, in-progress, completed, not-anymore
-        houseOwnerAction: houseOwnerAction //accepted, pending, canceled
+        houseOwnerAction: houseOwnerAction ,//accepted, pending, canceled
+        name: job.houseOwnerId.name
       },
     });
   };

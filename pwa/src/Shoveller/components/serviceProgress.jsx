@@ -14,8 +14,8 @@ export default function ServiceProgress() {
 
 
     const location = useLocation();
-    const { jobId, houseOwnerId, jobStatus, houseOwnerAction } = location.state || {};
-
+    const { jobId, houseOwnerId, jobStatus, houseOwnerAction,name } = location.state || {};
+    console.log(name)
     const [isChatOpen, setIsChatOpen] = useState(false);
 
     const openChat = () => setIsChatOpen(true);
@@ -120,7 +120,7 @@ export default function ServiceProgress() {
                         <div className="flex relative flex-col mt-12 w-full">
                             <div className="w-full text-2xl capitalize text-zinc-800">
                                 You Are Fulfilling <br />
-                                <span className="font-bold">JohnAndres's</span> Service Request
+                                <span className="font-bold">{name}</span> Service Request
                             </div>
                             <div className="self-center py-3.5 px-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg">
                                 Details
@@ -137,12 +137,12 @@ export default function ServiceProgress() {
                     {isChatOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
                     <div className="bg-white rounded-lg p-6 w-96 relative">
-                        <button
+                        {/* <button
                             onClick={closeChat}
                             className="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800"
                         >
                             &times;
-                        </button>
+                        </button> */}
 
 
                         <Chat
@@ -150,6 +150,8 @@ export default function ServiceProgress() {
                             userId={userId}
                             clientId={houseOwnerId}
                             providerId={providerId}
+                            name={name}
+                            closeChat={closeChat}
                         />
                     </div>
                 </div>
