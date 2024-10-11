@@ -1,13 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Chat from '../../sharedComp/chat';
 import { cancelJob } from '../../apiManager/houseOwner/matchShvoller';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
+import { getUserName } from "../../apiManager/shoveller/shovellerInfo";
+import Loadder from '../../sharedComp/loader'
+
 
 export default function ServiceProgress() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [shovellerName,setShovellerName] = useState('');
 
     const navigate = useNavigate();
     const { userInfo } = useSelector((state) => state.auth);
@@ -21,6 +25,24 @@ export default function ServiceProgress() {
     const userId = userInfo.user.houseOwnerId;
     const clientId = userInfo.user.houseOwnerId;
     const providerId = userInfo.user.shovellerId || null;
+
+    useEffect(() => {
+        // if (!userId) return; // Avoid running the effect if userId is not defined
+        setLoading(true);
+        (async () => {
+            try {
+                const res = await getUserName(userId);
+                console.log(res);
+                setShovellerName(res.userName);
+            } catch (error) {
+                setError(error);
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [userId]);
+    
     
     const handleServiceFinished = async() => {
         try {
@@ -57,7 +79,7 @@ export default function ServiceProgress() {
     };
 
     if(error) return <div>{error}</div>
-    if(loading) return <div>Loading...</div>
+    if(loading) return <div> <Loadder /> </div>
 
     return (
         <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
@@ -86,7 +108,7 @@ export default function ServiceProgress() {
                 />
                 <div className="flex relative flex-col mt-8 w-full">
                     <div className="w-full text-2xl capitalize text-zinc-800">
-                        <span className="">Huzaifa</span> is Fulfilling
+                        <span className="">{shovellerName}</span> is Fulfilling
                         <br /> Your Service Request
                     </div>
                     <div className="flex justify-around mt-40">
@@ -120,18 +142,20 @@ export default function ServiceProgress() {
             {isChatOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
                     <div className="bg-white rounded-lg p-6 w-96 relative">
-                        <button
+                        {/* <button
                             onClick={closeChat}
                             className="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800"
                         >
                             &times;
-                        </button>
+                        </button> */}
 
                         <Chat
                             jobId={jobId}
                             userId={userId}
                             clientId={clientId}
                             providerId={providerId}
+                            name={shovellerName}
+                            closeChat={closeChat}
                         />
                     </div>
                 </div>
