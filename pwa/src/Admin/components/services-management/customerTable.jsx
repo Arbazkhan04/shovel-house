@@ -1,82 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
 import { FaSearch, FaStar } from 'react-icons/fa'; // Import icons
-
-const Customers = [
-    { name: "Jane Cooper", address: "56/11-A", phone: "(225) 555-0118", email: "jane@microsoft.com", signUpDate: "12/04/2024", rating: 4, service: "Consulting", price: "$100", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Alice Johnson", address: "24/C-12", phone: "(234) 555-0123", email: "alice@gmail.com", signUpDate: "01/15/2024", rating: 5, service: "Marketing", price: "$200", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Floyd Miles", address: "89/B-10", phone: "(205) 555-0100", email: "floyd@yahoo.com", signUpDate: "08/04/2024", rating: 3, service: "Design", price: "$150", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Bob Brown", address: "45/D-23", phone: "(243) 555-0456", email: "bob@hotmail.com", signUpDate: "05/10/2024", rating: 2, service: "Development", price: "$300", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "Charlie Davis", address: "78/E-34", phone: "(252) 555-0789", email: "charlie@yahoo.com", signUpDate: "09/22/2024", rating: 1, service: "Consulting", price: "$50", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Daisy Evans", address: "91/F-45", phone: "(261) 555-0101", email: "daisy@gmail.com", signUpDate: "03/30/2024", rating: 4, service: "Design", price: "$120", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Edward Harris", address: "32/G-56", phone: "(270) 555-0122", email: "edward@outlook.com", signUpDate: "06/15/2024", rating: 5, service: "Marketing", price: "$250", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Fiona Green", address: "15/H-67", phone: "(279) 555-0345", email: "fiona@hotmail.com", signUpDate: "07/22/2024", rating: 3, service: "Development", price: "$350", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "George Hill", address: "62/I-78", phone: "(288) 555-0567", email: "george@gmail.com", signUpDate: "11/11/2024", rating: 4, service: "Consulting", price: "$90", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Hannah White", address: "19/J-89", phone: "(297) 555-0780", email: "hannah@yahoo.com", signUpDate: "04/04/2024", rating: 5, service: "Design", price: "$180", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Isaac Black", address: "76/K-90", phone: "(306) 555-0901", email: "isaac@gmail.com", signUpDate: "02/02/2024", rating: 2, service: "Marketing", price: "$130", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Julia Martin", address: "38/L-01", phone: "(315) 555-1123", email: "julia@hotmail.com", signUpDate: "10/10/2024", rating: 3, service: "Development", price: "$200", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "Kevin Lee", address: "20/M-12", phone: "(324) 555-1345", email: "kevin@gmail.com", signUpDate: "12/15/2024", rating: 1, service: "Consulting", price: "$75", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Laura King", address: "44/N-23", phone: "(333) 555-1567", email: "laura@yahoo.com", signUpDate: "08/20/2024", rating: 4, service: "Design", price: "$220", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Michael Wright", address: "57/O-34", phone: "(342) 555-1789", email: "michael@hotmail.com", signUpDate: "09/30/2024", rating: 3, service: "Marketing", price: "$160", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Nina Taylor", address: "30/P-45", phone: "(351) 555-1900", email: "nina@gmail.com", signUpDate: "01/22/2024", rating: 5, service: "Development", price: "$400", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "Oliver Scott", address: "82/Q-56", phone: "(360) 555-2123", email: "oliver@yahoo.com", signUpDate: "04/14/2024", rating: 2, service: "Consulting", price: "$110", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Paula Young", address: "49/R-67", phone: "(369) 555-2345", email: "paula@gmail.com", signUpDate: "05/05/2024", rating: 4, service: "Design", price: "$140", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Quentin Adams", address: "61/S-78", phone: "(378) 555-2567", email: "quentin@hotmail.com", signUpDate: "06/25/2024", rating: 3, service: "Marketing", price: "$190", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Rachel Brown", address: "29/T-89", phone: "(387) 555-2789", email: "rachel@gmail.com", signUpDate: "03/01/2024", rating: 5, service: "Development", price: "$270", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "Steven Miller", address: "12/U-90", phone: "(396) 555-2901", email: "steven@yahoo.com", signUpDate: "07/11/2024", rating: 1, service: "Consulting", price: "$60", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" },
-    { name: "Tina Wilson", address: "90/V-01", phone: "(405) 555-3111", email: "tina@hotmail.com", signUpDate: "11/29/2024", rating: 4, service: "Design", price: "$230", chat: "Canceled", payment: "Manual Capture", status: "Completed", shovelStatus: "Completed" },
-    { name: "Victor James", address: "33/W-12", phone: "(414) 555-3333", email: "victor@gmail.com", signUpDate: "02/13/2024", rating: 3, service: "Marketing", price: "$180", chat: "Canceled", payment: "Manual Capture", status: "In-progress", shovelStatus: "In-progress" },
-    { name: "Wendy Clark", address: "71/X-23", phone: "(423) 555-3555", email: "wendy@yahoo.com", signUpDate: "12/18/2024", rating: 5, service: "Development", price: "$320", chat: "Canceled", payment: "Manual Capture", status: "Canceled", shovelStatus: "Canceled" },
-    { name: "Xavier Davis", address: "55/Y-34", phone: "(432) 555-3777", email: "xavier@hotmail.com", signUpDate: "09/05/2024", rating: 2, service: "Consulting", price: "$80", chat: "Canceled", payment: "Manual Capture", status: "Pending", shovelStatus: "Pending" }
-];
+import { allJobsInfo } from '../../../apiManager/admin/JobsManagement.js';
+import Loader from '../../../sharedComp/loader.jsx'
 
 function CustomerTable() {
-    const [customers, setCustomers] = useState(Customers);
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [dateSortBy, setDateSortBy] = useState('Newest First');
+
+    useEffect(() => {
+        const getJobsData = async () => {
+            try {
+                setLoading(true);
+                const res = await allJobsInfo();
+                console.log(res)
+                setJobs(res);
+            } catch (error) {
+                setError(error.message || "An error occurred while fetching data");
+            } finally {
+                setLoading(false);
+            }
+        }
+        getJobsData();
+    }, []);
 
     const columns = React.useMemo(
         () => [
             {
                 Header: 'User Name',
-                accessor: 'name',
-                Cell: ({ row }) => {
-                    const customerRating = row.original.rating;
-                    return (
-                        <div className="flex flex-col items-left">
-                            <span className="text-left">{row.original.name}</span>
-                            <div className="flex mt-1">
-                                {[...Array(5)].map((_, index) => (
-                                    <FaStar
-                                        key={index}
-                                        className={`w-5 h-5 ${index < customerRating ? 'text-yellow-400' : 'text-gray-300'}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    );
-                },
+                accessor: 'userName',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.userDetails.userName}
+                    </div>
+                ),
             },
-            { Header: 'Address', accessor: 'address' },
-            { Header: 'Phone Number', accessor: 'phone' },
-            { Header: 'Email', accessor: 'email' },
-            { Header: 'Sign Up Date', accessor: 'signUpDate' },
+            {
+                Header: 'Address', accessor: 'address',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.userDetails.address}
+                    </div>
+                ),
+            },
+            {
+                Header: 'Phone Number', accessor: 'phone',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.userDetails.phone}
+                    </div>
+                ),
+            },
+            {
+                Header: 'Email', accessor: 'email',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.userDetails.email}
+                    </div>
+                ),
+            },
+            {
+                Header: 'Sign-Up Date', accessor: 'signUpDate',
+                Cell: ({ row }) => (
+                    <div>
+                        {new Date(row.original.userDetails.dateJoined).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </div>
+                ),
+            },
 
             {
                 Header: 'House Owner Job Status',
                 accessor: 'status',
                 Cell: ({ row }) => {
                     const statusArray = ['Pending', 'Completed', 'In-progress', 'Canceled'];
-                    const currentStatus = row.original.status;
+                    const currentStatus = row.original.houseOwnerAction;
                     const currentIndex = statusArray.indexOf(currentStatus);
                     const nextStatus = statusArray[(currentIndex + 1) % statusArray.length];
 
                     return (
                         <button
-                            className={`px-3 py-1 rounded cursor-pointer ${currentStatus === 'Pending' ? 'bg-yellow-500' : currentStatus === 'Completed' ? 'bg-green-500' : currentStatus === 'In-progress' ? 'bg-blue-500' : 'bg-red-500'} text-white`}
+                            className={`px-3 py-1 rounded cursor-pointer bg-zinc-900 text-white`}
                             onClick={() => {
-                                const updatedCustomers = [...customers];
+                                const updatedCustomers = [...jobs];
                                 updatedCustomers[row.index].status = nextStatus;
-                                setCustomers(updatedCustomers);
+                                setJobs(updatedCustomers);
                             }}
                         >
                             {currentStatus}
@@ -90,17 +105,17 @@ function CustomerTable() {
                 accessor: 'shovelStatus',
                 Cell: ({ row }) => {
                     const statusArray = ['Pending', 'Completed', 'In-progress', 'Canceled'];
-                    const currentShovelStatus = row.original.shovelStatus;
+                    const currentShovelStatus = row.original.shovelerAction;
                     const currentShovelIndex = statusArray.indexOf(currentShovelStatus);
                     const nextShovelStatus = statusArray[(currentShovelIndex + 1) % statusArray.length];
 
                     return (
                         <button
-                            className={`px-3 py-1 rounded cursor-pointer ${currentShovelStatus === 'Pending' ? 'bg-yellow-500' : currentShovelStatus === 'Completed' ? 'bg-green-500' : currentShovelStatus === 'In-progress' ? 'bg-blue-500' : 'bg-red-500'} text-white`}
+                            className={`px-3 py-1 rounded cursor-pointer bg-zinc-900 text-white`}
                             onClick={() => {
-                                const updatedCustomers = [...customers];
+                                const updatedCustomers = [...jobs];
                                 updatedCustomers[row.index].shovelStatus = nextShovelStatus;
-                                setCustomers(updatedCustomers);
+                                setJobs(updatedCustomers);
                             }}
                         >
                             {currentShovelStatus}
@@ -109,26 +124,59 @@ function CustomerTable() {
                 },
             },
 
-            { Header: 'Type of Service', accessor: 'service' },
-            { Header: 'Price Offered', accessor: 'price' },
-
             {
-                Header: 'Chat',
-                accessor: 'chat',
+                Header: 'Type of Service', accessor: 'service',
                 Cell: ({ row }) => (
-                    <button className="bg-red-500 text-white p-1 rounded-md">{row.original.chat}</button>
+                    <div>
+                        {row.original.jobDetails.services[0]}
+                    </div>
+                ),
+            },
+            {
+                Header: 'Price Offered', accessor: 'price',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.jobDetails.paymentInfo.amount}
+                    </div>
                 ),
             },
             {
                 Header: 'Payment Capture',
                 accessor: 'payment',
                 Cell: ({ row }) => (
-                    <button className="bg-black text-white px-1 py-1 rounded-md">{row.original.payment}</button>
+                    <button className="bg-black text-white px-1 py-1 rounded-md">Capture</button>
                 ),
             },
         ],
-        [customers]
+        [jobs]
     );
+
+    const data = React.useMemo(() => {
+        return jobs
+            .filter((job) =>
+                job.userDetails.userName.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .sort((a, b) => {
+                // Convert dates to JavaScript Date objects (if not already)
+                const dateA = new Date(a.userDetails.dateJoined);
+                const dateB = new Date(b.userDetails.dateJoined);
+
+                // Handle invalid date parsing
+                if (isNaN(dateA) || isNaN(dateB)) {
+                    return 0; // If either date is invalid, keep the order unchanged
+                }
+
+                // Sort by "Newest First" or "Oldest First"
+                if (dateSortBy === 'Newest First') {
+                    return dateB - dateA; // Newest dates first
+                } else if (dateSortBy === 'Oldest First') {
+                    return dateA - dateB; // Oldest dates first
+                } else {
+                    return 0; // If dateSortBy is not valid, don't change order
+                }
+            });
+    }, [jobs, searchTerm, dateSortBy]);
+
 
     const {
         getTableProps,
@@ -148,7 +196,7 @@ function CustomerTable() {
     } = useTable(
         {
             columns,
-            data: customers,
+            data: data,
             initialState: { pageIndex: 0, pageSize: 8 },
         },
         useSortBy,
@@ -159,13 +207,25 @@ function CustomerTable() {
         gotoPage(event.selected);
     };
 
+    if (!jobs.length) {
+        return <p>No jobs available</p>;
+    }
+
+    if (loading) {
+        return <Loader />;
+    }
+
+    if (error) {
+        return <p className="text-red-500">{error}</p>;
+    }
+
     return (
         <section className="flex flex-col self-stretch py-9 mt-10 w-full bg-white rounded-[30px] shadow-[0px_10px_60px_rgba(226,236,249,0.5)] max-md:max-w-full">
             <div className="flex flex-col pr-0.5 pl-10 w-full max-md:pl-5 max-md:max-w-full">
                 <div className="flex flex-wrap gap-24 justify-between max-w-full w-[914px]">
                     <div className="flex flex-col">
-                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Customers</h2>
-                        <div className="self-start mt-2 text-sm tracking-normal text-zinc-800">Active Members</div>
+                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Jobs</h2>
+                        <div className="self-start mt-2 text-sm tracking-normal text-zinc-800">Active Jobs</div>
                     </div>
                     <div className="flex flex-wrap flex-auto gap-3.5 my-auto text-xs tracking-normal text-zinc-500 max-md:max-w-full">
                         <form className="flex gap-2 px-2 py-2 text-gray-400 whitespace-nowrap rounded-xl bg-neutral-100">
@@ -176,10 +236,12 @@ function CustomerTable() {
                                 id="tableSearch"
                                 placeholder="Search"
                                 className="bg-transparent border-none focus:outline-none"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </form>
 
-                        {/* Status Sorting Field */}
+                        {/* Status Sorting Field }
                         <div className="flex gap-3.5 px-3.5 py-2.5 rounded-xl bg-neutral-100">
                             <label htmlFor="statusSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
                             <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
@@ -190,12 +252,15 @@ function CustomerTable() {
                                 <option value="in-progress">In-progress</option>
                             </select>
                         </div>
+                        */}
 
                         {/* SignUp Date Sorting Field */}
                         <div className="flex gap-5 py-2.5 pl-4 rounded-xl bg-neutral-100">
                             <label htmlFor="signupDateSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
-                            <select id="signupDateSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
-                                <option value="signupDate">SignUp Date</option>
+                            <select id="signupDateSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1"
+                                value={dateSortBy}
+                                onChange={(e) => setDateSortBy(e.target.value)}
+                            >
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
                             </select>
