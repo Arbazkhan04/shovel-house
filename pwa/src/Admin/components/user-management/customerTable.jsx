@@ -1,45 +1,38 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FaStar, FaSearch } from 'react-icons/fa';
 import { useTable, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
+import Loader from '../../../sharedComp/loader.jsx'
+import { allShovelersInfo, updateShovelerStatus } from '../../../apiManager/admin/ShovelersManagement.js';
 import "./UserManagement.css"
 
 
 function CustomerTable() {
-    const [sortBy, setSortBy] = useState('Status');
+    const [sortBy, setSortBy] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectedStatus, setSelectedStatus] = useState({});
     const [currentPage, setCurrentPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [shovelers, setShovelers] = useState([]);
+    const [error, setError] = useState('');
     const rowsPerPage = 8;
 
-    const customers = [
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Jane Cooper', address: '56/11-A', phone: '(225) 555-0118', email: 'jane@microsoft.com', signUpDate: '12/4/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 2, receivedPayments: '$500' },
-        { name: 'Floyd Miles', address: '56/11-A', phone: '(205) 555-0100', email: 'floyd@yahoo.com', signUpDate: '08/04/2024', rating: 3, avgPrice: '$180', servicesPrice: '$120', cancelledServices: 1, receivedPayments: '$400' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Ronald Richards', address: '56/11-A', phone: '(302) 555-0107', email: 'ronald@adobe.com', signUpDate: '20/05/2024', rating: 5, avgPrice: '$220', servicesPrice: '$160', cancelledServices: 0, receivedPayments: '$600' },
-        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
-        { name: 'Marvin McKinney', address: '56/11-A', phone: '(252) 555-0126', email: 'marvin@tesla.com', signUpDate: '28/05/2024', rating: 4, avgPrice: '$210', servicesPrice: '$140', cancelledServices: 1, receivedPayments: '$450' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Jerome Bell', address: '56/11-A', phone: '(629) 555-0129', email: 'jerome@google.com', signUpDate: '09/06/2024', rating: 4, avgPrice: '$230', servicesPrice: '$170', cancelledServices: 0, receivedPayments: '$700' },
-        { name: 'Kathryn Murphy', address: '56/11-A', phone: '(406) 555-0120', email: 'kathryn@microsoft.com', signUpDate: '17/06/2024', rating: 3, avgPrice: '$190', servicesPrice: '$130', cancelledServices: 2, receivedPayments: '$300' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Jacob Jones', address: '56/11-A', phone: '(208) 555-0112', email: 'jacob@yahoo.com', signUpDate: '20/07/2024', rating: 5, avgPrice: '$240', servicesPrice: '$180', cancelledServices: 1, receivedPayments: '$550' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        { name: 'Kristin Watson', address: '56/11-A', phone: '(704) 555-0127', email: 'kristin@facebook.com', signUpDate: '29/07/2024', rating: 4, avgPrice: '$200', servicesPrice: '$150', cancelledServices: 0, receivedPayments: '$400' },
-        // Add more data as needed...
-    ];
+    useEffect(() => {
+        const getShovelersData = async () => {
+            try {
+                setLoading(true);
+                const res = await allShovelersInfo();
+                console.log(res)
+                setShovelers(res);
+            } catch (error) {
+                setError(error.message || "An error occurred while fetching data");
+            } finally {
+                setLoading(false);
+            }
+        }
+        getShovelersData();
+    }, []);
+
 
     const handlePageClick = ({ selected }) => {
         setCurrentPage(selected);
@@ -63,36 +56,61 @@ function CustomerTable() {
         () => [
             {
                 Header: 'User Name',
-                accessor: 'name',
+                accessor: 'userName',
                 Cell: ({ row }) => (
                     <div>
-                        {row.original.name}
-                        {renderStars(row.original.rating)}
+                        {row.original.shovelerDetails.userName}
+                        {renderStars(row.original.statistics.averageRating)}
                     </div>
                 ),
             },
             {
                 Header: 'Address',
                 accessor: 'address',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.shovelerDetails.address}
+                    </div>
+                ),
             },
             {
                 Header: 'Phone Number',
                 accessor: 'phone',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.shovelerDetails.phone}
+                    </div>
+                ),
             },
             {
                 Header: 'Email',
                 accessor: 'email',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.shovelerDetails.email}
+                    </div>
+                ),
             },
             {
                 Header: 'Sign Up Date',
-                accessor: 'signUpDate',
+                accessor: 'dateJoined',
+                Cell: ({ row }) => (
+                    <div>
+                        {new Date(row.original.shovelerDetails.dateJoined).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+
+                    </div>
+                ),
             },
             {
                 Header: 'Status',
                 accessor: 'status',
                 Cell: ({ row }) => {
                     // Determine the current status
-                    const currentStatus = selectedStatus[row.index] || row.original.status;
+                    const currentStatus = selectedStatus[row.index] || row.original.shovelerDetails.status;
 
                     // Define the className based on the status
                     const className = `px-2 py-1 rounded ${currentStatus === 'Suspend' ? 'bg-yellow-500 text-white'
@@ -107,35 +125,69 @@ function CustomerTable() {
                             value={currentStatus} // Use the current status as the value
                             onChange={(e) => handleStatusChange(row.index, e.target.value)} // Update the status on change
                         >
-                            <option value="Activate">Activate</option>
-                            <option value="Deactivate">Deactivate</option>
-                            <option value="Suspend">Suspend</option>
+                            <option value="active">Activate</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="suspend">Suspend</option>
                         </select>
                     );
                 },
             },
             {
                 Header: 'Average Price',
-                accessor: 'avgPrice',
+                accessor: 'averagePrice',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.statistics.averagePrice ? parseInt(row.original.statistics.averagePrice) : 0}
+                    </div>
+                ),
             },
             {
-                Header: 'Services Price',
-                accessor: 'servicesPrice',
+                Header: 'Completed Jobs',
+                accessor: 'completedJobs',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.statistics.completedJobs}
+                    </div>
+                ),
             },
             {
                 Header: 'Cancelled Services',
-                accessor: 'cancelledServices',
+                accessor: 'canceledJobs',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.statistics.canceledJobs}
+                    </div>
+                ),
             },
             {
                 Header: 'Received Payments',
-                accessor: 'receivedPayments',
+                accessor: 'totalPayments',
+                Cell: ({ row }) => (
+                    <div>
+                        {row.original.statistics.totalPayments}
+                    </div>
+                ),
             },
         ],
         [selectedStatus]
     );
 
-    const data = useMemo(() => customers, []);
+    const data = useMemo(() => {
+        return shovelers
+            .filter((shoveler) =>
+                shoveler.shovelerDetails.userName.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .filter((shoveler) => {
+                // Check if "All" is selected, if yes, don't apply the status filter
+                if (sortBy.toLowerCase() === 'all') {
+                    return true; // Include all shovelers
+                }
+                return shoveler.shovelerDetails.status.toLowerCase() === sortBy.toLowerCase();
+            });
+    }, [shovelers, searchTerm, sortBy]);
+    
 
+    
     const {
         getTableProps,
         getTableBodyProps,
@@ -149,12 +201,34 @@ function CustomerTable() {
         (currentPage + 1) * rowsPerPage
     );
 
-    const handleStatusChange = (index, value) => {
+    const handleStatusChange = async (index, value) => {
+        // Update the selected status in the state
         setSelectedStatus((prevStatus) => ({
             ...prevStatus,
             [index]: value,
         }));
+
+        // Ensure that the shovelerDetails exists before making the API call
+        const shoveler = shovelers[index];
+        if (shoveler && shoveler.shovelerDetails) {
+            await updateShovelerStatus(shoveler.shovelerDetails._id, value);
+        } else {
+            console.error(`Shoveler details are missing or undefined for index ${index}`);
+        }
     };
+
+
+    if (!shovelers.length) {
+        return <p>No shovelers available</p>;
+    }
+
+    if (loading) {
+        return <Loader />;
+    }
+
+    if (error) {
+        return <p className="text-red-500">{error}</p>;
+    }
 
     return (
 
@@ -162,7 +236,7 @@ function CustomerTable() {
         <div className="p-6">
             <div className="flex justify-between items-center my-10 gap-x-28">
                 <div>
-                    <h2 className="text-xl font-bold">All Customers</h2>
+                    <h2 className="text-xl font-bold">All Shovelers</h2>
                     <p className="text-gray-500">Active Members</p>
                 </div>
                 <div className="flex gap-4 w-[80%]">
@@ -173,6 +247,8 @@ function CustomerTable() {
                             id="gsearch"
                             name="gsearch"
                             className="w-full border bg-gray-100 border-gray-300 rounded-md px-10 py-1"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
                     </div>
@@ -182,10 +258,10 @@ function CustomerTable() {
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <option value="Pending">Pending</option>
-                        <option value="Completed">Activate</option>
-                        <option value="Canceled">Deactivate</option>
-                        <option value="In-progress">Suspend</option>
+                        <option value="all">All</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspend">Suspend</option>
                         {/* Add more sorting options as needed */}
                     </select>
                 </div>
