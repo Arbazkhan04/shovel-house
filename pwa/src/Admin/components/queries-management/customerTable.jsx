@@ -1,110 +1,132 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
 import { FaSearch, FaStar } from 'react-icons/fa'; // Import icons
-
-const Customers = [
-    { name: "Jane Cooper", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "John Smith" },
-    { name: "Alice Johnson", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Paul Green" },
-    { name: "Floyd Miles", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Lisa White" },
-    { name: "Bob Brown", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Mike Black" },
-    { name: "Charlie Davis", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Nancy Blue" },
-    { name: "Daisy Evans", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Tom Yellow" },
-    { name: "Edward Harris", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Sara Orange" },
-    { name: "Fiona Green", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Jake Red" },
-    { name: "George Hill", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Ella Purple" },
-    { name: "Hannah White", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Chris Brown" },
-    { name: "Isaac Black", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Tina Pink" },
-    { name: "Julia Martin", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Greg Grey" },
-    { name: "Kevin Lee", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Laura Silver" },
-    { name: "Laura King", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Sam Gold" },
-    { name: "Michael Wright", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Amy Copper" },
-    { name: "Nina Taylor", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Randy Brass" },
-    { name: "Oliver Scott", query: "Payment Stuck", status: "Completed", rating: 3, shoveler: "Betty Iron" },
-    { name: "Paula Young", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Nina Steel" },
-    { name: "Quentin Adams", query: "Service Not Completed", status: "Completed", rating: 3, shoveler: "Larry Lead" },
-    { name: "Rachel Brown", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Zoe Zinc" },
-    { name: "Steven Miller", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Frank Nickel" },
-    { name: "Tina Wilson", query: "Payment Stuck", status: "Completed", rating: 2, shoveler: "Clara Tin" },
-    { name: "Victor James", query: "Service Not Completed", status: "Completed", rating: 4, shoveler: "Daisy Glass" },
-    { name: "Wendy Clark", query: "Payment Stuck", status: "Completed", rating: 5, shoveler: "Jake Wood" },
-    { name: "Yvonne Harris", query: "Service Not Completed", status: "Completed", rating: 3, shoveler: "Kate Fiber" },
-    { name: "Zachary Lee", query: "Payment Stuck", status: "Completed", rating: 4, shoveler: "Mike Fabric" }
-];
-
+import { allQueries, sendQueryResponse } from '../../../apiManager/admin/QueriesManagement.js';
+import Loader from '../../../sharedComp/loader.jsx'
+import Modal from './queryComponent.jsx'
+import ReplyModal from './replyComponent.jsx'
 
 function CustomerTable() {
-    const [customers, setCustomers] = useState(Customers);
+    const [queries, setQueries] = useState([]);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState('');
+    const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+    const [selectedQueryId, setSelectedQueryId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+
+    useEffect(() => {
+        const getQueriesData = async () => {
+            try {
+                setLoading(true);
+                const res = await allQueries();
+                console.log(res)
+                setQueries(res);
+            } catch (error) {
+                setError(error.message || "An error occurred while fetching data");
+            } finally {
+                setLoading(false);
+            }
+        }
+        getQueriesData();
+    }, []);
+
+    const handleTitleClick = (content, queryId) => {
+        setModalContent(content);
+        setSelectedQueryId(queryId);
+        setIsModalOpen(true);
+    };
+
+    const handleReplyClick = () => {
+        setIsModalOpen(false);
+        setIsReplyModalOpen(true);
+    };
+
+    const handleSubmitReply = async (replyText) => {
+        if (!replyText.trim()) {
+            alert("Reply can't be empty");
+            return;
+        }
+
+        // Call your function to send the reply to the backend
+        await sendQueryResponse(selectedQueryId, replyText);
+
+        // Close the reply modal after submitting
+        setIsReplyModalOpen(false);
+        alert('Reply submitted successfully');
+    };
 
     const columns = React.useMemo(
         () => [
             {
                 Header: 'User Name',
                 accessor: 'name',
-                Cell: ({ row }) => {
-                    const customerRating = row.original.rating;
-                    return (
-                        <div className="flex flex-col items-left">
-                            <span className="text-left">{row.original.name}</span>
-                            <div className="flex mt-1">
-                                {[...Array(5)].map((_, index) => (
-                                    <FaStar
-                                        key={index}
-                                        className={`w-5 h-5 ${index < customerRating ? 'text-yellow-400' : 'text-gray-300'}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    );
-                },
+                Cell: ({ row }) => (
+                    <span className="text-left">{row.original.name}</span>
+                ),
+
             },
             {
-                Header: 'Query',
-                accessor: 'query',
+                Header: 'Title',
+                accessor: 'title',
                 Cell: ({ row }) => (
-                    <span className="text-left">{row.original.query}</span>
+                    <span className="text-left"
+                    onClick={() => handleTitleClick(row.original.query.query, row.original.query._id)}
+                    >
+                        {row.original.query.title}
+                    </span>
                 ),
             },
             {
                 Header: 'Status',
                 accessor: 'status',
                 Cell: ({ row }) => {
-                    const currentStatus = row.original.status;
+                    const currentStatus = row.original.query.status;
 
                     const handleStatusChange = (newStatus) => {
-                        const updatedCustomers = [...customers];
+                        const updatedCustomers = [...queries];
                         updatedCustomers[row.index].status = newStatus;
-                        setCustomers(updatedCustomers);
+                        setQueries(updatedCustomers);
                     };
 
                     return (
                         <div className="flex space-x-2">
                             <button
-                                onClick={() => handleStatusChange('Completed')}
-                                className={`px-2 py-1 rounded ${currentStatus === 'Completed' ? 'bg-black text-white' : 'bg-gray-300 text-black'}`}
+                                className={`px-2 py-1 rounded bg-zinc-900 text-white`}
                             >
-                                Completed
-                            </button>
-                            <button
-                                onClick={() => handleStatusChange('Pending')}
-                                className={`px-2 py-1 rounded ${currentStatus === 'Pending' ? 'bg-black text-white' : 'bg-gray-300 text-black'}`}
-                            >
-                                Pending
+                                {row.original.query.status}
                             </button>
                         </div>
                     );
                 },
             },
             {
-                Header: 'Shoveler',
-                accessor: 'shoveler',
+                Header: 'Role',
+                accessor: 'role',
                 Cell: ({ row }) => (
-                    <span className="text-left">{row.original.shoveler}</span>
+                    <span className="text-left">{row.original.role}</span>
                 ),
             },
+            {
+                Header: 'Enable Cancel',
+                accessor: 'enable cancel',
+                Cell: ({ row }) => (
+                    <button className="bg-black text-white px-1 py-1 rounded-md">Enable</button>
+                ),
+            }
         ],
-        [customers] // Include customers in dependencies to re-render on state change
+        [queries] // Include customers in dependencies to re-render on state change
     );
+
+    const data = React.useMemo(() => {
+        return queries
+            .filter((query) =>
+                query.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+    }, [queries, searchTerm]);
 
     const {
         getTableProps,
@@ -124,7 +146,7 @@ function CustomerTable() {
     } = useTable(
         {
             columns,
-            data: customers,
+            data: data,
             initialState: { pageIndex: 0, pageSize: 8 },
         },
         useSortBy,
@@ -135,13 +157,24 @@ function CustomerTable() {
         gotoPage(event.selected);
     };
 
+    if (!queries.length) {
+        return <p>No queries available</p>;
+    }
+
+    if (loading) {
+        return <Loader />;
+    }
+
+    if (error) {
+        return <p className="text-red-500">{error}</p>;
+    }
+
     return (
         <section className="flex flex-col self-stretch py-9 mt-10 w-full bg-white rounded-[30px] shadow-[0px_10px_60px_rgba(226,236,249,0.5)] max-md:max-w-full">
             <div className="flex flex-col pr-0.5 pl-10 w-full max-md:pl-5 max-md:max-w-full">
                 <div className="flex flex-wrap gap-24 justify-between max-w-full w-[914px]">
                     <div className="flex flex-col">
-                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Customers</h2>
-                        <div className="self-start mt-2 text-sm tracking-normal text-zinc-800">Active Members</div>
+                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Queries</h2>
                     </div>
                     <div className="flex flex-wrap flex-auto gap-5 my-auto text-xs tracking-normal text-zinc-500 max-md:max-w-full">
                         <form className=" flex gap-2 px-2 py-2 text-gray-400 whitespace-nowrap rounded-xl bg-neutral-100 ">
@@ -152,6 +185,8 @@ function CustomerTable() {
                                 id="tableSearch"
                                 placeholder="Search"
                                 className="bg-transparent border-none focus:outline-none "
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </form>
 
@@ -160,10 +195,8 @@ function CustomerTable() {
                             <label htmlFor="statusSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
                             <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
                                 <option value="status">Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="completed">Completed</option>
-                                <option value="canceled">Canceled</option>
-                                <option value="in-progress">In-progress</option>
+                                <option value="completed">Closed</option>
+                                <option value="canceled">Open</option>
                             </select>
                         </div>
 
@@ -223,6 +256,21 @@ function CustomerTable() {
                     </table>
                 </div>
             </div>
+
+            {/* Modal component */}
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                content={modalContent}
+                onReplyClick={handleReplyClick}
+            />
+
+            {/* Modal for replying to the query */}
+            <ReplyModal
+                isOpen={isReplyModalOpen}
+                onClose={() => setIsReplyModalOpen(false)}
+                onSubmitReply={handleSubmitReply}
+            />
 
             {/* Pagination */}
             <ReactPaginate className='pagination-container flex justify-end me-32 mt-10 gap-x-5'
