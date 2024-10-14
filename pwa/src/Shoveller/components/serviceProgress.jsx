@@ -3,18 +3,19 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import Chat from '../../sharedComp/chat';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
-import QueryModal  from '../../sharedComp/Query';
+import QueryModal from '../../sharedComp/Query';
+
 
 export default function ServiceProgress() {
 
-    const [error,setError] = useState('');
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     const [isOpenQuery, setIsOpenQuery] = useState(false)
 
 
     const location = useLocation();
-    const { jobId, houseOwnerId, jobStatus, houseOwnerAction,name } = location.state || {};
+    const { jobId, houseOwnerId, jobStatus, houseOwnerAction, name, payoutStatus, shovellerAction } = location.state || {};
     console.log(name)
     const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -31,21 +32,28 @@ export default function ServiceProgress() {
         setLoading(true);
         try {
             const res = await jobCompleted(jobId, providerId, "shoveller");
-            
-                console.log(res)
-                // setLoading(false);
-                navigate('/shoveller/serviceFinishedByShoveller');
+
+            console.log(res)
+            // setLoading(false);
+            navigate('/shoveller/serviceFinishedByShoveller',{
+                state:{
+                    Id: jobId,
+                    paymentOffering: res.job.paymentInfo.amount/100
+                }
+            });
         } catch (error) {
             console.log(error)
             setError(error.response.data.error);
-        }finally{
+        } finally {
             setLoading(false);
         }
 
     };
 
+    
 
-    const closeQuery = () => { 
+
+    const closeQuery = () => {
         setIsOpenQuery(false)
     }
 
@@ -61,8 +69,8 @@ export default function ServiceProgress() {
         navigate(-1); // Navigate back to the previous page
     };
 
-    if(error) return <div>{error}</div>
-    if(loading) return <div>Loading...</div>
+    if (error) return <div>{error}</div>
+    if (loading) return <div>Loading...</div>
 
     return (
         <div className="flex flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
@@ -84,7 +92,7 @@ export default function ServiceProgress() {
             {isOpenQuery && (
                 <QueryModal
                     isOpen={openQuery}
-                    onClose={closeQuery }
+                    onClose={closeQuery}
                     onSave={saveQuery}
                 />
             )}
@@ -104,7 +112,7 @@ export default function ServiceProgress() {
                 </div>
             )}
 
-            {houseOwnerAction === "accepted" && (
+            {houseOwnerAction === "accepted" && shovellerAction !== 'completed' && (
                 <>
                     <div className="flex relative flex-col px-14 pt-40 pb-6 mt-7 w-full text-center rounded-xl aspect-[0.804]">
                         <img
@@ -135,9 +143,9 @@ export default function ServiceProgress() {
                     </button>
                     {/* chat modal */}
                     {isChatOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
-                    <div className="bg-white rounded-lg p-6 w-96 relative">
-                        {/* <button
+                        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
+                            <div className="bg-white rounded-lg p-6 w-96 relative">
+                                {/* <button
                             onClick={closeChat}
                             className="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-800"
                         >
@@ -145,17 +153,17 @@ export default function ServiceProgress() {
                         </button> */}
 
 
-                        <Chat
-                            jobId={jobId}
-                            userId={userId}
-                            clientId={houseOwnerId}
-                            providerId={providerId}
-                            name={name}
-                            closeChat={closeChat}
-                        />
-                    </div>
-                </div>
-            )}
+                                <Chat
+                                    jobId={jobId}
+                                    userId={userId}
+                                    clientId={houseOwnerId}
+                                    providerId={providerId}
+                                    name={name}
+                                    closeChat={closeChat}
+                                />
+                            </div>
+                        </div>
+                    )}
 
                 </>
             )}
@@ -167,6 +175,28 @@ export default function ServiceProgress() {
                     </div>
                 </div>
             )}
+
+
+            {payoutStatus === 'failed' && (
+                <div className="flex flex-col items-center justify-center mt-10">
+                    <div className="text-2xl text-yellow-500 font-bold mb-6">
+                        Your payment transfer has failed. You can submit a query to us, and we will review your account.
+                        Our team will reach out to you shortly.
+                    </div>
+                </div>
+            )}
+
+
+            {houseOwnerAction === 'accepted' && shovellerAction === 'completed' && (
+                <div className="flex flex-col items-center justify-center mt-10">
+                    <div className="text-2xl text-yellow-500 font-bold mb-6">
+                        The house owner has not yet accepted your completed job. Please wait for one business day,
+                        after which the job will be automatically accepted.
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 }

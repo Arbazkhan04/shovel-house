@@ -1,6 +1,16 @@
 import * as React from "react";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
 export default function ServiceFinished() {
+  const location = useLocation();
+  const { Id, paymentOffering } = location.state || {};
+  
+  // Calculate the remaining amount after deducting 20%
+  const [jobId, setJobId] = useState(Id || "");
+  const [payment, setPayment] = useState(paymentOffering || "");
+  const remainingPayment = payment ? payment * 0.8 : 0; // 80% of the original payment
+
   return (
     <div className="flex overflow-hidden flex-col pb-60 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col self-end mt-6 mr-20 max-w-full text-3xl font-medium text-center text-black capitalize whitespace-nowrap w-[252px]">
@@ -15,13 +25,15 @@ export default function ServiceFinished() {
         <div className="flex flex-col w-full leading-7 rounded-none">
           <div className="flex flex-col justify-center px-3.5 py-5 rounded-lg bg-zinc-100">
             <div className="flex flex-col w-full">
-              <div className="text-xs text-stone-500">Invoice #00001</div>
+              <div className="text-xs text-stone-500">Invoice #{jobId}</div>
               <div className="flex gap-10 justify-between items-center mt-3 w-full text-xl capitalize text-zinc-800">
                 <div className="my-auto w-[232px]">
-                  <span className="">$50.00 </span>has been <br />
-                  Transferred To
+                  <span className="">${remainingPayment.toFixed(2)} </span>will be transferred to you within the next 24-hour <br />
+                  
                   <br />
-                  <span className="">5632 5684 2649 5912 </span>
+                  <span className="text-sm">
+                    Note: You have marked the service as finished. We are waiting for the house owner to confirm the completion of the job. If the house owner does not take any action within a reasonable time, we will automatically mark the job as complete, and the payment will be transferred to you.
+                  </span>
                 </div>
                 <img
                   loading="lazy"
