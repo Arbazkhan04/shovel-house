@@ -1,53 +1,56 @@
+// App.jsx
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Loader from './sharedComp/loader';
-
-// reset password component
+import ProtectedRoute from './sharedComp/protectedRoute';
 import ResetPassword from './sharedComp/resetPassword';
-
-import 'leaflet/dist/leaflet.css';
-import HouseOwnerRoutes from "./HomeOwner/components/homeOwnerRoute";
-import ShovellerRoutes from "./Shoveller/components/shovellerRoutes";
+import HouseOwnerRoutes from './HomeOwner/components/homeOwnerRoute';
+import ShovellerRoutes from './Shoveller/components/shovellerRoutes';
 import AdminRoutes from './Admin/components/adminRoutes';
-// Lazy load components
+
 const Login = lazy(() => import('./sharedComp/login'));
 const Question = lazy(() => import('./sharedComp/question'));
 const SignupQuestion = lazy(() => import('./sharedComp/singupQuestion'));
-// const Chat = lazy(() => import('./sharedComp/chat'));
 
 function App() {
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const renderRoutes = useMemo(() => {
+    if (!userInfo) return null; // Return null if userInfo is not available
+
+    const routes = [];
+    const basePath = userInfo.user.role === 'houseOwner' ? '/houseowner' :
+                    userInfo.user.role === 'shoveller' ? '/shoveller' :
+                    userInfo.user.role === 'admin' ? '/admin' : null;
+
+    const roleRoutes = {
+      houseOwner: HouseOwnerRoutes,
+      shoveller: ShovellerRoutes,
+      admin: AdminRoutes,
+    };
+
+    if (basePath) {
+      roleRoutes[userInfo.user.role].forEach(({ path, element }) => {
+        routes.push(
+          <Route key={path} path={`${basePath}${path}`} element={<ProtectedRoute>{element}</ProtectedRoute>} />
+        );
+      });
+    }
+    
+    return routes;
+  }, [userInfo]);
+
   return (
     <Router>
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route exact path="/" element={<Login />} />
+          {/* Public Routes */}
           <Route path="/question" element={<Question />} />
           <Route path="/signupQuestion" element={<SignupQuestion />} />
-          <Route path='/resetPassword/:resetToken' element={<ResetPassword />} />
-          {/* Use lazy-loaded Chat component */}
-          {/* <Route path="/chat" element={<Chat />} /> */}
-          {HouseOwnerRoutes.map(({ path, element }) => (
-            <Route
-              key={path}
-              path={`/houseowner${path}`}
-              element={element}
-            />
-          ))}
-          {ShovellerRoutes.map(({ path, element }) => (
-            <Route
-              key={path}
-              path={`/shoveller${path}`}
-              element={element}
-            />
-          ))}
-
-          {AdminRoutes.map(({ path, element }) => (
-            <Route
-              key={path}
-              path={`/admin${path}`}
-              element={element}
-            />
-          ))}
+          <Route path="/resetPassword/:resetToken" element={<ResetPassword />} />
+          <Route path="/" element={<Login />} />
+          {renderRoutes}
         </Routes>
       </Suspense>
     </Router>

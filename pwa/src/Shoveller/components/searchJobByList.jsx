@@ -5,6 +5,7 @@ import Loader from '../../sharedComp/loader';
 import { useSelector } from "react-redux";
 
 export default function SearchJobByList() {
+  console.log('SearchJobByList')
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

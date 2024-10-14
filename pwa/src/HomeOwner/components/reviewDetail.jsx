@@ -33,7 +33,8 @@ export default function ReviewDetail({nextStpe, preStep}) {
       },
       jobStatus: 'open', // Set initial job status as 'open'
     };
-  
+    
+    console.log(jobData);
     try {
       // Send the transformed job data to your backend
       const response = await fetch(`http://localhost:3003/api/job/createJob/${userInfo.user.id}`, {
