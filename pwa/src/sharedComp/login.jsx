@@ -14,7 +14,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
@@ -46,6 +46,7 @@ function Login() {
   }, [navigate, userInfo]);
 
   const handleForgotPassword = () => {
+    console.log('Forgot password clicked');
     setIsForgotPasswordOpen(true);
   }
 
@@ -97,13 +98,17 @@ function Login() {
               {/* Password Field */}
               <div className="flex flex-col justify-center p-3 mt-3 w-full rounded-lg border-black border-solid border-[0.5px]">
                 <div className="flex gap-2 items-center w-full">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/a14806764547a21360ac495174d06d2a7e02e5d3b3299f6e275c8b51511eb58d?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04" className="object-contain shrink-0 aspect-square w-[22px]" alt="Lock Icon" />
+                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/66871b91e41236b22c08c0b76ca8f261be2b85018bf3d819cb7c88eb30e9b4b1?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04" className="object-contain shrink-0 aspect-square w-[22px]" alt="Lock Icon" />
                   <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="flex-1 outline-none bg-transparent" />
                 </div>
               </div>
 
               {/* Login Button */}
-              <button onClick={submitHandler} className={`bg-blue-700 rounded-lg py-2 mt-4 text-white ${isLoading ? "opacity-50" : "hover:bg-blue-800"}`} disabled={isLoading}>
+              <button
+                onClick={submitHandler}
+                className={`bg-black rounded-lg py-2 mt-4 text-white ${isLoading ? "opacity-50" : "hover:bg-black-800"}`}
+                disabled={isLoading}
+              >
                 {isLoading ? "Loading..." : "Login"}
               </button>
 
@@ -113,9 +118,11 @@ function Login() {
               </button>
 
               {/* Sign Up Question */}
-              <button onClick={handleQuestion} className="mt-4 text-sm text-blue-700 hover:underline">
-                Don't have an account? Sign up
+              <button onClick={handleQuestion} className="mt-4 text-sm text-black hover:underline">
+                Don't have an account?
+                <span className="text-blue-700"> Sign up</span>
               </button>
+
             </div>
           </div>
         </div>

@@ -16,7 +16,6 @@ import StripeCheckout from "./stripeCheckout";
 import ListOfShovellerApplied from "./ListOfShovellerApplied"
 
 const route = [
-    { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> },
     { path: '/jobPostProgress', element: <JobPostProgress /> },
     { path: '/stripeCheckout', element: <StripeCheckout /> },
     { path: '/homeOwnerLocation', element: <HomeOwnerLocation /> },
@@ -24,11 +23,6 @@ const route = [
     { path: '/paymentDetail', element: <PayementDetail /> },
     { path: '/reviewDetail', element: <ReviewDetail /> },
     { path:'/listOfShovellerApplied', element: <ListOfShovellerApplied />},
-
-    // { path: '/personalDetail', element: <PersonalDetail /> },
-    // { path: '/loginAccountDetail', element: <LoginAccountDetail /> },
-    // { path: '/loginPaymentInfo', element: <LoginPayemtInfo /> },
-    // { path: '/servicePreference', element: <ServicePreference /> },
     { path: '/isMatchShoveller', element: <IsMatchShoveller /> },
     { path: '/serviceProgress', element: <ServiceProgress /> },
     { path: '/serviceFinished', element: <ServiceFinished /> },
