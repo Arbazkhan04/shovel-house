@@ -16,3 +16,19 @@ export const cancelJob = async (jobId,shovellerId) => {
     const res = await api.post('/job/cancelJob', { jobId,shovellerId });
     return res.data;
 }
+
+export const getShovellerJobStatus = async (jobId,shovellerId) => {
+    const res = await api.get('/job/getShovellerJobStatus',{jobId,shovellerId})
+    return res.data
+}
+
+export const feedbackByHouseOwner = async (jobId,jobRating,houseOwnerFeedback) => {
+    const res = await api.post('/job/feedbackByHouseOwner', { jobId,jobRating,houseOwnerFeedback });
+    return res.data;
+}
+
+//cancel the job if no shoveller applied
+export const cancelJobIfNoShovellerApplied = async (jobId) => {
+    const res = await api.post('/job/cancelJobIfNoShovellerApplied', { jobId });
+    return res.data;
+}

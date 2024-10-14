@@ -2,16 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Chat from '../../sharedComp/chat';
-import { cancelJob } from '../../apiManager/houseOwner/matchShvoller';
+import { cancelJob, getShovellerJobStatus } from '../../apiManager/houseOwner/matchShvoller';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
-import { getUserName } from "../../apiManager/shoveller/shovellerInfo";
-import Loadder from '../../sharedComp/loader'
+import { getShovellerJobStatusAndShovellerName } from "../../apiManager/shoveller/shovellerInfo";
+import Loader from '../../sharedComp/loader'
+import  ConfirmationModal from "../../sharedComp/customModal";
 
 
 export default function ServiceProgress() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [shovellerName,setShovellerName] = useState('');
+    const [shovellerName, setShovellerName] = useState('');
+    const [shovellerAction, setShovellerAction] = useState('');
+    const [isRequesting, setIsRequesting] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false); // Control the modal visibility
 
     const navigate = useNavigate();
     const { userInfo } = useSelector((state) => state.auth);
@@ -25,15 +29,18 @@ export default function ServiceProgress() {
     const userId = userInfo.user.houseOwnerId;
     const clientId = userInfo.user.houseOwnerId;
     const providerId = userInfo.user.shovellerId || null;
+    const paymentOffering = userInfo.user.paymentOffering / 100;
 
     useEffect(() => {
-        // if (!userId) return; // Avoid running the effect if userId is not defined
+        if (!providerId || !jobId) return; // Avoid running the effect if userId is not defined
         setLoading(true);
         (async () => {
             try {
-                const res = await getUserName(userId);
+                const res = await getShovellerJobStatusAndShovellerName(jobId, providerId);
                 console.log(res);
-                setShovellerName(res.userName);
+                setShovellerName(res.shovellerName);
+                setShovellerAction(res.shovellerAction);
+                setIsRequesting(res.isRequestedForCancel);
             } catch (error) {
                 setError(error);
                 console.log(error);
@@ -41,45 +48,56 @@ export default function ServiceProgress() {
                 setLoading(false);
             }
         })();
-    }, [userId]);
-    
-    
-    const handleServiceFinished = async() => {
+    }, [providerId, jobId]);
+
+    // in this handler clear the localstorage 
+    const handleServiceFinished = async () => {
+        setLoading(true);
         try {
             const res = await jobCompleted(jobId, providerId, "houseOwner");
             console.log(res)
         } catch (error) {
             console.log(error)
+        }finally{
+            setLoading(false);
         }
-        navigate('/houseowner/serviceFinished');
+
+        navigate('/houseowner/serviceFinished', {
+            state: {
+                Id: jobId,
+                paymentOffering: paymentOffering,
+                name: shovellerName
+            }
+        });
     }
 
     const handleAccept = () => {
         navigate('/HouseOwner/serviceProgress'); // Navigate to the accepted job page
     };
 
-    const handleCancel = async() => {
+    const handleCancel = async () => {
+        setShowCancelModal(false); // Close the modal before performing the action
         setLoading(true);
         try {
             const res = await cancelJob(jobId, providerId);
-            if(res.err){
+            if (res.err) {
                 setError(res.err);
             }
-            else{
+            else {
                 //clear the localstorage and navigate to the tot he home page
             }
             console.log(res);
-            
+
         } catch (error) {
             setError(error);
-        }finally{
+        } finally {
             setLoading(false);
         }
         // navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
     };
 
-    if(error) return <div>{error}</div>
-    if(loading) return <div> <Loadder /> </div>
+    if (error) return <div>{error}</div>
+    if (loading) return <div> <Loader /> </div>
 
     return (
         <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
@@ -91,9 +109,15 @@ export default function ServiceProgress() {
                 />
             </div>
 
-            <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
-                Service In Progress!
-            </div>
+            {shovellerAction === 'completed' ? (
+                <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+                    Service Completed!
+                </div>
+            ) : (
+                <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
+                    Service In Progress!
+                </div>
+            )}
 
             <div className="flex relative flex-col px-14 pt-40 pb-6 mt-7 w-full text-center rounded-xl aspect-[0.804]">
                 <img
@@ -107,35 +131,64 @@ export default function ServiceProgress() {
                     className="object-contain self-center w-36 max-w-full rounded-none aspect-[2.77]"
                 />
                 <div className="flex relative flex-col mt-8 w-full">
-                    <div className="w-full text-2xl capitalize text-zinc-800">
-                        <span className="">{shovellerName}</span> is Fulfilling
-                        <br /> Your Service Request
-                    </div>
+                    {shovellerAction === 'completed' ? (
+                        <div className="w-full text-2xl capitalize text-zinc-800">
+                            <span className="">{shovellerName}</span> marked job as Completed
+                            <br /> Now it's your turn!
+                        </div>
+                    ) : (
+                        <div className="w-full text-2xl capitalize text-zinc-800">
+                            <span className="">{shovellerName}</span> is Fulfilling
+                            <br /> Your Service Request
+                        </div>
+                    )}
                     <div className="flex justify-around mt-40">
-                        <button
-                            onClick={handleCancel}
-                            className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
-                        >
-                            Cancel
-                        </button>
-                        <button
+                        {/* if the shovellerAction is completed and isRequesting is false it meamns
+                        shoveller mark the job is completed and hide the cancel button */}
+                        {isRequesting && shovellerAction === 'completed' && (
+                            <button
+                                onClick={() => setShowCancelModal(true)}
+                                className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
+                            >
+                                Cancel the job
+                            </button>
+                        )}
+                        {/* if the shovellerActions is completed and houseonwer did not reqyested */}
+                        {!isRequesting && shovellerAction !== 'completed' && (
+                            <button
+                                onClick={() => setShowCancelModal(true)}
+                                className="py-3 px-8 text-xl font-medium text-black bg-white rounded-lg"
+                            >
+                                Cancel the Job
+                            </button>
+                        )}
+                        
+
+                        {/* <button
                             onClick={handleAccept}
                             className="py-3 px-8 text-xl font-medium text-white bg-black rounded-lg"
                         >
                             Details
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
 
             <div
-                onClick={openChat}
-                className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-black bg-[#EEEEEE] rounded-lg max-w-[350px]"
+                onClick={shovellerAction !== 'completed' ? openChat : null}
+                className={`gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-black rounded-lg max-w-[350px] ${shovellerAction === 'completed' ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#EEEEEE]'
+                    }`}
+                disabled={shovellerAction === 'completed'}
             >
                 Chat With Provider
             </div>
 
-            <div onClick={handleServiceFinished} className="gap-9 self-center cursor-pointer px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+            <div
+                onClick={shovellerAction === 'completed' ? handleServiceFinished : null}
+                className={`gap-9 self-center cursor-pointer px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white rounded-lg max-w-[350px] ${shovellerAction === 'completed' ? 'bg-black' : 'bg-gray-400 cursor-not-allowed'
+                    }`}
+                disabled={shovellerAction !== 'completed'}
+            >
                 Service Finished
             </div>
 
@@ -160,6 +213,16 @@ export default function ServiceProgress() {
                     </div>
                 </div>
             )}
+
+       {/* Use the reusable confirmation modal */}
+       <ConfirmationModal
+        showModal={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancel}
+        title="Cancel Job"
+        message="Are you sure you want to cancel this job? This action cannot be undone."
+      />
+
         </div>
     );
 }

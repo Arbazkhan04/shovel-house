@@ -10,7 +10,7 @@ export default function AppliedJobsList() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const {userInfo} = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const shovellerId = userInfo.user.id;
 
   useEffect(() => {
@@ -30,15 +30,18 @@ export default function AppliedJobsList() {
     fetchAppliedJobs();
   }, []);
 
-  const navigateToJobDetails = (job,houseOwnerAction) => {
-    
+  const navigateToJobDetails = (job, houseOwnerAction,payoutStatus,shovellerAction) => {
+
     navigate("/shoveller/serviceProgressShoveller", {
       state: {
         jobId: job._id,
         houseOwnerId: job.houseOwnerId._id,
         jobStatus: job.jobStatus, //open, in-progress, completed, not-anymore
-        houseOwnerAction: houseOwnerAction ,//accepted, pending, canceled
-        name: job.houseOwnerId.name
+        houseOwnerAction: houseOwnerAction,//accepted, pending, canceled
+        name: job.houseOwnerId.name,
+        payoutStatus: payoutStatus || 'not-available',
+        shovellerAction: shovellerAction
+
       },
     });
   };
@@ -71,33 +74,44 @@ export default function AppliedJobsList() {
           jobs.map((job, index) => {
             console.log(job.ShovelerInfo.
               ShovelerId)
-            const shovellerInfo = job.ShovelerInfo?.find((shoveller) => shoveller.ShovelerId === shovellerId);   
+            const shovellerInfo = job.ShovelerInfo?.find((shoveller) => shoveller.ShovelerId === shovellerId);
 
             return (
               <div
-              key={index}
-              onClick={() => navigateToJobDetails(job,shovellerInfo.houseOwnerAction)}
-              className="flex justify-between items-center p-4 bg-zinc-100 rounded-lg mb-3 hover:bg-zinc-200 transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-4">
-                {/* <img
+                key={index}
+                onClick={() => navigateToJobDetails(job, shovellerInfo.houseOwnerAction,shovellerInfo.PayoutStatus,shovellerInfo.shovellerAction)}
+                className="flex justify-between items-center p-4 bg-zinc-100 rounded-lg mb-3 hover:bg-zinc-200 transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  {/* <img
                   srcSet={job.imageUrl}
                   className="w-12 h-12 object-contain"
                   alt="Job Icon"
                 /> */}
-                <div>
-                  <div className="text-lg font-medium">{job.services[0]}</div>
-                  <div className="text-sm text-gray-500">
-                    Scheduled at {job.scheduledTime.hour}:{job.scheduledTime.minute} {job.scheduledTime.period}
+                  <div>
+                    <div className="text-lg font-medium">{job.services[0]}</div>
+                    <div className="text-sm text-gray-500">
+                      Scheduled at {job.scheduledTime.hour}:{job.scheduledTime.minute} {job.scheduledTime.period}
+                    </div>
                   </div>
                 </div>
+                <div className="text-sm font-semibold text-black">
+                  {shovellerInfo.shovellerAction === 'completed' ? (
+                    shovellerInfo.PayoutStatus === "failed" ? (
+                      <span className="text-red-500">Payout Failed</span>
+                    ) : (
+                      <span className="text-red-500">Awaiting job acceptance</span>
+                    )
+                  ) : (
+                    <>
+                      {shovellerInfo.houseOwnerAction === "canceled" && <span className="text-red-500">Canceled</span>}
+                      {shovellerInfo.houseOwnerAction === "accepted" && <span className="text-yellow-500">Accepted</span>}
+                      {shovellerInfo.houseOwnerAction === "pending" && <span className="text-green-500">Pending</span>}
+                    </>
+                  )}
+
+                </div>
               </div>
-              <div className="text-sm font-semibold text-black">
-                {shovellerInfo.houseOwnerAction === "canceled" && <span className="text-red-500">Canceled</span>}
-                {shovellerInfo.houseOwnerAction === "accepted" && <span className="text-yellow-500">Accepted</span>}
-                {shovellerInfo.houseOwnerAction === "pending" && <span className="text-green-500">Pending</span>}
-              </div>
-            </div>
             )
           })
         ) : (
