@@ -32,3 +32,8 @@ export const cancelJobIfNoShovellerApplied = async (jobId) => {
     const res = await api.post('/job/cancelJobIfNoShovellerApplied', { jobId });
     return res.data;
 }
+
+export const isJobCompleted = async(jobId) => {
+    const res = await api.post(`/job/isJobCompleted`,{jobId});
+    return res.data;
+}

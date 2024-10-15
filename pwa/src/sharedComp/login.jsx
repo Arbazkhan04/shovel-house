@@ -20,30 +20,34 @@ function Login() {
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (userInfo) {
-      // Navigate based on user role after login
-      switch (userInfo.user.role) {
-        case 'admin':
-          navigate(ROUTES.ADMIN_DASHBOARD);
-          break;
-        case 'shoveller':
-          navigate(userInfo.user.chargesEnabled ? ROUTES.SHOVELLER_SEARCH : ROUTES.SHOVELLER_ONBOARD);
-          break;
-        case 'houseOwner':
-          if (userInfo.user.paymentStatus === 'authorized') {
-            navigate(userInfo.user.jobStatus === 'in-progress' ? ROUTES.HOUSEOWNER_SERVICE_PROGRESS : ROUTES.HOUSEOWNER_LIST);
-          } else if (userInfo.user.paymentStatus === 'pending') {
-            navigate(ROUTES.HOUSEOWNER_CHECKOUT);
-          } else {
-            navigate(ROUTES.HOUSEOWNER_JOB_PROGRESS);
-          }
-          break;
-        default:
-          break; // No action for unrecognized roles
+    useEffect(() => {
+      if (userInfo) {
+        // Navigate based on user role after login
+        switch (userInfo.user.role) {
+          case 'admin':
+            navigate(ROUTES.ADMIN_DASHBOARD);
+            break;
+          case 'shoveller':
+            navigate(userInfo.user.chargesEnabled ? ROUTES.SHOVELLER_SEARCH : ROUTES.SHOVELLER_ONBOARD);
+            break;
+          case 'houseOwner':
+             if(userInfo.user.jobStatus === 'completed'){
+              navigate(ROUTES.HOUSEOWNER_SERVICE_FINISHED);
+            }
+            else if (userInfo.user.paymentStatus === 'authorized') {
+              navigate(userInfo.user.jobStatus === 'in-progress' ? ROUTES.HOUSEOWNER_SERVICE_PROGRESS : ROUTES.HOUSEOWNER_LISTOFSHOVELLERAPPLIED);
+            } else if (userInfo.user.paymentStatus === 'pending') {
+              navigate(ROUTES.HOUSEOWNER_CHECKOUT);
+            }
+            else {
+              navigate(ROUTES.HOUSEOWNER_JOB_PROGRESS);
+            }
+            break;
+          default:
+            break; // No action for unrecognized roles
+        }
       }
-    }
-  }, [navigate, userInfo]);
+    }, [navigate, userInfo]);
 
   const handleForgotPassword = () => {
     console.log('Forgot password clicked');

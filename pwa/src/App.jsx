@@ -48,8 +48,8 @@ function App() {
           <Route path="/question" element={<Question />} />
           <Route path="/signupQuestion" element={<SignupQuestion />} />
           <Route path="/resetPassword/:resetToken" element={<ResetPassword />} />
-          <Route path="/" element={<Login />} />
-          <Route path='houseOwnerSingupProcess'element={<HouseOwnerSingupProcess />} />
+          
+          <Route path='/houseOwnerSingupProcess'element={<HouseOwnerSingupProcess />} />
           <Route path="/shovellerSignupProcess" element={<ShovellerSignupProcess />} />
           {/* { path:'/shovellerSignupProcess', element: <ShovellerSignupProcess /> }, */}
           {/* { path: '/houseOwnerSingupProcess', element: <HouseOwnerSingupProcess /> }, */}
@@ -60,7 +60,7 @@ function App() {
           ) : (
             <Route path="*" element={<Navigate to="/" />} /> // Redirect to login page
           )}
-
+          <Route path="/" element={<Login />} />
           {/* Handle unauthorized access */}
           <Route path="/houseowner/*" element={<Navigate to="/" />} />
           <Route path="/shoveller/*" element={<Navigate to="/" />} />
