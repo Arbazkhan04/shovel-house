@@ -2,10 +2,13 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import { setCredentials } from '../../slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Transaction() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const { Id,shovellerName, payment } = location.state || {};
 
   const [jobId, setJobId] = useState(Id || "");
@@ -13,7 +16,17 @@ export default function Transaction() {
   const [paymentTransferred, setPaymentTransferred] = useState(payment || "");
   
   const handleContinue = () => {
-    navigate('/HouseOwner/jobPostProgress'); // Navigate to the accepted job page
+    // get data from localstorage and remove the job status and only keep houseonwer and role 
+    const userData = JSON.parse(localStorage.getItem('userInfo'));
+    console.log(userData);
+    dispatch(setCredentials({ 
+      user:{
+        id: userData.user.id,
+        role: userData.user.role,
+      },
+      token: userData.token
+    }))
+    navigate('/houseowner/jobPostProgress'); // Navigate to the accepted job page
   };
 
 

@@ -5,6 +5,8 @@ import { getShovellersWhoAppliedOnYourJob } from '../../apiManager/houseOwner/ma
 import Loader from "../../sharedComp/loader"
 import ConfirmationModal from "../../sharedComp/customModal"
 import { cancelJobIfNoShovellerApplied } from "../../apiManager/houseOwner/matchShvoller"
+import { setCredentials } from '../../slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 export default function AppliedShovellers() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -17,6 +19,8 @@ export default function AppliedShovellers() {
   const [showCancelModal, setShowCancelModal] = useState(false); // Control the modal visibility
 
   const navigate = useNavigate(); // Use useNavigate here
+  const dispatch = useDispatch();
+
 
   // Function to fetch applicants
   const getApplicants = async () => {
@@ -56,13 +60,28 @@ export default function AppliedShovellers() {
      const res = await cancelJobIfNoShovellerApplied(jobId);
      if(res.err){
       setError(res.err || 'An error occurred while canceling the job');
+      return;
      }
+
+     const userData = JSON.parse(localStorage.getItem('userInfo'));
+     console.log(userData);
+     dispatch(setCredentials({ 
+       user:{
+         id: userData.user.id,
+         role: userData.user.role,
+       },
+       token: userData.token
+     }))
+     navigate('/houseowner/jobPostProgress'); // Navigate to the accepted job page
+
     }catch(error){
       setError(error || 'An error occurred while canceling the job');
     }finally{
       setLoading(false);
     }
    
+   
+
   };
 
   if (loading) return <Loader />; // Replace with a spinner component

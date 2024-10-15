@@ -6,7 +6,10 @@ import { cancelJob, getShovellerJobStatus } from '../../apiManager/houseOwner/ma
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 import { getShovellerJobStatusAndShovellerName } from "../../apiManager/shoveller/shovellerInfo";
 import Loader from '../../sharedComp/loader'
-import  ConfirmationModal from "../../sharedComp/customModal";
+import ConfirmationModal from "../../sharedComp/customModal";
+import { isJobCompleted } from "../../apiManager/houseOwner/matchShvoller";
+import { setCredentials } from '../../slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 
 export default function ServiceProgress() {
@@ -18,6 +21,8 @@ export default function ServiceProgress() {
     const [showCancelModal, setShowCancelModal] = useState(false); // Control the modal visibility
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const { userInfo } = useSelector((state) => state.auth);
 
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -50,6 +55,46 @@ export default function ServiceProgress() {
         })();
     }, [providerId, jobId]);
 
+
+    const checkJobCompletedStatus = async () => {
+        setLoading(true);
+        try {
+            const res = await isJobCompleted(jobId);
+            console.log(res);
+            if (res.user.jobStatus !== 'completed') {
+                return;
+            }
+            if (res.err) {
+                setError(res.err);
+                return;
+            }
+            //update the localstoage
+            dispatch(setCredentials({ ...res }));
+            navigate('/houseowner/serviceFinished', {
+                state: {
+                    Id: jobId,
+                    paymentOffering: paymentOffering,
+                    name: shovellerName
+                }
+            })
+        } catch (error) {
+            setError(error);
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // check if the job is completed or not
+    useEffect(() => {
+        if (!jobId) return; // Avoid running the effect if userId is not defined
+        (async () => {
+            await checkJobCompletedStatus(jobId)
+        })()
+    }, [jobId]);
+
+
+
     // in this handler clear the localstorage 
     const handleServiceFinished = async () => {
         setLoading(true);
@@ -58,17 +103,19 @@ export default function ServiceProgress() {
             console.log(res)
         } catch (error) {
             console.log(error)
-        }finally{
+        } finally {
             setLoading(false);
         }
 
-        navigate('/houseowner/serviceFinished', {
-            state: {
-                Id: jobId,
-                paymentOffering: paymentOffering,
-                name: shovellerName
-            }
-        });
+        await checkJobCompletedStatus();
+
+        // navigate('/houseowner/serviceFinished', {
+        //     state: {
+        //         Id: jobId,
+        //         paymentOffering: paymentOffering,
+        //         name: shovellerName
+        //     }
+        // });
     }
 
     const handleAccept = () => {
@@ -82,11 +129,20 @@ export default function ServiceProgress() {
             const res = await cancelJob(jobId, providerId);
             if (res.err) {
                 setError(res.err);
+                return;
             }
-            else {
-                //clear the localstorage and navigate to the tot he home page
-            }
-            console.log(res);
+
+            //update the localstoage
+            const userData = JSON.parse(localStorage.getItem('userInfo'));
+            console.log(userData);
+            dispatch(setCredentials({
+                user: {
+                    id: userData.user.id,
+                    role: userData.user.role,
+                },
+                token: userData.token
+            }))
+            navigate('/houseowner/jobPostProgress'); // Navigate to the accepted job page
 
         } catch (error) {
             setError(error);
@@ -162,7 +218,7 @@ export default function ServiceProgress() {
                                 Cancel the Job
                             </button>
                         )}
-                        
+
 
                         {/* <button
                             onClick={handleAccept}
@@ -214,14 +270,14 @@ export default function ServiceProgress() {
                 </div>
             )}
 
-       {/* Use the reusable confirmation modal */}
-       <ConfirmationModal
-        showModal={showCancelModal}
-        onClose={() => setShowCancelModal(false)}
-        onConfirm={handleCancel}
-        title="Cancel Job"
-        message="Are you sure you want to cancel this job? This action cannot be undone."
-      />
+            {/* Use the reusable confirmation modal */}
+            <ConfirmationModal
+                showModal={showCancelModal}
+                onClose={() => setShowCancelModal(false)}
+                onConfirm={handleCancel}
+                title="Cancel Job"
+                message="Are you sure you want to cancel this job? This action cannot be undone."
+            />
 
         </div>
     );

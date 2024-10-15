@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { feedbackByHouseOwner } from "../../apiManager/houseOwner/matchShvoller";
+import { useSelector } from "react-redux";
 
 export default function ServiceFinished() {
   const navigate = useNavigate();
@@ -12,8 +13,9 @@ export default function ServiceFinished() {
 
   const location = useLocation();
   const { Id,name,paymentOffering } = location.state || {};
+  const { userInfo } = useSelector((state) => state.auth);
 
-  const [jobId, setJobId] = useState(Id || "");
+  const [jobId, setJobId] = useState(userInfo?.user?.jobId || Id);
   const [shovellerName, setShovellerName] = useState(name || ""); 
   const [payment, setPayment] = useState(paymentOffering||"");
 
