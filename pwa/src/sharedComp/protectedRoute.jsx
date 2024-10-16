@@ -51,6 +51,14 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       };
 
 
+      // Add the admin role
+      const isAllowedRouteForAdmin = [
+        ROUTES.ADMIN_DASHBOARD,
+        ROUTES.ADMIN_SERVICE_DASHBOARD,
+        ROUTES.ADMIN_QUERY_DASHBOARD,
+      ]
+
+
 
 
       switch (userInfo.user.role) {
@@ -113,9 +121,14 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   
         case 'admin':
           console.log('Redirecting to Admin Dashboard...');
-          if (location.pathname !== ROUTES.ADMIN_DASHBOARD) {
-            navigate(ROUTES.ADMIN_DASHBOARD, { state: { from: location } });
+          if(!isAllowedRouteForAdmin.includes(location.pathname)){
+            if (location.pathname !== '/') {
+              navigate('/', { state: { from: location } });
+            }
           }
+          // if (location.pathname !== ROUTES.ADMIN_DASHBOARD) {
+          //   navigate(ROUTES.ADMIN_DASHBOARD, { state: { from: location } });
+          // }
           break;
 
         default:

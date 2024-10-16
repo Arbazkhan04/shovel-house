@@ -1,7 +1,11 @@
 // routes.js
 export const ROUTES = {
     LOGIN: '/',
+
     ADMIN_DASHBOARD: '/admin/dashboard',
+    ADMIN_SERVICE_DASHBOARD :'/admin/ServiceDashboard',
+    ADMIN_QUERY_DASHBOARD :'/admin/QueryDashboard',
+
     SHOVELLER_SEARCH: '/shoveller/searchJobByList',
     SHOVELLER_ONBOARD: '/shoveller/stripeOnboard',
     HOUSEOWNER_SERVICE_PROGRESS: '/houseowner/serviceProgress',
