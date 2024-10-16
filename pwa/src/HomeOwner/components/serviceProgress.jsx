@@ -180,7 +180,7 @@ export default function ServiceProgress() {
                     srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/61f218a5e71d24bc3dfa5060bb7615e62d7d7e1c87227b76dc176c67f059d25e?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                     className="object-contain self-center w-36 max-w-full rounded-none aspect-[2.77]"
                 /> */}
-                <div className="flex relative flex-col mt-8 w-full">
+                <div className="flex relative flex-col mt-20 w-full">
                     {shovellerAction === 'completed' ? (
                         <div className="w-full text-2xl capitalize text-zinc-800">
                             <span className="">{shovellerName}</span> marked job as Completed
@@ -224,7 +224,7 @@ export default function ServiceProgress() {
                 </div>
             </div>
 
-            <div
+            {/* <div
                 onClick={shovellerAction !== 'completed' ? openChat : null}
                 className={`gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-black rounded-lg max-w-[350px] ${shovellerAction === 'completed' ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#EEEEEE]'
                     }`}
@@ -240,7 +240,26 @@ export default function ServiceProgress() {
                 disabled={shovellerAction !== 'completed'}
             >
                 Service Finished
-            </div>
+            </div> */}
+
+            {shovellerAction !== 'completed' && (
+                <div
+                    onClick={openChat}
+                    className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-black rounded-lg max-w-[350px] bg-[#EEEEEE]"
+                >
+                    Chat With Provider
+                </div>
+            )}
+
+            {shovellerAction === 'completed' && (
+                <div
+                    onClick={handleServiceFinished}
+                    className="gap-9 self-center cursor-pointer px-12 py-4 mt-2 w-full text-xl font-medium tracking-wider text-center text-white rounded-lg max-w-[350px] bg-black"
+                >
+                    Service Finished
+                </div>
+            )}
+
 
             {isChatOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
