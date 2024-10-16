@@ -1,16 +1,22 @@
 import * as React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+import { useNavigte } from "react-router-dom";
 export default function ServiceFinished() {
   const location = useLocation();
   const { Id, paymentOffering } = location.state || {};
-  
+
   // Calculate the remaining amount after deducting 20%
   const [jobId, setJobId] = useState(Id || "");
   const [payment, setPayment] = useState(paymentOffering || "");
   const remainingPayment = payment ? payment * 0.8 : 0; // 80% of the original payment
+  const navigate = useNavigate();
 
+
+
+  const handlerBackToJobList = () => {
+    navigate('/shoveller/searchJobByList')
+  }
   return (
     <div className="flex overflow-hidden flex-col pb-60 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col self-end mt-6 mr-20 max-w-full text-3xl font-medium text-center text-black capitalize whitespace-nowrap w-[252px]">
@@ -29,7 +35,7 @@ export default function ServiceFinished() {
               <div className="flex gap-10 justify-between items-center mt-3 w-full text-xl capitalize text-zinc-800">
                 <div className="my-auto w-[232px]">
                   <span className="">${remainingPayment.toFixed(2)} </span>will be transferred to you within the next 24-hour <br />
-                  
+
                   <br />
                   <span className="text-sm">
                     Note: You have marked the service as finished. We are waiting for the house owner to confirm the completion of the job. If the house owner does not take any action within a reasonable time, we will automatically mark the job as complete, and the payment will be transferred to you.
@@ -51,6 +57,9 @@ export default function ServiceFinished() {
             className="object-contain aspect-square w-[72px]"
           />
           <div className="mt-6">Thank you for choosing Shovelhouse!</div>
+        </div>
+        <div onClick={handlerBackToJobList} className="gap-9 self-center cursor-pointer px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-center text-white bg-black rounded-lg max-w-[350px]">
+          Continue
         </div>
       </div>
     </div>

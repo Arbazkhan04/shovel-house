@@ -48,7 +48,7 @@ export default function IsMatchShoveller() {
       //navigate to the search job by list  
       navigate('/shoveller/searchJobByList');
     } catch (error) {
-      setError(error);
+      setError(error.message || "an error occured");
     } finally {
       setLoading(false);
     }

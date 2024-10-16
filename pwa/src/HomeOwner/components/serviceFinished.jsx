@@ -11,13 +11,13 @@ export default function ServiceFinished() {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState("");
 
-  const location = useLocation();
-  const { Id,name,paymentOffering } = location.state || {};
+  // const location = useLocation();
+  // // const { Id,name,paymentOffering } = location.state || {};
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [jobId, setJobId] = useState(userInfo?.user?.jobId || Id);
-  const [shovellerName, setShovellerName] = useState(name || ""); 
-  const [payment, setPayment] = useState(paymentOffering||"");
+  const [jobId, setJobId] = useState(userInfo?.user?.jobId);
+  // const [shovellerName, setShovellerName] = useState(name || ""); 
+  // const [payment, setPayment] = useState(paymentOffering||"");
 
   
   const handleFinished = async () => {
@@ -33,13 +33,7 @@ export default function ServiceFinished() {
     }finally{
       console.log('done')
     }
-    navigate("/houseowner/transaction",{
-      state:{
-        Id:jobId,
-        shovellerName:shovellerName,
-        payment:payment
-      }
-    });
+    navigate("/houseowner/transaction");
 
   };
 
@@ -67,8 +61,8 @@ export default function ServiceFinished() {
               <div className="flex flex-col justify-center px-4 py-8 w-full rounded-lg bg-zinc-100">
                 <div className="flex gap-6 items-center">
                   <div className="my-auto w-[232px]">
-                    <span className="">${payment} </span>will be Transferred to{" "}
-                    <span className="">{shovellerName}</span>
+                    <span className="">Payment </span>has been Transferred to{" "}
+                    <span className="">Shoveller</span>
                   </div>
                   <img
                     loading="lazy"
@@ -121,7 +115,7 @@ export default function ServiceFinished() {
             <div className="flex z-10 flex-col justify-center px-2.5 py-4 w-full rounded-lg bg-zinc-100">
               <div className="flex gap-10 justify-between items-center w-full">
                 <div className="self-stretch my-auto text-sm tracking-tight leading-loose text-zinc-800">
-                  Rate <span className="font-medium">{shovellerName}'s</span> Services
+                  Rate <span className="font-medium">shoveller's</span> Services
                 </div>
                 <div className="flex gap-1 items-center self-stretch my-auto">
                   {[1, 2, 3, 4, 5].map((star) => (

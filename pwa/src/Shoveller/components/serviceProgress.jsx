@@ -4,6 +4,7 @@ import { useState } from "react";
 import Chat from '../../sharedComp/chat';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 import QueryModal from '../../sharedComp/Query';
+import Loader from '../../sharedComp/loader'
 
 
 export default function ServiceProgress() {
@@ -70,7 +71,7 @@ export default function ServiceProgress() {
     };
 
     if (error) return <div>{error}</div>
-    if (loading) return <div>Loading...</div>
+    if (loading) return <div> <Loader /> </div>
 
     return (
         <div className="flex flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">

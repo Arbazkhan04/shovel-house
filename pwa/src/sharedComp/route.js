@@ -26,5 +26,6 @@ export const ROUTES = {
     SHOVELLER_ISMATCHHOUSEOWNER: '/shoveller/isMatchHouseOwner',
     SHOVELLER_APPLIEDJOBS:  /shoveller\/appliedJobs\/.*/i,
     SHOVELLER_SERVICE_PROGRESS: '/shoveller/serviceProgressShoveller',
+    SHOVELLER_SERVICE_FINISHED: '/shoveller/serviceFinishedByShoveller',
 };
   

@@ -109,6 +109,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, useJsApiLoader } from '@react-google-maps/api';
 import { useShovellerSignupContext } from '../../context/shovllerSignupFormContext';
+import Loader from '../../sharedComp/loader'
 
 const libraries = ["places"];
 
@@ -174,7 +175,7 @@ export default function ShovellerDetails({ nextStep }) {
 
     return (
         !isLoaded ? ( // Check if the API is loaded before rendering
-            <div>Loading...</div>
+            <div> <Loader /> </div>
         ) : (
             <div className="flex overflow-hidden flex-col items-center pb-12 mx-auto w-full bg-white max-w-[480px]">
                 <div className="mt-16 text-5xl font-medium text-center text-black capitalize w-[305px]">

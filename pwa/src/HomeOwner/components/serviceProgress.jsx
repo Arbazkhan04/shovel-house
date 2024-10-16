@@ -70,13 +70,7 @@ export default function ServiceProgress() {
             }
             //update the localstoage
             dispatch(setCredentials({ ...res }));
-            navigate('/houseowner/serviceFinished', {
-                state: {
-                    Id: jobId,
-                    paymentOffering: paymentOffering,
-                    name: shovellerName
-                }
-            })
+            navigate('/houseowner/serviceFinished')
         } catch (error) {
             setError(error);
             console.log(error);

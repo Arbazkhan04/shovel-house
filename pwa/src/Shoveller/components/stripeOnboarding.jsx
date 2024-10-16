@@ -58,7 +58,7 @@ export default function StripeOnboard() {
                 console.log('Stripe connection successful:', data);
                 // dispatch(setCredentials({ userInfo: data }));
                 dispatch(setCredentials({ ...data })); // Update the user info in Redux store
-                 navigate('/success'); // Or navigate to a job page after successful onboarding
+                navigate('/shoveller/searchJobByList'); // Or navigate to a job page after successful onboarding and change fro the stripe https://shovel-house.vercel.app/shoveller/stripeOnboard to whatever we will have in the future
             } else {
                 console.error('Error finalizing Stripe connection:', response.statusText);
             }

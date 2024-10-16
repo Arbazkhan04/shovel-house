@@ -4,16 +4,18 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { setCredentials } from '../../slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function Transaction() {
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const dispatch = useDispatch();
-  const { Id,shovellerName, payment } = location.state || {};
+  // const { Id,shovellerName, payment } = location.state || {};
+  const { userInfo } = useSelector((state) => state.auth);
 
-  const [jobId, setJobId] = useState(Id || "");
-  const [name, setName] = useState( shovellerName || "");
-  const [paymentTransferred, setPaymentTransferred] = useState(payment || "");
+  const [jobId, setJobId] = useState(userInfo?.user?.jobId);
+  // const [name, setName] = useState( shovellerName || "");
+  // const [paymentTransferred, setPaymentTransferred] = useState(payment || "");
   
   const handleContinue = () => {
     // get data from localstorage and remove the job status and only keep houseonwer and role 
@@ -50,9 +52,10 @@ export default function Transaction() {
               <div className="text-xs text-stone-500">Invoice #{jobId}</div>
               <div className="flex gap-10 justify-between items-center mt-3 w-full text-xl capitalize text-zinc-800">
                 <div className="my-auto w-[232px]">
-                  <span className="">${paymentTransferred} </span>has been <br />
-                  transferred to <span className="">{name}</span>
+                  <span className="">Payment </span>has been <br />
+                  transferred to <span className="">Shoveller</span>
                   <br />
+                  Your feedback is valuable to us! <br />
                 </div>
                 <img
                   loading="lazy"

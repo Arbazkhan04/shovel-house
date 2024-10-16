@@ -1,58 +1,3 @@
-// import React, { useEffect } from 'react';
-// import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-// import { ROUTES } from '../sharedComp/route';
-
-// const ProtectedRoute = ({ children, allowedRoles }) => {
-//   const { userInfo } = useSelector((state) => state.auth);
-//   const location = useLocation();
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // If user is not logged in, navigate to home page
-//     if (!userInfo) {
-//       navigate('/', { state: { from: location } });
-//     } else {
-//       // Redirect logic based on role and statuses
-//       switch (userInfo.user.role) {
-//         case 'houseOwner':
-//           if (userInfo.user.paymentStatus === 'pending') {
-//             navigate(ROUTES.HOUSEOWNER_CHECKOUT, { state: { from: location } });
-//           } else if (userInfo.user.jobStatus === 'in-progress') {
-//             navigate(ROUTES.HOUSEOWNER_SERVICE_PROGRESS, { state: { from: location } });
-//           }
-//           break;
-
-//         case 'shoveller':
-//           navigate(userInfo.user.chargesEnabled ? ROUTES.SHOVELLER_SEARCH : ROUTES.SHOVELLER_ONBOARD, { state: { from: location } });
-//           break;
-
-//         case 'admin':
-//           navigate(ROUTES.ADMIN_DASHBOARD, { state: { from: location } });
-//           break;
-
-//         default:
-//           break; // Handle unrecognized roles
-//       }
-
-//       // Check if the user has the correct role to access the route
-//       if (allowedRoles && !allowedRoles.includes(userInfo.user.role)) {
-//         navigate('/unauthorized', { state: { from: location } });
-//       }
-//     }
-//   }, [userInfo, navigate, location, allowedRoles]);
-
-//   // Prevent component from rendering if the user is being redirected
-//   if (!userInfo || (allowedRoles && !allowedRoles.includes(userInfo.user.role))) {
-//     return null; // No rendering until navigation is complete
-//   }
-
-//   // Render the child component
-//   return children;
-// };
-
-// export default ProtectedRoute;
-
 
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -101,6 +46,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
           ROUTES.SHOVELLER_ISMATCHHOUSEOWNER,
           ROUTES.SHOVELLER_APPLIEDJOBS,
           ROUTES.SHOVELLER_SERVICE_PROGRESS,
+          ROUTES.SHOVELLER_SERVICE_FINISHED
         ],
       };
 
