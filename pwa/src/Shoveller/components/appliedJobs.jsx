@@ -46,6 +46,10 @@ export default function AppliedJobsList() {
     });
   };
 
+  const handleBack = () => {
+    navigate("/shoveller/searchJobByList");
+  }
+
   if (loading) {
     return <Loader />;
   }
@@ -60,8 +64,9 @@ export default function AppliedJobsList() {
       <div className="w-full mb-4">
         <div className="flex items-center justify-between">
           <img
+            onClick={handleBack}
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/e78b2ab3c1b037e4da039a9fa3854323270864886cc09ff5fbbb6ed86eb963e2?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-            className="w-6 h-6 object-contain"
+            className="w-6 h-6 object-contain cursor-pointer"
             alt="Applied Jobs Icon"
           />
           <p className="text-gray-500">Applied Jobs</p>

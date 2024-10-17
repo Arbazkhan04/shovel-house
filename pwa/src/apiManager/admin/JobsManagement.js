@@ -1,11 +1,15 @@
 import api from '../api';
 
 export const allJobsInfo = async () => {
-    try {
+    
         const res = await api.get('/job/getAllJobsInfo');
-        console.log(res.data.jobs);
         return res.data.jobs;
-    } catch (error) {
-        console.log(error);
-    }
+    
+}
+
+export const manualCapture = async (jobId, shovellerId, role) => {
+    
+        const res = await api.post('/job/markJobAsCompleted', { jobId, shovellerId, role });
+        return res.data;
+    
 }

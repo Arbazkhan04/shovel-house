@@ -20,11 +20,6 @@ export default function ServiceFinished() {
   return (
     <div className="flex overflow-hidden flex-col pb-60 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col self-end mt-6 mr-20 max-w-full text-3xl font-medium text-center text-black capitalize whitespace-nowrap w-[252px]">
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b43acc558e919fa473cbcf367b1c477c8b3e999f6752c6162c0bae03bc699b9?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain self-end w-6 aspect-square"
-        />
         <div className="self-start mt-14">Service Finished</div>
       </div>
       <div className="flex flex-col items-center self-center mt-5 w-full max-w-[350px]">

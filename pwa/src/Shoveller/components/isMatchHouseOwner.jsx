@@ -60,15 +60,6 @@ export default function IsMatchShoveller() {
   return (
 
     <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
-
-      <div className="flex flex-col self-end mt-2 mr-6 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain self-end w-6 aspect-square"
-        />
-
-      </div>
       <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         Matched!
       </div>

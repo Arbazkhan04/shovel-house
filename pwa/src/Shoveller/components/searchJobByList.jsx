@@ -102,12 +102,8 @@ export default function SearchJobByList() {
       {/* Header Section */}
       <div className="w-full">
         <div className="flex items-center justify-between">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/e78b2ab3c1b037e4da039a9fa3854323270864886cc09ff5fbbb6ed86eb963e2?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-            className="w-6 h-6 object-contain"
-            alt="Search Icon"
-          />
-          <p onClick={ () => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
+          <p onClick={() => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
+          <p className="text-gray-500 cursor-pointer">Referral Code: 000000</p>
         </div>
         <div className="flex flex-col mt-4">
           <h1 className="text-3xl font-semibold text-black mb-4">
