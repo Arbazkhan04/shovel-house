@@ -111,7 +111,7 @@ function Login() {
               {/* Email Field */}
               <div className="flex flex-col justify-center p-3 w-full rounded-lg border-black border-solid border-[0.5px]">
                 <div className="flex gap-2 items-center w-full">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/47d37bff9099e72f0bf3ebb0f0fe368c52a3d28c434d397b6937cfbf5603428a?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04" className="object-contain shrink-0 aspect-square w-[22px]" alt="User Icon" />
+                  <img loading="lazy" src="https://shovelhousefrontendfmages.s3.ca-central-1.amazonaws.com/loginIcon.svg" className="object-contain shrink-0 aspect-square w-[22px]" alt="User Icon" />
                   <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="flex-1 outline-none bg-transparent" />
                 </div>
               </div>
@@ -119,7 +119,7 @@ function Login() {
               {/* Password Field */}
               <div className="flex flex-col justify-center p-3 mt-3 w-full rounded-lg border-black border-solid border-[0.5px]">
                 <div className="flex gap-2 items-center w-full">
-                  <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/66871b91e41236b22c08c0b76ca8f261be2b85018bf3d819cb7c88eb30e9b4b1?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04" className="object-contain shrink-0 aspect-square w-[22px]" alt="Lock Icon" />
+                  <img loading="lazy" src="https://shovelhousefrontendfmages.s3.ca-central-1.amazonaws.com/lockicon.svg" className="object-contain shrink-0 aspect-square w-[22px]" alt="Lock Icon" />
                   <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="flex-1 outline-none bg-transparent" />
                 </div>
               </div>
