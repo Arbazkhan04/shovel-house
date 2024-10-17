@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
 import { feedbackByHouseOwner } from "../../apiManager/houseOwner/matchShvoller";
 import { useSelector } from "react-redux";
 
@@ -44,11 +43,7 @@ export default function ServiceFinished() {
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
       <div className="flex flex-col px-20 mt-6 w-full">
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/cccddd1adf967f0ace784bac7ff266373e9f7f1e96b1bcdceed0aa5bcc94afce?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain self-end w-6 aspect-square -mb-7"
-        />
+      
         <div className="flex flex-col items-center w-full mt-14">
           <div className="text-3xl font-medium text-center text-black capitalize">
             Service Finished

@@ -17,7 +17,7 @@ export default function ConfirmationModal({ showModal, onClose, onConfirm, title
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700"
+            className="px-4 py-2 bg-zinc-900 text-white font-semibold rounded-lg hover:bg-zinc-600"
           >
             Yes, Confirm
           </button>

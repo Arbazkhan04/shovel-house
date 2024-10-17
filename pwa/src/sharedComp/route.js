@@ -4,7 +4,8 @@ export const ROUTES = {
 
     ADMIN_DASHBOARD: '/admin/dashboard',
     ADMIN_SERVICE_DASHBOARD :'/admin/ServiceDashboard',
-    ADMIN_QUERY_DASHBOARD :'/admin/QueryDashboard',
+    ADMIN_QUERY_DASHBOARD: '/admin/QueryDashboard',
+    ADMIN_REFERRAL_DASHBOARD: '/admin/RefererDashboard',
 
     SHOVELLER_SEARCH: '/shoveller/searchJobByList',
     SHOVELLER_ONBOARD: '/shoveller/stripeOnboard',

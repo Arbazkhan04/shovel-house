@@ -218,18 +218,18 @@ function CustomerTable() {
     };
 
 
-    if (!shovelers.length) {
-        return <p>No shovelers available</p>;
-    }
-
+    
     if (loading) {
         return <Loader />;
     }
-
+    
     if (error) {
         return <p className="text-red-500">{error}</p>;
     }
-
+    
+    if (!shovelers.length) {
+        return <p>No shovelers available</p>;
+    }
     return (
 
         // table header

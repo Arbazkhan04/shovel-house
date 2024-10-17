@@ -2,62 +2,57 @@ import React, { useState, useEffect } from 'react';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
 import { FaSearch } from 'react-icons/fa'; // Import icons
-import { allQueries, sendQueryResponse } from '../../../apiManager/admin/QueriesManagement.js';
 import Loader from '../../../sharedComp/loader.jsx'
-import Modal from './queryComponent.jsx'
-import ReplyModal from './replyComponent.jsx';
+import { allReferralShovelers, sendPaymentToReferer } from '../../../apiManager/admin/ReferralManagement.js';
 
 function CustomerTable() {
-    const [queries, setQueries] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState('');
-    const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-    const [selectedQueryId, setSelectedQueryId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [referrals, setReferrals] = useState([]);
 
 
     useEffect(() => {
-        const getQueriesData = async () => {
+        const getReferralsData = async () => {
             try {
                 setLoading(true);
-                const res = await allQueries();
+                const res = await allReferralShovelers();
+                if (res && res.error) {
+                    setError(res.error);
+                    return;
+                }
                 console.log(res)
-                setQueries(res);
+                setReferrals(res.users);
             } catch (error) {
                 setError(error.message || "An error occurred while fetching data");
             } finally {
                 setLoading(false);
             }
         }
-        getQueriesData();
+        getReferralsData();
     }, []);
 
-    const handleTitleClick = (content, queryId) => {
-        setModalContent(content);
-        setSelectedQueryId(queryId);
-        setIsModalOpen(true);
-    };
 
-    const handleReplyClick = () => {
-        setIsModalOpen(false);
-        setIsReplyModalOpen(true);
-    };
-
-    const handleSubmitReply = async (replyText) => {
-        if (!replyText.trim()) {
-            alert("Reply can't be empty");
-            return;
+    const handleSendMoney = async (userId) => {
+        try {
+            setLoading(true);
+            const res = await sendPaymentToReferer(userId);
+            if (res.error) {
+                setError(res.error);
+                return;
+            }
+            console.log(res)
+            alert('Payment sent successfully')
+            setReferrals(referrals.filter((referral) => referral._id !== userId))
+        } catch (error) {
+            setError(error.message || "An error occurred while sending payment");
+        } finally {
+            setLoading(false);
         }
+    }
+    
 
-        // Call your function to send the reply to the backend
-        await sendQueryResponse(selectedQueryId, replyText);
-
-        // Close the reply modal after submitting
-        setIsReplyModalOpen(false);
-        alert('Reply submitted successfully');
-    };
+   
 
     const columns = React.useMemo(
         () => [
@@ -70,72 +65,36 @@ function CustomerTable() {
 
             },
             {
-                Header: 'Title',
-                accessor: 'title',
+                Header: 'No. of Jobs',
+                accessor: 'no of jobs',
                 Cell: ({ row }) => (
                     <span className="text-left"
-                    onClick={() => handleTitleClick(row.original.query.query, row.original.query._id)}
                     >
-                        {row.original.query.title}
+                        {row.original.jobCount}
                     </span>
                 ),
             },
             {
-                Header: 'Status',
-                accessor: 'status',
-                Cell: ({ row }) => {
-                    const currentStatus = row.original.query.status;
-
-                    const handleStatusChange = (newStatus) => {
-                        const updatedCustomers = [...queries];
-                        updatedCustomers[row.index].status = newStatus;
-                        setQueries(updatedCustomers);
-                    };
-
-                    return (
-                        <div className="flex space-x-2">
-                            <button
-                                className={`px-2 py-1 rounded bg-zinc-900 text-white`}
-                            >
-                                {row.original.query.status}
-                            </button>
-                        </div>
-                    );
-                },
-            },
-            {
-                Header: 'Role',
-                accessor: 'role',
-                Cell: ({ row }) => (
-                    <span className="text-left">{row.original.role}</span>
-                ),
-            },
-            {
-                Header: 'Enable Cancel',
-                accessor: 'enable cancel',
-                Cell: ({ row }) => (
-                    <button className="bg-black text-white px-1 py-1 rounded-md">Enable</button>
-                ),
-            },
-            {
-                Header: 'Send Email',
-                accessor: 'send email',
+                Header: 'Send Referer Money',
+                accessor: 'send referer money',
                 Cell: ({ row }) => (
                     <button
-                        onClick={() => handleReplyClick(row.original.query.query, row.original.query._id)}
-                        className="bg-black text-white px-1 py-1 rounded-md">Send Email</button>
+                        onClick={() => handleSendMoney(row.original._id)}
+                        className="bg-black text-white px-1 py-1 rounded-md">Send Money</button>
                 ),
             }
         ],
-        [queries] // Include customers in dependencies to re-render on state change
+        [referrals] // Include customers in dependencies to re-render on state change
     );
 
     const data = React.useMemo(() => {
-        return queries
+        return referrals ? referrals
             .filter((query) =>
                 query.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
-    }, [queries, searchTerm]);
+            :
+            [];
+    }, [referrals, searchTerm]);
 
     const {
         getTableProps,
@@ -176,8 +135,8 @@ function CustomerTable() {
         return <p className="text-red-500">{error}</p>;
     }
 
-    if (!queries.length) {
-        return <p>No queries available</p>;
+    if (!referrals || !referrals.length) {
+        return <p>No Shovelers available with completed probation</p>;
     }
 
     return (
@@ -185,7 +144,7 @@ function CustomerTable() {
             <div className="flex flex-col pr-0.5 pl-10 w-full max-md:pl-5 max-md:max-w-full">
                 <div className="flex flex-wrap gap-24 justify-between max-w-full w-[914px]">
                     <div className="flex flex-col">
-                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Queries</h2>
+                        <h2 className="text-2xl font-semibold tracking-tight text-black">All Referrals</h2>
                     </div>
                     <div className="flex flex-wrap flex-auto gap-5 my-auto text-xs tracking-normal text-zinc-500 max-md:max-w-full">
                         <form className=" flex gap-2 px-2 py-2 text-gray-400 whitespace-nowrap rounded-xl bg-neutral-100 ">
@@ -201,15 +160,7 @@ function CustomerTable() {
                             />
                         </form>
 
-                        {/* Status Sorting Field */}
-                        <div className="flex gap-3.5 px-3.5 py-2.5 rounded-xl bg-neutral-100">
-                            <label htmlFor="statusSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
-                            <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
-                                <option value="status">Status</option>
-                                <option value="completed">Closed</option>
-                                <option value="canceled">Open</option>
-                            </select>
-                        </div>
+                        
 
                         
                     </div>
@@ -260,19 +211,6 @@ function CustomerTable() {
                 </div>
             </div>
 
-            {/* Modal component */}
-            <Modal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                content={modalContent}
-            />
-
-            {/* Modal for replying to the query */}
-            <ReplyModal
-                isOpen={isReplyModalOpen}
-                onClose={() => setIsReplyModalOpen(false)}
-                onSubmitReply={handleSubmitReply}
-            />
 
             {/* Pagination */}
             <ReactPaginate className='pagination-container flex justify-end me-32 mt-10 gap-x-5'

@@ -1,4 +1,4 @@
-const Modal = ({ isOpen, onClose, content, onReplyClick }) => {
+const Modal = ({ isOpen, onClose, content }) => {
     if (!isOpen) return null;
 
     return (
@@ -9,9 +9,6 @@ const Modal = ({ isOpen, onClose, content, onReplyClick }) => {
                 <div className="flex justify-end space-x-4 mt-4">
                     <button onClick={onClose} className="bg-zinc-900 text-white px-4 py-2 rounded">
                         Close
-                    </button>
-                    <button onClick={onReplyClick} className="bg-zinc-900 text-white px-4 py-2 rounded">
-                        Reply to Query
                     </button>
                 </div>
             </div>

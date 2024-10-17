@@ -10,11 +10,16 @@ import ConfirmationModal from "../../sharedComp/customModal";
 import { isJobCompleted } from "../../apiManager/houseOwner/matchShvoller";
 import { setCredentials } from '../../slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { postQuery } from '../../apiManager/shared/Query.js';
+import QueryModal from '../../sharedComp/Query.jsx'
+
 
 
 export default function ServiceProgress() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isOpenQuery, setIsOpenQuery] = useState(false)
+
     const [shovellerName, setShovellerName] = useState('');
     const [shovellerAction, setShovellerAction] = useState('');
     const [isRequesting, setIsRequesting] = useState(false);
@@ -146,6 +151,36 @@ export default function ServiceProgress() {
         // navigate('/HouseOwner/cancelledJob'); // Navigate to the cancelled job page
     };
 
+    const closeQuery = () => {
+        setIsOpenQuery(false)
+    }
+
+   
+
+    const saveQuery = async (query) => {
+        setLoading(true)
+        try {
+            const res = await postQuery(jobId, userId, query.title, query.description)
+            if (res.error) {
+                setError(res.error)
+                return;
+            }
+            alert('Your query has been sent successfully')
+        } catch (error) {
+            setError(error.error || "server error")
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const openQuery = () => {
+        setIsOpenQuery(true)
+    }
+
+    const handleGoBack = () => {
+        navigate(-1); // Navigate back to the previous page
+    };
+
     if (error) return <div>{error}</div>
     if (loading) return <div> <Loader /> </div>
 
@@ -155,9 +190,19 @@ export default function ServiceProgress() {
                 <img
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain self-end w-6 aspect-square"
+                    className="object-contain self-end w-6 aspect-square cursor-pointer"
+                    onClick={openQuery}
                 />
             </div>
+
+            {/* Query Modal */}
+            {isOpenQuery && (
+                <QueryModal
+                    isOpen={openQuery}
+                    onClose={closeQuery}
+                    onSave={saveQuery}
+                />
+            )}
 
             {shovellerAction === 'completed' ? (
                 <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">

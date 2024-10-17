@@ -56,6 +56,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         ROUTES.ADMIN_DASHBOARD,
         ROUTES.ADMIN_SERVICE_DASHBOARD,
         ROUTES.ADMIN_QUERY_DASHBOARD,
+        ROUTES.ADMIN_REFERRAL_DASHBOARD,
       ]
 
 

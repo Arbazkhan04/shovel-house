@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
-import { FaSearch, FaStar } from 'react-icons/fa'; // Import icons
-import { allJobsInfo } from '../../../apiManager/admin/JobsManagement.js';
+import { FaSearch } from 'react-icons/fa'; // Import icons
+import { allJobsInfo, manualCapture } from '../../../apiManager/admin/JobsManagement.js';
 import Loader from '../../../sharedComp/loader.jsx'
+import ConfirmationModal from '../../../sharedComp/customModal.jsx'
 
 function CustomerTable() {
     const [jobs, setJobs] = useState([]);
@@ -11,6 +12,10 @@ function CustomerTable() {
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [dateSortBy, setDateSortBy] = useState('Newest First');
+    const [showCancelModal, setShowCancelModal] = useState(false); //
+    const [jobId, setJobId] = useState(''); //
+    const [shovelerId, setShovelerId] = useState(''); //
+
 
     useEffect(() => {
         const getJobsData = async () => {
@@ -27,6 +32,41 @@ function CustomerTable() {
         }
         getJobsData();
     }, []);
+
+    const handleCapture = async () => {
+        try {
+            setLoading(true);
+            
+            const res = await manualCapture(jobId, shovelerId, 'admin');
+            if (res && res.error) {
+                setError(res.error);
+                setLoading(false);
+                setJobId('');
+                setShovelerId('');
+                return
+            }
+            
+            alert('Payment Captured Successfully');
+            setShowCancelModal(false); // Close the modal before performing the action
+            setLoading(false);
+            console.log(jobId)
+        } catch (error) {
+            setError(error.message || "An error occurred while capturing payment");
+        }
+        finally {
+            setLoading(false);
+            setJobs(jobs.filter((referral) => referral._id !== jobId));
+        }
+        setJobId('');
+        setShovelerId('');
+    }
+
+    const handleManualCaptureClick = (row) => {
+        setShowCancelModal(true);
+        setJobId(row.original.jobDetails._id);
+        setShovelerId(row.original.shovelerId);
+    }
+
 
     const columns = React.useMemo(
         () => [
@@ -95,7 +135,9 @@ function CustomerTable() {
                             }}
                         >
                             {currentStatus}
+
                         </button>
+
                     );
                 },
             },
@@ -136,7 +178,7 @@ function CustomerTable() {
                 Header: 'Price Offered', accessor: 'price',
                 Cell: ({ row }) => (
                     <div>
-                        {row.original.jobDetails.paymentInfo.amount}
+                        {row.original.jobDetails.paymentInfo.amount / 100}
                     </div>
                 ),
             },
@@ -144,7 +186,7 @@ function CustomerTable() {
                 Header: 'Payment Capture',
                 accessor: 'payment',
                 Cell: ({ row }) => (
-                    <button className="bg-black text-white px-1 py-1 rounded-md">Capture</button>
+                    <button onClick={() => handleManualCaptureClick(row)} className="bg-black text-white px-1 py-1 rounded-md">Capture</button>
                 ),
             },
         ],
@@ -207,9 +249,7 @@ function CustomerTable() {
         gotoPage(event.selected);
     };
 
-    if (!jobs.length) {
-        return <p>No jobs available</p>;
-    }
+
 
     if (loading) {
         return <Loader />;
@@ -217,6 +257,10 @@ function CustomerTable() {
 
     if (error) {
         return <p className="text-red-500">{error}</p>;
+    }
+
+    if (!jobs.length) {
+        return <p>No jobs available</p>;
     }
 
     return (
@@ -328,7 +372,17 @@ function CustomerTable() {
                 />
 
             </div>
+            {/* Use the reusable confirmation modal */}
+            <ConfirmationModal
+                showModal={showCancelModal}
+                onClose={() => setShowCancelModal(false)}
+                onConfirm={handleCapture}
+                title="Capture Payment"
+                message="Are you sure you want to capture the paymnent for this job?"
+            />
         </section>
+
+
     );
 }
 

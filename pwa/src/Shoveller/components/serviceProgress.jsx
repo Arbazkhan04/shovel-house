@@ -5,6 +5,7 @@ import Chat from '../../sharedComp/chat';
 import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 import QueryModal from '../../sharedComp/Query';
 import Loader from '../../sharedComp/loader'
+import { postQuery } from '../../apiManager/shared/Query.js';
 
 
 export default function ServiceProgress() {
@@ -52,14 +53,26 @@ export default function ServiceProgress() {
     };
 
     
-
-
     const closeQuery = () => {
         setIsOpenQuery(false)
     }
 
-    const saveQuery = (query) => {
-        console.log(query)
+   
+
+    const saveQuery = async (query) => {
+        setLoading(true)
+        try {
+            const res = await postQuery(jobId, userId, query.title, query.description)
+            if (res.error) {
+                setError(res.error)
+                return;
+            }
+            alert('Your query has been sent successfully')
+        } catch (error) {
+            setError(error.error || "server error")
+        } finally {
+            setLoading(false);
+        }
     }
 
     const openQuery = () => {
@@ -78,12 +91,14 @@ export default function ServiceProgress() {
 
             {/* Header Section */}
             <div className="flex flex-col self-end mt-2 mr-20 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
-                <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-                    className="object-contain self-end w-6 aspect-square"
-                    onClick={openQuery}
-                />
+                {(houseOwnerAction!=='canceled' || houseOwnerAction!=='pending') && (
+                     <img
+                     loading="lazy"
+                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
+                     className="object-contain self-end w-6 aspect-square cursor-pointer"
+                     onClick={openQuery}
+                 />
+               )}
                 <div className="self-start mt-5">
                     {houseOwnerAction === "canceled" ? "Request Cancelled" : "Service in Progress"}
                 </div>
