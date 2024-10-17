@@ -31,7 +31,7 @@ function CustomerTable() {
             }
         }
         getJobsData();
-    }, []);
+    }, [jobId]);
 
     const handleCapture = async () => {
         try {
@@ -49,7 +49,6 @@ function CustomerTable() {
             alert('Payment Captured Successfully');
             setShowCancelModal(false); // Close the modal before performing the action
             setLoading(false);
-            console.log(jobId)
         } catch (error) {
             setError(error.message || "An error occurred while capturing payment");
         }
