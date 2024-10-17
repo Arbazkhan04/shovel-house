@@ -1,4 +1,4 @@
-// Login.jsx
+import React from 'react';
 import upperHeadImage from "../assets/images/upperhead.png";
 import homeImage from "../assets/images/home.png";
 import { useNavigate } from 'react-router-dom';
@@ -14,72 +14,89 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [error,setError] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
-    useEffect(() => {
-      if (userInfo) {
-        // Navigate based on user role after login
-        switch (userInfo.user.role) {
-          case 'admin':
-            navigate(ROUTES.ADMIN_DASHBOARD);
-            break;
-          case 'shoveller':
-            navigate(userInfo.user.chargesEnabled ? ROUTES.SHOVELLER_SEARCH : ROUTES.SHOVELLER_ONBOARD);
-            break;
-          case 'houseOwner':
-             if(userInfo.user.jobStatus === 'completed'){
-              navigate(ROUTES.HOUSEOWNER_SERVICE_FINISHED);
-            }
-            else if (userInfo.user.paymentStatus === 'authorized') {
-              navigate(userInfo.user.jobStatus === 'in-progress' ? ROUTES.HOUSEOWNER_SERVICE_PROGRESS : ROUTES.HOUSEOWNER_LISTOFSHOVELLERAPPLIED);
-            } else if (userInfo.user.paymentStatus === 'pending') {
-              navigate(ROUTES.HOUSEOWNER_CHECKOUT);
-            }
-            else {
-              navigate(ROUTES.HOUSEOWNER_JOB_PROGRESS);
-            }
-            break;
-          default:
-            break; // No action for unrecognized roles
-        }
+  useEffect(() => {
+    if (userInfo) {
+      // Navigate based on user role after login
+      switch (userInfo.user.role) {
+        case 'admin':
+          navigate(ROUTES.ADMIN_DASHBOARD);
+          break;
+        case 'shoveller':
+          navigate(userInfo.user.chargesEnabled ? ROUTES.SHOVELLER_SEARCH : ROUTES.SHOVELLER_ONBOARD);
+          break;
+        case 'houseOwner':
+          if (userInfo.user.jobStatus === 'completed') {
+            navigate(ROUTES.HOUSEOWNER_SERVICE_FINISHED);
+          } else if (userInfo.user.paymentStatus === 'authorized') {
+            navigate(userInfo.user.jobStatus === 'in-progress' ? ROUTES.HOUSEOWNER_SERVICE_PROGRESS : ROUTES.HOUSEOWNER_LISTOFSHOVELLERAPPLIED);
+          } else if (userInfo.user.paymentStatus === 'pending') {
+            navigate(ROUTES.HOUSEOWNER_CHECKOUT);
+          } else {
+            navigate(ROUTES.HOUSEOWNER_JOB_PROGRESS);
+          }
+          break;
+        default:
+          break; // No action for unrecognized roles
       }
-    }, [navigate, userInfo]);
+    }
+  }, [navigate, userInfo]);
 
   const handleForgotPassword = () => {
-    console.log('Forgot password clicked');
     setIsForgotPasswordOpen(true);
-  }
+  };
 
   const handleForgotPasswordSave = async (email) => {
     try {
-      await forgotPassword(email);
+      const res = await forgotPassword(email);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      setError('');
       console.log('Forgot password email sent.');
     } catch (err) {
-      console.log(err?.data?.message || err.error);
+      setError(err?.data?.message || err.error);
     }
-  }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      setError('');
       dispatch(setCredentials({ ...res }));
     } catch (err) {
-      console.log(err?.data?.message || err.error);
+      setError(err?.data?.message || err.error);
     }
-  }
+  };
 
   const handleQuestion = () => {
     navigate('/signupQuestion');
-  }
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-white mt-5">
       <div className="text-center text-3xl font-medium text-black">Shovel House</div>
+      
+      {/* Error Alert */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 w-full max-w-[330px] sm:max-w-[390px] text-center">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+
       <div className="relative w-full max-w-[500px] pt-16">
         <img src={upperHeadImage} alt="Upper Head" className="absolute top-1 left-0 w-full h-auto" />
       </div>
@@ -131,7 +148,8 @@ function Login() {
           </div>
         </div>
       </div>
-      {isForgotPasswordOpen && <ForgotPassword onClose={() => setIsForgotPasswordOpen(false)} onSave={handleForgotPasswordSave} />}
+
+      {isForgotPasswordOpen && <ForgotPassword isOpen={isForgotPasswordOpen} onClose={() => setIsForgotPasswordOpen(false)} onSave={handleForgotPasswordSave} />}
     </div>
   );
 }
