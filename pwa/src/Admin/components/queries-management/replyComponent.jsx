@@ -2,6 +2,38 @@ import { useState } from 'react';
 
 const ReplyModal = ({ isOpen, onClose, onSubmitReply }) => {
     const [replyText, setReplyText] = useState('');
+    const [error, setError] = useState('');
+
+    const validate = () => {
+        let isValid = true;
+        let newErrors = '';
+    
+        // Title validation
+        if (replyText.length < 6) {
+          newErrors = "Reply must be at least 6 characters long.";
+          isValid = false;
+        } else if (replyText.length > 150) {
+          newErrors = "Reply must be at most 150 characters long.";
+          isValid = false;
+        }
+    
+        // Description validation
+        if (!replyText.trim()) {
+          newErrors = "Reply is required.";
+          isValid = false;
+        }
+    
+        setError(newErrors);
+        return isValid;
+    };
+    
+    const handleSave = () => { 
+        if (validate()) {
+            onSubmitReply(replyText);
+            setReplyText('');
+            onClose();
+        }
+    }
 
     if (!isOpen) return null;
 
@@ -15,12 +47,13 @@ const ReplyModal = ({ isOpen, onClose, onSubmitReply }) => {
                     className="w-full h-24 p-2 border rounded"
                     placeholder="Write your reply..."
                 />
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                 <div className="flex justify-end space-x-4 mt-4">
                     <button onClick={onClose} className="bg-zinc-900 text-white px-4 py-2 rounded">
                         Cancel
                     </button>
                     <button
-                        onClick={() => onSubmitReply(replyText)}
+                        onClick={() => handleSave()}
                         className="bg-zinc-900 text-white px-4 py-2 rounded"
                     >
                         Submit Reply

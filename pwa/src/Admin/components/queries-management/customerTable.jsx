@@ -3,6 +3,7 @@ import { useTable, usePagination, useSortBy } from 'react-table';
 import ReactPaginate from 'react-paginate';
 import { FaSearch } from 'react-icons/fa'; // Import icons
 import { allQueries, sendQueryResponse } from '../../../apiManager/admin/QueriesManagement.js';
+import { enableCapture } from '../../../apiManager/admin/JobsManagement.js';
 import Loader from '../../../sharedComp/loader.jsx'
 import Modal from './queryComponent.jsx'
 import ReplyModal from './replyComponent.jsx';
@@ -16,6 +17,9 @@ function CustomerTable() {
     const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
     const [selectedQueryId, setSelectedQueryId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('Status');
+    const [enableCancel, setEnableCancel] = useState(false); 
+    const [jobId, setJobId] = useState(null);
 
 
     useEffect(() => {
@@ -32,32 +36,82 @@ function CustomerTable() {
             }
         }
         getQueriesData();
-    }, []);
+    }, [jobId]);
 
-    const handleTitleClick = (content, queryId) => {
+    const handleTitleClick = (content) => {
         setModalContent(content);
-        setSelectedQueryId(queryId);
         setIsModalOpen(true);
     };
 
-    const handleReplyClick = () => {
+    const handleReplyClick = (queryId) => {
         setIsModalOpen(false);
+        setSelectedQueryId(queryId);
         setIsReplyModalOpen(true);
     };
 
     const handleSubmitReply = async (replyText) => {
-        if (!replyText.trim()) {
-            alert("Reply can't be empty");
-            return;
+        try {
+            setLoading(true);
+            if (!replyText.trim()) {
+                setError('Reply text cannot be empty');
+                return;
+            }
+    
+            const res = await sendQueryResponse(selectedQueryId, replyText);
+            if (res && res.error) { 
+                setError(res.error);
+                setLoading(false);
+                return;
+            }
+    
+            // check if this was enable cancel button
+            if (enableCancel) { 
+                const result = await handleEnableCancel(jobId);
+                if (result && result.error) { 
+                    setError(result.error);
+                    setLoading(false);
+                    return;
+                }
+                setEnableCancel(false);
+                setJobId(null);
+            }
+    
+            // Close the reply modal after submitting
+            setIsReplyModalOpen(false);
+            alert('Reply submitted successfully');
+        } catch (error) {
+            setError(error.message || "An error occurred while sending reply");
         }
-
-        // Call your function to send the reply to the backend
-        await sendQueryResponse(selectedQueryId, replyText);
-
-        // Close the reply modal after submitting
-        setIsReplyModalOpen(false);
-        alert('Reply submitted successfully');
+        finally {
+            setLoading(false);
+        }
     };
+
+    const enableCancelClick = async (row) => {
+        setEnableCancel(true);
+        setJobId(row.original.query.jobId);
+        handleReplyClick(row.original.query._id); 
+    }
+
+    const handleEnableCancel = async (jobId) => {
+        try {
+            
+            setLoading(true);
+            const res = await enableCapture(jobId);
+            if (res && res.error) {
+                setError(res.error);
+                setLoading(false);
+                return;
+            }
+            alert('Cancel button enabled!');
+            setLoading(false);
+        } catch (error) {
+            setError(error.message || "An error occurred while enabling cancel button");
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     const columns = React.useMemo(
         () => [
@@ -73,8 +127,8 @@ function CustomerTable() {
                 Header: 'Title',
                 accessor: 'title',
                 Cell: ({ row }) => (
-                    <span className="text-left"
-                    onClick={() => handleTitleClick(row.original.query.query, row.original.query._id)}
+                    <span className="text-left cursor-pointer"
+                    onClick={() => handleTitleClick(row.original.query.query)}
                     >
                         {row.original.query.title}
                     </span>
@@ -95,7 +149,7 @@ function CustomerTable() {
                     return (
                         <div className="flex space-x-2">
                             <button
-                                className={`px-2 py-1 rounded bg-zinc-900 text-white`}
+                                className={`px-2 py-1 rounded bg-zinc-400 text-white`}
                             >
                                 {row.original.query.status}
                             </button>
@@ -111,10 +165,23 @@ function CustomerTable() {
                 ),
             },
             {
+                Header: 'Reason',
+                accessor: 'reason',
+                Cell: ({ row }) => (
+                    row.original.role === 'shoveller' &&
+                    <span className="text-left cursor-pointer"
+                    onClick={() => handleTitleClick(row.original.reason ? row.original.reason : "No reason provided!")}
+                    >Show Reason</span>
+                ),
+            },
+            {
                 Header: 'Enable Cancel',
                 accessor: 'enable cancel',
                 Cell: ({ row }) => (
-                    <button className="bg-black text-white px-1 py-1 rounded-md">Enable</button>
+                    (row.original.role === 'houseOwner' && row.original.query.status === 'open') &&
+                    <button
+                        onClick={() => enableCancelClick(row)}
+                        className="bg-black text-white px-1 py-1 rounded-md">Enable</button>
                 ),
             },
             {
@@ -122,7 +189,7 @@ function CustomerTable() {
                 accessor: 'send email',
                 Cell: ({ row }) => (
                     <button
-                        onClick={() => handleReplyClick(row.original.query.query, row.original.query._id)}
+                        onClick={() => handleReplyClick(row.original.query._id)}
                         className="bg-black text-white px-1 py-1 rounded-md">Send Email</button>
                 ),
             }
@@ -134,8 +201,15 @@ function CustomerTable() {
         return queries
             .filter((query) =>
                 query.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-    }, [queries, searchTerm]);
+        )
+        .filter((query) => {
+            // Check if "All" is selected, if yes, don't apply the status filter
+            if (sortBy.toLowerCase() === 'status') {
+                return true; // Include all shovelers
+            }
+            return query.query.status.toLowerCase() === sortBy.toLowerCase();
+        });
+    }, [queries, searchTerm, sortBy]);
 
     const {
         getTableProps,
@@ -204,10 +278,13 @@ function CustomerTable() {
                         {/* Status Sorting Field */}
                         <div className="flex gap-3.5 px-3.5 py-2.5 rounded-xl bg-neutral-100">
                             <label htmlFor="statusSort" className="font-semibold text-zinc-700 flex justify-center items-center">Sort by:</label>
-                            <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1">
+                            <select id="statusSort" className="bg-neutral-100 text-zinc-700 font-semibold rounded-lg px-2 py-1"
+                                onChange={(e) => setSortBy(e.target.value)}
+                                value={sortBy}
+                            >
                                 <option value="status">Status</option>
-                                <option value="completed">Closed</option>
-                                <option value="canceled">Open</option>
+                                <option value="closed">Closed</option>
+                                <option value="open">Open</option>
                             </select>
                         </div>
 

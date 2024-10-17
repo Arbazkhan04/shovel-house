@@ -13,3 +13,11 @@ export const manualCapture = async (jobId, shovellerId, role) => {
         return res.data;
     
 }
+
+
+export const enableCapture = async (jobId) => {
+    
+        const res = await api.post('/job/houseOwnerRequestedForCancel', { jobId });
+        return res.data;
+    
+}
