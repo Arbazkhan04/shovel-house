@@ -8,6 +8,7 @@ import { setCredentials } from '../../slices/authSlice';
 
 export default function ServicePreference({ preStep }) {
   const { formData, setFormData } = useFormContext();
+  const [serverError, setServerError] = useState(null);
 
   const [register, { isLoading }] = useRegisterMutation();
 
@@ -66,10 +67,14 @@ export default function ServicePreference({ preStep }) {
 
     try {
       const res = await register(data).unwrap();
+      if(res.error){
+        setServerError(res.message)
+        return;
+      }
       dispatch(setCredentials({ ...res }));
       navigate("/houseowner/jobPostProgress");
     } catch (err) {
-      console.log(err?.data?.message || err.error);
+      setServerError(err.message || "An error occurred in server please try again later");
     }   
 };
 
@@ -79,6 +84,13 @@ const handleBack = () => {
 
 return (
   <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
+     {/* Error Alert */}
+     {serverError && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 w-full max-w-[330px] sm:max-w-[390px] text-center">
+          <strong className="font-bold">ServerError: </strong>
+          <span className="block sm:inline">{serverError}</span>
+        </div>
+      )}
     <div className="flex flex-col px-5 mt-5 w-full">
       <img
         loading="lazy"

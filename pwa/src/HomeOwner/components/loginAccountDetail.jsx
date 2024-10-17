@@ -1,28 +1,64 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useFormContext } from "../../context/houseOwnerSignupFormContext";
 
-export default function LoginAccountDetail({nextStep,preStep}) {
+export default function LoginAccountDetail({ nextStep, preStep }) {
   const { formData, handleChange } = useFormContext();
-  // const navigate = useNavigate();
-
-  // State for form fields
-  // const [email, setEmail] = useState("");
-  // const [name, setName] = useState("");
-  // const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // State for password visibility
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  // const handleNext = () => {
-  //   navigate("/houseowner/loginPaymentInfo");
-  // };
+  // State for error messages
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+  });
 
-  // const handleBack = () => {
-  //   navigate("/houseowner/personalDetail");
-  // };
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      name: "",
+    };
+
+    // Validate email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      valid = false;
+    }
+
+    // Validate password
+    if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+      valid = false;
+    }
+
+    // Validate confirm password
+    if (formData.password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+      valid = false;
+    }
+    if(!formData.name){
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleNext = () => {
+    if (validateForm()) {
+      nextStep();
+    }
+  };
 
   return (
     <div className="flex overflow-hidden flex-col pb-12 mx-auto w-full bg-white max-w-[480px]">
@@ -56,6 +92,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
                     className="self-stretch my-auto outline-none"
                   />
                 </div>
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
               </div>
               {/* Name Field */}
               <div className="flex flex-col justify-center p-3 mt-3 w-full whitespace-nowrap rounded-lg border-black border-solid border-[0.5px]">
@@ -74,6 +111,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
                     className="self-stretch my-auto outline-none"
                   />
                 </div>
+              {errors.name && <p className="text-red-500">{errors.name}</p>}
               </div>
               {/* Password Field */}
               <div className="flex flex-col justify-center p-3 mt-3 w-full whitespace-nowrap rounded-lg border-black border-solid border-[0.5px]">
@@ -100,6 +138,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
                     onClick={() => setPasswordVisible(!passwordVisible)}
                   />
                 </div>
+                {errors.password && <p className="text-red-500">{errors.password}</p>}
               </div>
               {/* Confirm Password Field */}
               <div className="flex flex-col justify-center p-3 mt-3 w-full rounded-lg border-black border-solid border-[0.5px]">
@@ -125,6 +164,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
                     onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
                   />
                 </div>
+                {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
               </div>
             </div>
           </div>
@@ -137,7 +177,7 @@ export default function LoginAccountDetail({nextStep,preStep}) {
             Back
           </div>
           <div
-            onClick={nextStep}
+            onClick={handleNext}
             className="flex-1 shrink gap-9 self-stretch px-12 py-3.5 text-white bg-black rounded-lg"
           >
             Next
