@@ -290,7 +290,7 @@ export default function ServiceProgress() {
             {shovellerAction !== 'completed' && (
                 <div
                     onClick={openChat}
-                    className="gap-9 self-center px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-black rounded-lg max-w-[350px] bg-[#EEEEEE]"
+                    className="gap-9 self-center cursor-pointer px-12 py-4 mt-9 w-full text-xl font-medium tracking-wider text-center text-black rounded-lg max-w-[350px] bg-[#EEEEEE]"
                 >
                     Chat With Provider
                 </div>

@@ -6,6 +6,8 @@ import { jobCompleted } from '../../apiManager/shared/jobCompleted';
 import QueryModal from '../../sharedComp/Query';
 import Loader from '../../sharedComp/loader'
 import { postQuery } from '../../apiManager/shared/Query.js';
+import DetailsModal from './detailsModal.jsx'
+import { getJobDetails } from '../../apiManager/shoveller/jobDetails.js';
 
 
 export default function ServiceProgress() {
@@ -13,7 +15,10 @@ export default function ServiceProgress() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [jobDetails, setJobDetails] = useState({});
+
     const [isOpenQuery, setIsOpenQuery] = useState(false)
+    const [isOpenDetails, setIsOpenDetails] = useState(false)
 
 
     const location = useLocation();
@@ -52,9 +57,33 @@ export default function ServiceProgress() {
 
     };
 
+
+    const closeDetails = () => { 
+        setIsOpenDetails(false)
+    }
+
+    const openDetails = async () => {
+        try {
+            setLoading(true)
+            const res = await getJobDetails(jobId, userId)
+            if (res && res.error) {
+                setError(res.error)
+                setLoading(false)
+                return;
+            }
+            setJobDetails(res)
+            setIsOpenDetails(true)
+        } catch (error) {
+            setError(error.error || "server error")
+        }
+        finally {
+            setLoading(false)
+        }
+    }
     
     const closeQuery = () => {
         setIsOpenQuery(false)
+        setJobDetails({})
     }
 
    
@@ -63,7 +92,7 @@ export default function ServiceProgress() {
         setLoading(true)
         try {
             const res = await postQuery(jobId, userId, query.title, query.description)
-            if (res.error) {
+            if (res && res.error) {
                 setError(res.error)
                 return;
             }
@@ -91,18 +120,19 @@ export default function ServiceProgress() {
 
             {/* Header Section */}
             <div className="flex flex-col self-end mt-2 mr-20 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
-                {(houseOwnerAction!=='canceled' || houseOwnerAction!=='pending') && (
+                {houseOwnerAction==='accepted' && (
                      <img
                      loading="lazy"
                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
                      className="object-contain self-end w-6 aspect-square cursor-pointer"
                      onClick={openQuery}
                  />
-               )}
-                <div className="self-start mt-5">
+                )}
+            </div>
+                <div className="flex flex-col self-end mt-2 items-center max-w-full mx-auto text-4xl font-medium text-black capitalize whitespace-nowrap w-[350px]">
                     {houseOwnerAction === "canceled" ? "Request Cancelled" : "Service in Progress"}
                 </div>
-            </div>
+           
 
             {/* Query Modal */}
             {isOpenQuery && (
@@ -110,6 +140,15 @@ export default function ServiceProgress() {
                     isOpen={openQuery}
                     onClose={closeQuery}
                     onSave={saveQuery}
+                />
+            )}
+
+            {/* Details Modal */}
+            {isOpenDetails && (
+                <DetailsModal
+                    isOpen={isOpenDetails}
+                    onClose={closeDetails}
+                    data={jobDetails}
                 />
             )}
 
@@ -146,7 +185,9 @@ export default function ServiceProgress() {
                                 You Are Fulfilling <br />
                                 <span className="font-bold">{name}</span> Service Request
                             </div>
-                            <div className="self-center py-3.5 px-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg">
+                            <div
+                                onClick={openDetails}
+                                className="self-center cursor-pointer py-3.5 px-12 mt-8 max-w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-white rounded-lg">
                                 Details
                             </div>
                         </div>

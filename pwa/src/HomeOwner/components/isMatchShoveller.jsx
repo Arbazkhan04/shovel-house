@@ -6,11 +6,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setCredentials } from '../../slices/authSlice';
 import { updateJobStatus } from '../../apiManager/houseOwner/matchShvoller';
 import { useLocation } from "react-router-dom";
+import DetailsModal from './detailsModal.jsx'
+import { getJobDetails } from '../../apiManager/houseOwner/jobDetails.js';
+import Loader from '../../sharedComp/loader';
 
 export default function IsMatchShoveller() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const [isOpenDetails, setIsOpenDetails] = useState(false)
+  const [jobDetails, setJobDetails] = useState({});
 
   const location = useLocation();
   const { shovelerId,applicantName,formattedScheduledTime } = location.state || {};
@@ -51,8 +57,31 @@ export default function IsMatchShoveller() {
       setLoading(false); // Ensure loading is set to false in the finally block
     }
   };
+
+  const closeDetails = () => { 
+    setIsOpenDetails(false)
+}
+
   
 
+  const openDetails = async () => {
+    try {
+        setLoading(true)
+        const res = await getJobDetails(jobId, shovelerId)
+        if (res && res.error) {
+            setError(res.error)
+            setLoading(false)
+            return;
+        }
+        setJobDetails(res)
+        setIsOpenDetails(true)
+    } catch (error) {
+        setError(error.error || "server error")
+    }
+    finally {
+        setLoading(false)
+    }
+}
 
 
   
@@ -60,18 +89,11 @@ export default function IsMatchShoveller() {
     navigate('/HouseOwner/serviceProgress');
   }
 
+  if (loading) return <div> <Loader /> </div>
+
   if(error) return <p>{error.message}</p>
   return (
     <div className="flex overflow-hidden flex-col pb-10 mx-auto w-full bg-white max-w-[480px]">
-
-      <div className="flex flex-col self-end mt-2 mr-6 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/1a0ed20fd1b28fde60598f885257a0572863e17e0c242de30f15e6a59ed85d3b?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
-          className="object-contain self-end w-6 aspect-square"
-        />
-
-      </div>
       <div className="self-center flex items-center justify-center mt-10 max-w-full text-4xl font-medium text-black capitalize whitespace-nowrap w-[254px]">
         Matched!
       </div>
@@ -107,9 +129,23 @@ export default function IsMatchShoveller() {
           </div>
         </div>
       </div>
-      <div className="gap-9 self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
+      <div
+        onClick={openDetails}
+        className="gap-9 cursor-pointer self-center px-12 py-4 mt-8 w-full text-xl font-medium tracking-wider text-black whitespace-nowrap bg-zinc-200 text-center rounded-lg max-w-[350px] w-[169px]">
         View Details
       </div>
+
+
+      {/* Details Modal */}
+      {isOpenDetails && (
+                <DetailsModal
+                    isOpen={isOpenDetails}
+                    onClose={closeDetails}
+                    data={jobDetails}
+                />
+      )}
+      
+
       {/* Chat with provider button */}
       {/* <div
         onClick={providerId ? openChat : null} // Only open chat if providerId is not null
