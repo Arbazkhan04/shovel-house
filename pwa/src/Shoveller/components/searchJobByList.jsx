@@ -5,6 +5,9 @@ import Loader from '../../sharedComp/loader';
 import { useSelector } from "react-redux";
 
 export default function SearchJobByList() {
+  
+  const { userInfo } = useSelector((state) => state.auth);
+
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -12,9 +15,9 @@ export default function SearchJobByList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [referralCode,setReferralcode] = useState(userInfo.user.referralCode || '');
 
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.auth);
   const shovellerId = userInfo.user.id;
 
   // Fetch Jobs
@@ -110,7 +113,7 @@ export default function SearchJobByList() {
       <div className="w-full">
         <div className="flex items-center justify-between">
           <p onClick={() => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
-          <p className="text-gray-500 cursor-pointer">Referral Code: 000000</p>
+          { referralCode && ( <p className="text-gray-500 cursor-pointer">Referral Code: {referralCode}</p> ) }
         </div>
 
         <h1 className="text-3xl font-semibold text-black mb-4 mt-3">Search Jobs In Area</h1>

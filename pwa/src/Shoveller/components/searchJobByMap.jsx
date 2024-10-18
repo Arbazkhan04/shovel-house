@@ -3,25 +3,28 @@ import { useState, useEffect, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
 import ShovelHouseImage from "../../assets/images/shovelhouse.png";
 import Loading from '../../sharedComp/loader';
-import { getAllJobs } from '../../apiManager/shoveller/matchJobApi';
+import { findJob } from '../../apiManager/shoveller/matchJobApi';
 import { useSelector } from "react-redux";
 
 const libraries = ["places"];
 
 export default function SearchJobByArea() {
 
-
-  const [position, setPosition] = useState({ lat: 0, lng: 0 }); // Default position
+  const { userInfo } = useSelector((state) => state.auth);
+  const shovellerId = userInfo.user.id;
+  const initialLat = userInfo.user.latitude || 0;
+  const initialLng = userInfo.user.longitude || 0;
+  const [referralCode,setReferralcode] = useState(userInfo.user.referralCode || '');
+  const [position, setPosition] = useState({ lat: initialLat, lng: initialLng }); // Default position
   const [map, setMap] = useState(null); // Google Map instance
   const [autocomplete, setAutocomplete] = useState(null); // Autocomplete instance
   const [geocoder, setGeocoder] = useState(null); // Geocoder instance
   const [location, setLocation] = useState({ address: '', lat: null, lng: null });
+  const [error, setError] = useState('');
 
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state) => state.auth);
-  const shovellerId = userInfo.user.id;
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDJQNAbTK3AGLlmRGVxa3VbejegSp-qB9A",
@@ -127,13 +130,23 @@ export default function SearchJobByArea() {
   const fetchNearbyJobs = async (lat, lng) => {
     try {
       setLoadingJobs(true);
-      const res = await getAllJobs();
-      console.log(res)
-      setJobs(res);
+      console.log(lat,lng)
+      const res = await findJob(lat,lng);
+      if(res.error){
+        setError(res.error);
+        setJobs([]);
+        setLoadingJobs(false);
+        return;
+      }else{
+        setError('');
+        console.log(res)
+        setJobs(res.jobs);
+      }
     } catch (error) {
       console.log(error);
     } finally {
       setLoadingJobs(false);
+      
     }
     // setLoadingJobs(true);
     // setTimeout(() => {
@@ -176,7 +189,7 @@ export default function SearchJobByArea() {
       <div className="flex flex-col px-5 mt-5">
         <div className="flex items-center justify-between">
           <p onClick={() => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
-          <p className="text-gray-500 cursor-pointer">Referral Code: 000000</p>
+          { referralCode && ( <p className="text-gray-500 cursor-pointer">Referral Code: {referralCode}</p> ) }
         </div>
 
         <div className="text-3xl font-semibold mt-4">Search Jobs in Your Area</div>
@@ -261,6 +274,14 @@ export default function SearchJobByArea() {
         </div>
       </div>
 
+       {/* Error Alert */}
+       {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-5 py-3 rounded relative mt-4 w-full max-w-[330px] sm:max-w-[390px] text-center">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+      
       {/* Job List */}
       <div className="mt-4 px-5">
         {loadingJobs ? (
