@@ -1,8 +1,8 @@
 import api from '../api';
 
-export const getAllJobs = async () => {
-    const res = await api.get('/job/getAllJobs');
-    return res.data.jobs;
+export const getAllJobs = async (page = 1, limit = 10) => {
+    const res = await api.get(`/job/getAllJobs?page=${page}&limit=${limit}`);
+    return res.data;
 }
 
 export const updateJobStatus = async (jobId, shovellerId,decision) => {

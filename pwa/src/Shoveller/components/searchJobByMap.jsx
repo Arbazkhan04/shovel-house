@@ -20,7 +20,7 @@ export default function SearchJobByArea() {
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const navigate = useNavigate();
-  const {userInfo} = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   const shovellerId = userInfo.user.id;
 
   const { isLoaded } = useJsApiLoader({
@@ -124,7 +124,7 @@ export default function SearchJobByArea() {
   }, [map]);
 
 
-  const fetchNearbyJobs = async(lat, lng) => {
+  const fetchNearbyJobs = async (lat, lng) => {
     try {
       setLoadingJobs(true);
       const res = await getAllJobs();
@@ -132,7 +132,7 @@ export default function SearchJobByArea() {
       setJobs(res);
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       setLoadingJobs(false);
     }
     // setLoadingJobs(true);
@@ -157,7 +157,7 @@ export default function SearchJobByArea() {
         jobId: job._id,
         // isHouseOwnerAccepted: job.isHouseOwnerAccepted,
         scheduledTime: job.scheduledTime,
-        name : job.houseOwnerId.name, 
+        name: job.houseOwnerId.name,
       }
     });
   };
@@ -178,6 +178,7 @@ export default function SearchJobByArea() {
           <p onClick={() => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
           <p className="text-gray-500 cursor-pointer">Referral Code: 000000</p>
         </div>
+
         <div className="text-3xl font-semibold mt-4">Search Jobs in Your Area</div>
       </div>
 

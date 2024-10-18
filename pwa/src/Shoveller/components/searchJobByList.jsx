@@ -1,51 +1,69 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllJobs } from '../../apiManager/shoveller/matchJobApi'
+import { getAllJobs } from '../../apiManager/shoveller/matchJobApi';
 import Loader from '../../sharedComp/loader';
 import { useSelector } from "react-redux";
 
 export default function SearchJobByList() {
-  console.log('SearchJobByList')
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [filteredJobs, setFilteredJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const {userInfo} = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
   const shovellerId = userInfo.user.id;
 
+  // Fetch Jobs
   useEffect(() => {
-    const getJobs = async () => {
+    const fetchJobs = async () => {
       try {
         setLoading(true);
-        const res = await getAllJobs();
-        console.log(res)
-        setJobs(res);
+        const res = await getAllJobs(page);
+        setJobs(prevJobs => [...prevJobs, ...res.jobs]);
+        setTotalPages(res.totalPages);
       } catch (error) {
         setError(error.message || "An error occurred while fetching jobs");
       } finally {
         setLoading(false);
+        setIsFetchingMore(false);
       }
-    }
-    getJobs();
-  }, []);
+    };
 
-  const handleShovellerMap = () => {
-    navigate("/shoveller/searchJobByMap");
+    fetchJobs();
+  }, [page]);
+
+  // Debounced Search Hook (custom)
+  const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+      const handler = setTimeout(() => setDebouncedValue(value), delay);
+      return () => clearTimeout(handler);
+    }, [value, delay]);
+    return debouncedValue;
   };
 
-  const navigateToHouseOwnerJob = (job) => {
-    navigate("/shoveller/isMatchHouseOwner", {
-      state: {
-        houseOwnerId: job.houseOwnerId._id,
-        jobId: job._id,
-        // isHouseOwnerAccepted: job.isHouseOwnerAccepted,
-        scheduledTime: job.scheduledTime,
-        name : job.houseOwnerId.name, 
-      }
-    });
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  // Filter Jobs based on Search
+  const filteredJobs = useMemo(() => {
+    if (!debouncedSearchQuery) return jobs;
+    return jobs.filter(job =>
+      job.services.some(service =>
+        service.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      )
+    );
+  }, [debouncedSearchQuery, jobs]);
+
+  // Fetch more jobs
+  const handleLoadMore = () => {
+    if (page < totalPages && !isFetchingMore) {
+      setIsFetchingMore(true);
+      setPage(prevPage => prevPage + 1);
+    }
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -62,54 +80,41 @@ export default function SearchJobByList() {
     return distance.toFixed(2); // Return the distance rounded to two decimal places
   };
 
-  useEffect(() => {
-    const debounceTimeout = setTimeout(() => {
-      console.log('called')
-      if (searchQuery.trim()) {
-        const filtered = jobs.filter((job) =>
-          job.services.some((service) =>
-            service.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        );
-        setFilteredJobs(filtered);
-      } else {
-        setFilteredJobs(jobs); // Reset to all jobs if the search query is empty
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+
+  const handleShovellerMap = () => navigate("/shoveller/searchJobByMap");
+
+  const navigateToHouseOwnerJob = (job) => {
+    navigate("/shoveller/isMatchHouseOwner", {
+      state: {
+        houseOwnerId: job.houseOwnerId._id,
+        jobId: job._id,
+        scheduledTime: job.scheduledTime,
+        name: job.houseOwnerId.name,
       }
-    }, 500); // Debounce delay of 500ms
-
-    return () => clearTimeout(debounceTimeout); // Clean up timeout on component unmount or searchQuery change
-  }, [searchQuery, jobs]);
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    });
   };
 
+  const availableJobs = useMemo(() => {
+    return jobs.filter(job =>
+      !job.ShovelerInfo?.some(shoveller => shoveller.ShovelerId === shovellerId)
+    );
+  }, [jobs, shovellerId]);
 
-  // Filter out jobs where the shoveller has already applied
-  const availableJobs = jobs.filter(job => !job.ShovelerInfo?.some(shoveller => shoveller.ShovelerId === shovellerId));
-
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
+  if (loading && page === 1) return <Loader />;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="flex flex-col items-center w-full bg-white max-w-[480px] mx-auto p-4">
-      {/* Header Section */}
+    <div className="flex flex-col items-center mt-4 w-full bg-white max-w-[480px] mx-auto p-4">
+      {/* Search Section */}
       <div className="w-full">
         <div className="flex items-center justify-between">
           <p onClick={() => navigate(`/shoveller/appliedJobs/${shovellerId}`)} className="text-gray-500 cursor-pointer">Applied Jobs</p>
           <p className="text-gray-500 cursor-pointer">Referral Code: 000000</p>
         </div>
-        <div className="flex flex-col mt-4">
-          <h1 className="text-3xl font-semibold text-black mb-4">
-            Search Jobs In Area
-          </h1>
-          <div className="flex gap-4 items-center p-3 bg-zinc-100 rounded-lg text-xl">
+
+        <h1 className="text-3xl font-semibold text-black mb-4 mt-3">Search Jobs In Area</h1>
+        <div className="flex gap-4 items-center p-3 bg-zinc-100 rounded-lg text-xl">
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/24150185c539c82e9703719df45b8d931494322e0bbfae370589b7b204138ab1?placeholderIfAbsent=true&apiKey=e30cd013b9554f3083a2e6a324d19d04"
               className="w-6 h-6"
@@ -123,10 +128,9 @@ export default function SearchJobByList() {
               className="w-full p-2 bg-zinc-100 rounded-lg focus:outline-none text-gray-700"
             />
           </div>
-        </div>
       </div>
 
-      {/* Toggle between Map and List */}
+      {/* Map and List Toggle */}
       <div className="flex justify-center mt-6 gap-10 w-full">
         <button
           className="flex gap-2 items-center text-gray-500 hover:text-black transition-all cursor-pointer"
@@ -149,7 +153,8 @@ export default function SearchJobByList() {
         </div>
       </div>
 
-      {/* List of Jobs */}
+
+      {/* Job List */}
       <div className="flex flex-col mt-5 w-full">
         {filteredJobs.length > 0 ? (
           filteredJobs.map((job, index) => (
@@ -160,27 +165,41 @@ export default function SearchJobByList() {
             >
               <div className="flex items-center gap-4">
                 <img
-                  srcSet = {job.houseOwnerId.imageUrl}
+                  src={job.houseOwnerId.imageUrl}
                   className="w-12 h-12 object-cover rounded-full"
                   alt="Job Icon"
+                  loading="lazy"
                 />
                 <div>
                   <div className="text-lg font-medium">{job.houseOwnerId.name}</div>
                   <div className="text-sm text-gray-500">{job.services[0]}</div>
                 </div>
               </div>
+
               <div className="text-sm text-black">
-                 {calculateDistance(
+                {calculateDistance(
                   userInfo.user.latitude,
                   userInfo.user.longitude,
                   job.location.coordinates[1], //lat
                   job.location.coordinates[0] //long
                 )} km
               </div>
+
             </div>
           ))
         ) : (
           <p className="text-center text-gray-500">No jobs found</p>
+        )}
+
+        {/* Load More Button */}
+        {page < totalPages && (
+          <button
+            onClick={handleLoadMore}
+            className="mt-4 p-2 bg-blue-500 text-white rounded-lg"
+            disabled={isFetchingMore}
+          >
+            {isFetchingMore ? "Loading..." : "Load More"}
+          </button>
         )}
       </div>
     </div>
