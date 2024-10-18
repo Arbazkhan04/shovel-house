@@ -103,10 +103,10 @@ function CustomerTable() {
                 ),
             },
             {
-                Header: 'Sign-Up Date', accessor: 'signUpDate',
+                Header: 'Post Date', accessor: 'PostDate',
                 Cell: ({ row }) => (
                     <div>
-                        {new Date(row.original.userDetails.dateJoined).toLocaleDateString('en-US', {
+                        {new Date(row.original.jobDetails.createdAt).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric'
