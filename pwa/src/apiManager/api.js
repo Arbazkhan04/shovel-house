@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:3003/api', // Replace with your API base URL
+  baseURL: 'https://shovel-house-b93eaebaf538.herokuapp.com/api', // Replace with your API base URL
 });
 
 // You can add request interceptors to handle common tasks like adding tokens to headers
