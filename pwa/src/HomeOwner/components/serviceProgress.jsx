@@ -133,10 +133,10 @@ export default function ServiceProgress() {
 
             //update the localstoage
             const userData = JSON.parse(localStorage.getItem('userInfo'));
-            console.log(userData);
+            // console.log(userData);
             dispatch(setCredentials({
                 user: {
-                    id: userData.user.id,
+                    id: userData.user.houseOwnerId,
                     role: userData.user.role,
                 },
                 token: userData.token
