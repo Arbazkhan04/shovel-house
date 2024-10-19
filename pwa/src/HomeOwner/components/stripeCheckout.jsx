@@ -36,7 +36,7 @@ const StripeCheckout = () => {
     if (sessionId) {
       const checkPaymentStatus = async () => {
         try {
-          const response = await fetch('http://localhost:3003/api/stripe/verifyStatus', {
+          const response = await fetch('https://shovel-house-b93eaebaf538.herokuapp.com/api/stripe/verifyStatus', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const StripeCheckout = () => {
     // const jobId = '66efd711fea9d88f22a7c5a7'; // Replace with the job ID from your backend
     try {
       // Send the price to the backend to create the checkout session
-      const response = await fetch('http://localhost:3003/api/stripe/checkout', {
+      const response = await fetch('https://shovel-house-b93eaebaf538.herokuapp.com/api/stripe/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
